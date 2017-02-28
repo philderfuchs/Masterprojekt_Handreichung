@@ -1,0 +1,217 @@
+\documentclass[10pt,a4paper,bibliography=totoc,twocolumn]{scrartcl}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{1em}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage[numbers]{natbib}
+\usepackage{url}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{listings} 
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[normalem]{ulem}
+\usepackage{soul}
+\usepackage{color}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage[T1]{fontenc}% wichtig für Trennung von Wörtern mit Umlauten
+\usepackage{microtype}% verbesserter Randausgleich
+\usepackage[toc,page]{appendix}
+\usepackage[all]{nowidow}
+\usepackage[style=base, margin=5mm]{caption}
+\usepackage{siunitx}
+\geometry{a4paper,left=16mm,right=16mm, top=25mm, bottom=3cm} 
+\setlength{\columnsep}{16pt}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\counti}{count}
+
+\begin{document}
+
+
+\title{Methoden zur automatischen Farbkonfiguration von Weboberflächen aus Bildvorlagen}
+\subtitle{Masterproject Zwischenabgabe I}
+\author{Philipp Anders}
+
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelemente von Websites (Text, Buttons, Hintergründe, etc.) aus Bildvorlagen. Dabei wird das Problem in zwei Teilprobleme zerlegt: 1. Das Bilden einer Obermenge von Farben durch einen Algorithmus zur Color Palette Estimation (CPE). 2. Die Identifizierung von Farben für bestimmte Oberflächenelemente aus dieser Obermenge durch Lösung eines Constraintsystems. Für die CPE wird der ACoPa-Algorhitmus von \citet{acopa} ausgewählt und implementiert, da dessen Ergebnis den aus Styleguides bekannten Farbpaletten-Definitionen in Form von Color Swatches ähnelt.
+  \vspace*{1cm}
+    \end{abstract}
+  \end{@twocolumnfalse}
+]
+
+
+\section{Problemmodellierung}
+
+\subsection{Problembeschreibung}
+\label{sec:modellierung}
+Unter Farbkonfiguration von Websites wird die Zuordnung der Farben einer Farbpalette $C = \{c_1, c_2, \ldots, c_n\}$ und einer festen Menge semantischer HTML-Oberflächenelemente $O = \{$Text, Hintergrund, Buttons, $\ldots \}$ verstanden. Bei den Farben $c_{1 \ldots n}$ handelt sich sich um 3-Tupel, wobei der Wertebereich der Komponenten abhängig vom gewählten Farbraum ist. Die Abbildung zwischen $O$ und $C$ ist surjektiv, d.h. jede Farbe der Farbpalette soll Verwendung finden, mehrere Oberflächenelemente können jedoch die gleiche Farbe besitzen.
+
+Die Farbpalette soll sich dabei an einer Bildvorlage orientieren. Die Zusammenstellung einer Farbpalette aus einer Bildvorlage wird von \citet{acopa} als \textbf{Color Palette Estimation (CPE)} bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. Diese ist dann minimal, wenn redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden von den Autoren jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/ladybug.png}
+\caption{Beispiel für die Einfärbung eines Bildes mit unterschiedlichen Farbpaletten der Größe 12. Oben: Originalbild. Links: Farbpalette ohne rote Farbtöne. Rechts: Farbpalette mit roten Farbtönen, wodurch der Marienkäfer erkennbar ist (Quelle: \citep{acopa})}
+\label{fig:ladybug}
+\end{figure}
+
+
+Historisch geht die CPE aus der Farbquantisierung hervor, bei der die Farben von Grafiken aufgrund der früher zu kleinen Kapazität von Grafikpuffern vor deren Anzeige reduziert (Farbreduktion) und dann auf die reduzierte Farbpalette abgebildet werden mussten (Quantisierung) \citep{variance}. Aus diesem Kontext kommt das formale Kriterium der Summe des quadratischen Fehlers, welcher in diesem Anwendungsfall auch als \emph{Recoloring Error} bezeichnet wird \citep{colorthemes}.
+
+Da Grafikpuffer mittlerweile über ausreichend Kapazität verfügen, liegt die Anwendung der CPE in anderen Bereichen wie z.B. der farbbasierten Indizierung von Grafiken in Datenbanken oder der Zusammenstellung von Farbthemen zu Gestaltungszwecken. \citet{colorthemes} zeigen, dass in diesem Kontext der Recoloring Error keine geeignete Metrik zur Beurteilung der Güte einer Farbpalette in Bezug auf das Ausgangsbild ist. Grund sind die menschlichen Wahrnehmungseigenschaften, wobei Bilder auf Komponenten- und nicht auf Pixelebene erfasst werden. Stattdessen werden eine Reihe anderer Metriken vorgestellt, die diesen Umstand berücksichtigen. Die Autoren zeigen zusätzlich empirisch, dass abhängig vom Individuum ein und dieselbe Farbpalette eines Bildes für unterschiedlich repräsentativ gehalten wird. 
+
+Dieser Befund hebt hervor, dass die Güte einer Farbpalette in Bezug auf das Ausgangsbild subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Güte der zu ermittelnden Farbpalette $C$ keine objektive Bewertungsfunktion herangezogen. Stattdessen wird exemplarisch ermittelt, wie Styleguides Farbpaletten für die Oberflächengestaltung beschreiben.
+
+\subsection{Farbpaletten in Styleguides}
+\label{sec:swatches}
+
+Styleguides zur Oberflächengestaltung beinhalten unter anderem Richtlinien für den Farbeinsatz. Dabei werden i.d.R. eine Obermenge von Farben definiert und mit Verwendungshinweisen verbunden. Einige Farben, wie z.B. die Logo-Farbe, stehen hierbei unter strikten Restriktionen. Davon abgesehen wählt der Designer eine Untermenge von Farben der Farbpalette aus dem Styleguide und legt selbst Einsatzregeln fest, wie z.B. die Farbe für Interaktionselemente.
+
+Die Apple \emph{iOS Human Interaction Guidelines} legen eine Farbpalette von 8 strahlenden Farben fest, die sich aufgrund ihrer Intenstität ausschließlich für Interaktionselemente und ausgewählte Komponenten wie z.B. Statusleisten eignen \citep{ios}. Demgegenüber beschreibt Google im \emph{Material Design Styleguide} Farben in Form eines Farbtons in abgestuften Schattierungen. Dieses Konzept wird als \emph{Color Swatch} bezeichnet. Hierbei handelt es sich um ein Erweiterung der Farbpalette, die dem Designer mehr Spielraum bei der farblichen Komposition einräumt. Ein Beispiel hierfür zeigt Abbildung \ref{fig:swatches}, auf welcher ein Auszug der Color Swatches und ein Einsatzbeispiel für den Umgang mit Schattierungen gezeigt wird. Ein anderes Beispiel hierfür zeigt das Corporate Design Hanbuch der HTWK Leipzig. Der Farb-Guide stellt Color Swatches mit zwei bis drei Schattierungen bereit \citep{htwk}.
+
+Das Konzept der Color Swatches wird in dieser Arbeit für die CPE bevorzugt, da über die Farbeigenschaften eines Bildes keine Annahmen getroffen werden können. Die Bereitstellung eines Farbtons in verschiedenen Schattierungen ermöglicht jedoch den flexiblen Einsatz von Farben, der bei Bildern mit wenig Farben notwendig ist. So ist z.B. der selbe Farbton sowohl für Interaktionselement, oder in einer hellen Schattierung für den Hintergrund einsetzbar. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/material_design.png}
+\caption{Auszug der Color Swatches in der Farbpalette des Google Material Designs (oben) mit Einsatzbeispiel (unten). (Quelle: \citep{google})}
+\label{fig:swatches}
+\end{figure}
+
+
+\subsection{Problemlösungansatz}
+
+Die Durchführung einer CPE zur Ermittlung von $C = c_{1 \ldots n}$ reicht zur Problemlösung noch nicht aus. Außerdem muss eine Zurodnung zwischen $C$ und den Oberflächenelementen stattfinden. Hierbei ist zu beachten, dass die Farben je nach Einsatzzweck bestimmte Eigenschaften besitzen müssen. Beispielsweise kommen für Schaltelemente wie z.B. Buttons strahlende Farben in Frage. Das machen unter anderem die Standard-Buttonfarben der populären CSS-Frameworks Bootstrap \footnote{\url{http://getbootstrap.com/css/\#buttons}}, Foundation\footnote{\url{http://foundation.zurb.com/sites/docs/button.html}} oder Semantic-UI \footnote{\url{http://semantic-ui.com/elements/button.html}} deutlich. Außerdem sind Bedingungen zu beachten, die zwischen Farben gelten sollen, wie z.B. ausreichender Kontrast zwischen Schrift und Hintergrund. Diese zu erfüllenden Eigenschaften und Bedingungen werden im Folgenden als \textbf{Constraints} bezeichnet.
+
+Zur CPE in Verbindung mit Constraints werden im Folgenden zwei Herangehensweisen vorgestellt:
+\begin{enumerate}
+    \item \textbf{Constraints-First}: Die Constraints werden schon während der Extraktion der Farbpalette berücksichtigt. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Durch Training an umfangreichen Datenbeständen von Farbpaletten-Communities wie z.B. Adobe Color\footnote{\url{https://color.adobe.com/de/explore/}} wurde ein Modell zur Bewertung der Farbpaletten-Ästhetik entwickelt. Dieses Modell wird zur Formulierung einer alternativen Optimierungsfunktionen zur Suche von $C$ im Farbraum verwendet, die neben der Minimierung des Recoloring Errors auch ästhetische Faktoren durch eine Bewertungsfunktion berücksichtig.
+    \item \textbf{Constraints-Last}: Es wird zunächst eine Obermenge von Farben $C_s = \{c_1, \ldots , c_m\}$ mit $n < m$ ermittelt. Aus dieser wird daraufhin die finale Farbpalette $C$ durch Anwendung der Constraints ermittelt. Es gilt: $C \subseteq C_s$. Dieser Ansatz wird unter anderem von \citet{documentpalette} verfolgt. Hierbei wird die Hintergrundfarbe eins Dokuments komplementär zur via Bildsegmentierung ermittelten Hintergrundfarbe eines Bildes gewählt. Daraufhin wird die Textfarbe unter Beachtung des Kontrastes aus $C_s$ selektiert.
+\end{enumerate}
+
+Im Rahmen des Projekts wird die zweite Herangehensweise (Constraints-Last) bevorzugt, da sie eine größere Flexibilität gewährleistet. Zum gegenwärtigen Zeitpunkt wird Angenommen, dass die Anforderungen an die Farbpalette in Bezug auf Anzahl und Constraints bis auf wenige, bereits untersuchte Sachverhalte wie z.B. der Schrift-Hintergrund-Kontrast \citep{readability}, weniger durch wissenschaftliche Literatur als vielmehr durch Webdesign-Onlinemagazine erfasst werden. In diesem Zusammenhang ist mit wechselnden Anforderungen an die Farbpalette zu rechnen. Der Constraints-Last Ansatz ermöglicht die flexible Änderung der Constraints, ohne die Implementierung der CPE zu beeinflussen. Da Farbconstraints anwendungsabhängig sind, entkoppelt das Nachschalten der Farbauswahl die Lösung vom Anwendungsbezug der Weboberflächen und erhöht die Wiederverwendbarkeit.
+
+Dementsprechend wird folgender Problemlösungsansatz zur automatisierten Farbkonfiguration von Weboberflächen aus Bildvorlagen gewählt: 1. Ermittlung der Farbobermenge $C_s$ durch einen Algorithmus zur CPE 2. Lösung eines Constraintsystems auf $C_s$, wodurch die Zuordnung der Oberflächenelemente zu den Farben der Farbpalette festgestellt wird. Die finale Farbpalette $C$ als Teilmenge von $C_s$ ergibt sich dadurch implizit als die Menge der Farben, die von den Oberflächenelementen verwendet werden.
+
+\section{Algortihmen zur Color Palette Estimation}
+
+Im Folgenden wird eine Algorithmus zur Lösung des Teilproblems der Ermittlung der Farbobermenge $C_s$ gesucht. Hierzu findet eine Betrachtung von Typen vorhandener Algorithmen zur CPE statt. Abschließend wird ein geeigneter Algorithmus ausgewählt
+
+\subsection{Überblick}
+
+Grundlegend sind zwei Ansätze zur CPE zu unterscheiden:
+\begin{enumerate}
+    \item \textbf{Hisgoram-basiert}: Algorithmen, die nur auf dem Histogramm des Bildes arbeiten und somit die Positionsinformationen der Farben nicht beachten. Es handelt sich (bis auf Ausnahmen) um Clustering-Verfahren, die durch eine Partitionierung des Farbraums Gruppen ähnlicher Farben im Histogramm identifizieren.
+    \item \textbf{Bildsegmentierungs-basiert}: Algorithmen, die durch eine Segmentierung des Bildes zunächst zusammenhängende Komponenten identifizieren und für diese dann repräsentative Farben identifizieren.
+\end{enumerate}
+
+
+Bildsegmentierungs-basierte Algorithmen berücksichtigen die menschlichen Wahrnehmungseigenschaften auf Komponentenebene, führen aber durch die zusätzliche Betrachtung der Positionsinformation eine weitere Komplexitätsebene ein \citep{colorthemes}.
+
+\citet{categorization} treffen eine Kategorisierung der Histogramm-basierten Verfahren in \emph{hierarchisch} und \emph{iterativ}. Hierarchisch arbeitende Algorithmen zur CPE werden auch als \emph{Pre-Clustering Verfahren} bezeichnet, da sie vor dem Erreichen der (fest zu wählenden) Farbanzahl $n$ mit mehr bzw. weniger Farben starten. Sie basieren auf der statistischen Analyse der Verteilung der Bildfarben im Farbraum. In diese Kategorie fallen \emph{top-down} bzw. \emph{bottom-up} Clustering-Algorithmen. Zu den Top-Down Verfahren zählen die in der Vergangenheit populären Raumunterteilungs-Algorithmen wie z.B. Mediancut \citep{mediancut} oder Octree\citep{octree}. Sie Zerteilen den Farbraum sukzessiv in disjunkte Teilräume und unterstellen den Clustern dabei eine Würfelform. Ergebnis der Verarbeitung ist ein Dendogram, wobei die Blätter die Farben Farbpalette repräsentieren. Ein Schnitt des Dendograms entspricht einer Partitionierung des Raums, welche jedoch auch direkt durch die iterativ arbeitenden Algorithmen erreichbar ist \citep{acopa}. Diese Verfahren werden darum auch als \emph{partitionierend} \citep{acopa} oder auch \emph{Post-Clustering} \citep{categorization} bezeichnet. Sie starten bereits mit der erforderlichen Anzahl Farben $n$ und verbessern diese iterativ. Einige Methoden dieser Klasse verwenden den quadratischen Fehler, wie z.B. K-Means \citep{kmeans, kmeanshsi} oder Fuzzy C-Means \citep{fuccycmeans}. Andere analysieren das Histogramm auf dichte bzw. weniger dichte Regionen, wie z.B. Mean-Shift \citep{meanshift}. Eine detailliertere Vorstellung von Algorithmen zur CPE bietet \citep{categorization2}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/peppers.png}
+\caption{CPE Ergebnis von ACoPa. (a) Originalbild "Peppers" (b) Hierarchische Farbpalette. Die unterste Ebene zeigt die finalen Farben. (Quelle: \citep{acopa})}
+\label{fig:peppers}
+\end{figure}
+
+\citet{acopa} kritisieren an den bisherigen Algorithmen, dass die Anzahl gesuchten Farben $n$ zuvor bekannt sein muss, dass die Ergebnisse abhängig von der Initialisierung sind und dass Farben kleiner Bilddetails im Sinne der Definition in Abschnitt \ref{sec:modellierung} nur unzureichend repräsentiert werden, wie im Paper experimentell nachgewiesen wird. Aus diesem Grund stellen sie den \textbf{Automatic Color Palette (ACoPa)} Algorithmus vor, welcher durch die Analyse von Spitzen des Histogramms im HSI Raums eine Farbpalette erstellt und dabei deren Größe selbstständig bestimmt. Der Algorithmus ermittelt dabei zunächst die grundlegenden Farbtöne (Hue) des Bildes und schlüsselt diese daraufhin sukzessive nach deren Sättigungen (Saturation) und Schattierungen (Intensity) auf. Abbildung \ref{fig:peppers} veranschaulicht exemplarisch die hierarchische Arbeitsweise, bei der in jeder Ebene zusätzliche Sättigungen und Schattierungen der enthaltenen roten und grünen Farbtöne gebildet werden.
+
+\subsection*{Zusammenfassung und Wahl des Algorithmus zur CPE}
+
+Der Algorithmus zur CPE soll eine Obermenge $C_s$ von Farben bilden, aus welcher im einem nachfolgenden Schritt eine Teilmenge von Farben $C$ entsprechend ihrer Eignung für bestimmte Oberflächenelemente ausgewählt werden. Analog dazu werden Farbpaletten in Styleguides als Obermenge von Farben beschrieben, aus welcher der Designer eine Untermenge von Farben für die konkrete Oberfläche auswählt. Bestimmte Styleguides erweitern dabei das Farbpalettenkonzept um Color Swatches, bei welchen Farbtöne in zusätzliche Schattierungen aufgefächert werden. Dadurch hat der der Designer eine größere Flexibilität beim Einsatz der Farbpalette.
+
+Aus diesen Gründen wird der ACoPa Algorithmus von \citet{acopa} zur CPE gewählt.Da er Farbwerte automatisch in verschiedenen Sättigungen und Schattierungen ermittelt, imitiert er die Farbdefinition in Form von Color Swatches in Styleguides. Durch seine parameterfreie Arbeitsweise ermittelt er selbstständig die Anzahl repräsentativer Farben im Bild. Dadurch wird automatisch die erforderliche Obermenge zur Bildung der finalen Farbpalette bereitgestellt, wenn das Bild ausreichend viele Farben enthält. Das erzwingen eines großen Farbpalette mit anderen Clusteringverfahren, z.B. über einen pauschal großen K Parameter bei K-Means, führt hingegen unter Umständen zu einer Partitionierung des Farbraums, die nicht der Clusterstruktur des Histogramms entspricht.
+
+\section{ACoPa}
+
+Im Folgenden wird die grundlegende Arbeitsweise des ACoPa Algorithmus nach \citet{acopa} vorgestellt. Dabei werden die Herausforderungen, die bei der Implementierung aufgetreten sind, besprochen. Abschließend werden exemplarisch Anwendungsergebnisse präsentiert.
+
+\subsection{Konvertierung in den HSI-Raum}
+
+\begin{figure*}
+\centering
+\includegraphics[width=1\textwidth]{img/hsi_conversion.png}
+\caption{Gegenüberstellung von RGB zu HSI-Umrechungsergebnisse. (a.) Referenz-HSI Raum. (b.) Umrechnung nach \citep{acopa}. (c.) Umrechnung nach \citep{colorimage}.}
+\label{fig:hsi_conversion}
+\end{figure*}
+
+Zunächst wird das Histogram in den HSI Farbraum $\{(h, s, i) \ | \ 0 \leq h < 360 \wedge 0 \leq s, i \leq 1\}$ übertragen. Die Intensität eines Farbtons wird dabei in Polarkoordinaten via $h$ und $s$ angegeben, während die maximal mögliche Sättigung wiederum von der Intensität $i$ abhängt. Zur Konvertierung vom RGB in HSI Raum wurden verschiedene Umrechnungsvorschriften erprobt. Die Umrechnung gemäß der ACoPa-Autoren lautet:
+
+\begin{equation}
+\begin{split}
+I = \frac{R+G+B}{3} \\
+S = \sqrt{(R-I)^2 + (G-I)^2 + (B-I)^2} \\  
+H = \arccos{(\frac{(G-I)-(B-I)}{S\sqrt{2}})}
+\end{split}
+\label{eq:hsi_acopa}
+\end{equation}
+
+Die Umrechnung gemäß eines Lehrbuchs für Farbbild-Verarbeitung \citep{colorimage} lautet hingegen:
+
+\begin{equation}
+\begin{split}
+I = \frac{R+G+B}{3} \\
+S = 1 - \frac{\min{(R, G, B)}}{I} \\ 
+H = \arccos{(\frac{\frac{1}{2}((R-G)+(R-B))}{\sqrt{(R-G)^2+(R-B)(G-B))}})}
+\end{split}
+\label{eq:hsi_colorimage}
+\end{equation}
+
+Abbildung \ref{fig:hsi_conversion} stellt die Umrechnungsergebnisse dem Referenz HSI Raum (R) gegenüber. Keine der Umrechnungsvorschriften führt zu einem Doppelkegel. Weder Formel \ref{eq:hsi_acopa} noch Formel \ref{eq:hsi_colorimage} projiziert die Farben mit 100\% Sättigung ($s = 1$) in eine Ebene. Formel \ref{eq:hsi_acopa} führt lediglich zu einer Drehung und Stauchung des RGB-Würfels, Formel \ref{eq:hsi_colorimage} führt zu einem nach unten geöffneten Kegel. Da schlussendlich keine Formel gefunden werden konnte, die zu einem korrekten Doppelkegel führt, wurde die Berechnung mit Formel \ref{eq:hsi_acopa} fortgeführt.
+
+\subsection{Histogramm-Segmentierung}
+
+Die Samples des Ausgangsbildes werden entlang der Hue-Werte sortiert. Das 1-dimensionale Hue-Histogram $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche eine Segmentierung des Histograms darstellt. Das Intervall $[{s_i}, s_{i+1}]$ wird als Segment bezeichnet. Ziel ist, dass das Histogramm in den Bereichen $[h_{s_i}, \ldots,  h_{s_{i+1}}]$, eine \glqq annähernd unimodale Verteilung aufweist\grqq \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/unimodal.png}
+\caption{Beispiele der Segmentierung eines Histograms in unimodale Abschnitte. (Quelle: \citep{acopa})}
+\label{fig:unimodal}
+\end{figure}
+
+Das Histogramm ist offensichtlich in jedem Segment unimodal, wenn $s$ mit den Minima des Histograms initialisiert wird. Es wird nun versucht, Elemente aus $s$ zu entfernen, indem für $\forall i = 1 .. k$ überprüft wird, ob $h$ im Intervall $[h_{s_{i-1}}, \ldots,  h_{s_{i+1}}]$ die \glqq unimodale Hypothese\grqq  erfüllt. Anschaulich bedeutet das die Verschmelzung benachbarter Segmente, so dass das neu entstandene Segment nach wie vor \glqq annähernd unimodal ist\grqq. Hierfür stellen die Autoren in einer separaten Veröffentlichung \citep{ftc} einen parameterfreien statistischen Test vor, der $h$ im betrachteten Intervall mit einem Referenz-Histogramm $h^r$ vergleicht. $h^r$ ist in $[h^r_{s_{i-1}}, \ldots,  h^r_{s_{i+1}}]$ zunächst streng monoton wachsend und danach streng monoton fallend und damit in jedem Fall unimodal. Das Referenz-Histogramm wird aus dem Original-Histogramm $h$ durch Anwendung des Grenander-Operators gebildet. Die komplexen Details hierzu sind \citep{acopa, ftc} zu entnehmen. Da der parameterfreie Test verhältnismäßig aufwändig ist, wird in der eigenen Implementierung auf einen simplen T-Test zurückgegriffen. Dieser liefert ebenfalls befriedigende Ergebnisse, ist aber abhängig vom gewählten Signifikanzniveau.
+
+Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation Algorithm} zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Die Repräsentanten eines Segments werden durch Mittelung der Samples gebildet, die zum jeweiligen Segment gehören. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/h_segmentation.png}
+\caption{Beispiel für eine Segmentierung des Hue-Histogramms. (a) Ausgangsbild, ein Albumcover  von Kanye West. (b) Hue-Histogram (normalisiert), mit allen Minima als initiale Segmentierung. (c) Segmentierung nach Anwendung des FTC Algorithmus. (d) Farbmittelpunkte entsprechend der Samples der jeweiligen Segmente.}
+\label{fig:h_segmentation}
+\end{figure}
+
+\subsection{Bildung der hierarchischen Farbpalette}
+
+Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-Segmentierung. Dabei wird zuerst der $h$-, danach der $s$- und abschließend der $i$- Kanal segmentiert. Dabei werden in jedem Schritt die Samples der entstandenen Segmente separiert und die Histogramme der nächsten Ebene getrennt berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (h) wurden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene werden die Farbtöne jeweils in unterschiedliche Sättigungen aufgeteilt, wenn nötig. Auf der dritten Ebene (i) werden von den Sättigungen zusätzlich Helligkeitsabstufungen gebildet.
+
+Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Verarbeitung. Die Farbpalette spiegelt die in Abschnitt \ref{sec:swatches} definierten Color Swatches wieder. \citet{acopa} empfehlen zusätzlich, die erhaltenen Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt, wie sich die Farben durch K-Means geändert haben. Es ist zu einem späteren Zeitpunkt zu entschieden, welche der beiden Paletten für die weitere Verarbeitung geeigneter ist.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.48\textwidth]{img/palette.png}
+\caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. (b) Farbpalette nach Anwendung von K-Means.}
+\label{fig:palette}
+\end{figure}
+
+\section{Ausblick}
+
+Als nächstes sind die Eigenschaften und Bedingungen der Farben zu ermitteln, die auf der Weboberfläche zum Einsatz kommen sollen. Die Anforderungen müssen in Constraints übersetzt werden. Daraufhin ist ein Algorithmus auszuwählen und zu implementieren, der aus der Farbpalette, die durch ACoPa ermittelt wurde, die passenden Farben herausfiltert. Abschließend werden die Ergebnisse an einer prototypischen Weboberfläche demonstriert.
+
+\bibliographystyle{plainnat}
+\footnotesize{\bibliography{references}}
+
+\end{document}
