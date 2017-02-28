@@ -1,0 +1,1 @@
+# Masterproject "Methods for Automatic Color Configuration of Websites from Pictures"
