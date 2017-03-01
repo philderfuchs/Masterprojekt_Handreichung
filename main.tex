@@ -43,20 +43,35 @@
   \begin{@twocolumnfalse}
     \maketitle
     \begin{abstract}
-Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelemente von Websites (Text, Buttons, Hintergründe, etc.) aus Bildvorlagen. Dabei wird das Problem in zwei Teilprobleme zerlegt: 1. Das Bilden einer Obermenge von Farben durch einen Algorithmus zur Color Palette Estimation (CPE). 2. Die Identifizierung von Farben für bestimmte Oberflächenelemente aus dieser Obermenge durch Lösung eines Constraintsystems. Für die CPE wird der ACoPa-Algorhitmus von \citet{acopa} ausgewählt und implementiert, da dessen Ergebnis den aus Styleguides bekannten Farbpaletten-Definitionen in Form von Color Swatches ähnelt.
+Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelemente von Webseiten (Text, Buttons, Hintergründe, etc.) aus Bildvorlagen. Dabei wird das Problem in zwei Teilprobleme zerlegt: 1. Das Bilden einer Obermenge von Farben durch einen Algorithmus zur Color Palette Estimation (CPE). 2. Die Identifizierung von Farben für bestimmte Oberflächenelemente aus dieser Obermenge durch Lösung eines Constraintsystems. Für die CPE wird der ACoPa-Algorhitmus von \citet{acopa} ausgewählt und implementiert, da dessen Ergebnis den aus Styleguides bekannten Farbpaletten-Definitionen in Form von Color Swatches ähnelt.
   \vspace*{1cm}
     \end{abstract}
   \end{@twocolumnfalse}
 ]
 
+\section{Einleitung}
 
-\section{Problemmodellierung}
-
-\subsection{Problembeschreibung}
+\subsection{Problemmodellierung}
 \label{sec:modellierung}
-Unter Farbkonfiguration von Websites wird die Zuordnung der Farben einer Farbpalette $C = \{c_1, c_2, \ldots, c_n\}$ und einer festen Menge semantischer HTML-Oberflächenelemente $O = \{$Text, Hintergrund, Buttons, $\ldots \}$ verstanden. Bei den Farben $c_{1 \ldots n}$ handelt sich sich um 3-Tupel, wobei der Wertebereich der Komponenten abhängig vom gewählten Farbraum ist. Die Abbildung zwischen $O$ und $C$ ist surjektiv, d.h. jede Farbe der Farbpalette soll Verwendung finden, mehrere Oberflächenelemente können jedoch die gleiche Farbe besitzen.
 
-Die Farbpalette soll sich dabei an einer Bildvorlage orientieren. Die Zusammenstellung einer Farbpalette aus einer Bildvorlage wird von \citet{acopa} als \textbf{Color Palette Estimation (CPE)} bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. Diese ist dann minimal, wenn redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden von den Autoren jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
+Der CSS-Standard zur Beschreibung des Erscheinungsbildes von Webseiten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung von Texten, Hintergründen, Rahmen und anderen HTML-Elementen \citep{css3-color}. Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Elementen in Websites. Damit ordnet sich diese Arbeit in das Gebiet automatisierten Farbgestaltung (\textbf{Color Design Automation}) ein. Betrachtet werden all jene Oberflächenelemente, die visuell als Blöcke wahrgenommen werden (d.h. die Hintergrundfarbe \texttt{"background-color"} von \texttt{<div>}, \texttt{<button>}, \texttt{<p>} etc.) , sowie Texte (d.h. die Vordergrundfarbe \texttt{"color"} der Blöcke sowie von \texttt{<h1>}, \texttt{<a>}, etc.). Ziel ist also die Farbbestimmung von \textbf{Blöcken} und \textbf{Texten}, Rahmen und andere Textdekoration werden dabei ignoriert.
+
+Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleichen Farben abgebildet. Beispielsweise können alle Links (Textfarbe) sowie Buttons (Hintergrundfarbe) die gleiche Farbe erhalten. Im Folgenden wird eine Menge von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG$ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite wird als $CGs$ formalisiert. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musikstreaming, welche sieben Color Groups beinhaltet.
+
+Als vorbereitender Schritt wird der Suchraum zur Identifizierung geeigneter Farben durch die Zusammenstellung einer sogenannten \textbf{Farbpalette} verkleinert \citep{webpage}. Dabei handelt es sich um eine Farbmenge $P = \{c_1, c_2, \ldots, c_n\}$, wobei jedes $c \in P$ als String von RGB Werten kodiert wird. Formal ist damit das Ziel dieser Arbeit die Ermittlung einer Abbildung $CGs \to P$. Die Abbildung muss injektiv sein, d.h. nicht jede Farbe der Farbpalette $P$ muss verwendet werden, jedoch dürfen mehrere Color Groups nicht gleich gefärbt werden. Entscheidendes Kriterium für die Zuordnung ist eine funktionelle Gestaltung im Sinne der Usability und Lesbarkeit. Eine intuitiv widersinnige Färbung wäre beispielsweise ein roter Text auf orangem Hintergrund mit grauem Button. Weder ist der Text lesbar, noch wird die Aufmerksamkeit des Nutzers auf das Interaktionselement gelenkt.
+
+Als Besonderheit dieser Arbeit soll die Farbpalette P auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und der darin enthaltenen Grafik erreicht. Da die gewählte Farbgebung wesentlich für die vermittelte Atmosphäre einer Webseite ist \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv dessen Eindruck unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung zur Laufzeit möglich, wenn ein effizientes Suchverfahren ermittelt wird. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Seite für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} zeigt hierfür ein Gegenbeispiel: keine der Farben des Cover taucht in der umgebenen Weboberfläche auf.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/color_groups.png}
+	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. Oben: Originales Farbdesign. Unten: Hervorhebung der sieben Color Groups. Elemente einer Color Group erhalten die gleiche Farbe. Blöcke sind umrahmt.}
+	\label{fig:colorgroups}
+\end{figure}
+
+\subsection{Color Palette Estimation}
+
+Die Zusammenstellung einer Farbpalette aus einer Bildvorlage wird von \citet{acopa} als \textbf{Color Palette Estimation (CPE)} bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. Diese ist dann minimal, wenn redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden von den Autoren jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
 
 \begin{figure}
 \centering
@@ -65,31 +80,34 @@ Die Farbpalette soll sich dabei an einer Bildvorlage orientieren. Die Zusammenst
 \label{fig:ladybug}
 \end{figure}
 
-
-Historisch geht die CPE aus der Farbquantisierung hervor, bei der die Farben von Grafiken aufgrund der früher zu kleinen Kapazität von Grafikpuffern vor deren Anzeige reduziert (Farbreduktion) und dann auf die reduzierte Farbpalette abgebildet werden mussten (Quantisierung) \citep{variance}. Aus diesem Kontext kommt das formale Kriterium der Summe des quadratischen Fehlers, welcher in diesem Anwendungsfall auch als \emph{Recoloring Error} bezeichnet wird \citep{colorthemes}.
+Historisch geht die CPE aus der Farbquantisierung hervor, bei der die Farben von Grafiken aufgrund der damals zu kleinen Kapazität von Grafikpuffern vor deren Anzeige reduziert (Farbreduktion) und dann auf die reduzierte Farbpalette abgebildet werden mussten (Quantisierung) \citep{variance}. Aus diesem Kontext kommt das formale Kriterium der Summe des quadratischen Fehlers, welcher in diesem Anwendungsfall auch als \emph{Recoloring Error} bezeichnet wird \citep{colorthemes}.
 
 Da Grafikpuffer mittlerweile über ausreichend Kapazität verfügen, liegt die Anwendung der CPE in anderen Bereichen wie z.B. der farbbasierten Indizierung von Grafiken in Datenbanken oder der Zusammenstellung von Farbthemen zu Gestaltungszwecken. \citet{colorthemes} zeigen, dass in diesem Kontext der Recoloring Error keine geeignete Metrik zur Beurteilung der Güte einer Farbpalette in Bezug auf das Ausgangsbild ist. Grund sind die menschlichen Wahrnehmungseigenschaften, wobei Bilder auf Komponenten- und nicht auf Pixelebene erfasst werden. Stattdessen werden eine Reihe anderer Metriken vorgestellt, die diesen Umstand berücksichtigen. Die Autoren zeigen zusätzlich empirisch, dass abhängig vom Individuum ein und dieselbe Farbpalette eines Bildes für unterschiedlich repräsentativ gehalten wird. 
 
-Dieser Befund hebt hervor, dass die Güte einer Farbpalette in Bezug auf das Ausgangsbild subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Güte der zu ermittelnden Farbpalette $C$ keine objektive Bewertungsfunktion herangezogen. Stattdessen wird exemplarisch ermittelt, wie Styleguides Farbpaletten für die Oberflächengestaltung beschreiben.
+Dieser Befund hebt hervor, dass die Güte einer Farbpalette in Bezug auf das Ausgangsbild subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Güte der zu ermittelnden Farbpalette $C$ keine objektive Bewertungsfunktion herangezogen. Stattdessen wird die Farbpalette in Hinblick auf ihre Zweckmäßigkeit zur farblichen Gestaltung einer Webseite bewertet. Das heißt, die aus der Grafik hervorgehende Farbpalette muss eine Teilmenge an Farben beinhalten, mit welcher die automatisierte Farbgestaltung einer Webseite lösbar ist. Hierfür müssen Kriterien abgeleitet, indem Gestaltungsprinzipien von Webseiten zur Gewährleistung der Lesbarkeit und Usability sowie Farbdefinitionen aus Style Guides analysiert werden. Davon ausgehend wird eine geeignete Herangehensweise zur Bestimmung einer solchen Farbpalette aus einer Bildvorlage ermittelt.
 
-\subsection{Farbpaletten in Styleguides}
-\label{sec:swatches}
+\section{Literaturbesprechung}
 
-Styleguides zur Oberflächengestaltung beinhalten unter anderem Richtlinien für den Farbeinsatz. Dabei werden i.d.R. eine Obermenge von Farben definiert und mit Verwendungshinweisen verbunden. Einige Farben, wie z.B. die Logo-Farbe, stehen hierbei unter strikten Restriktionen. Davon abgesehen wählt der Designer eine Untermenge von Farben der Farbpalette aus dem Styleguide und legt selbst Einsatzregeln fest, wie z.B. die Farbe für Interaktionselemente.
+Im Bereich der automatisierten Farbgestaltung hat in den letzten Jahren viel Forschung stattgefunden, wobei überwiegend Methoden des maschinellen Lernens zur Problemlösung eingesetzt wurden.
 
-Die Apple \emph{iOS Human Interaction Guidelines} legen eine Farbpalette von 8 strahlenden Farben fest, die sich aufgrund ihrer Intenstität ausschließlich für Interaktionselemente und ausgewählte Komponenten wie z.B. Statusleisten eignen \citep{ios}. Demgegenüber beschreibt Google im \emph{Material Design Styleguide} Farben in Form eines Farbtons in abgestuften Schattierungen. Dieses Konzept wird als \emph{Color Swatch} bezeichnet. Hierbei handelt es sich um ein Erweiterung der Farbpalette, die dem Designer mehr Spielraum bei der farblichen Komposition einräumt. Ein Beispiel hierfür zeigt Abbildung \ref{fig:swatches}, auf welcher ein Auszug der Color Swatches und ein Einsatzbeispiel für den Umgang mit Schattierungen gezeigt wird. Ein anderes Beispiel hierfür zeigt das Corporate Design Hanbuch der HTWK Leipzig. Der Farb-Guide stellt Color Swatches mit zwei bis drei Schattierungen bereit \citep{htwk}.
+\citet{colorcomp} haben 2011 eine Grundlage für spätere Systeme zur automatisierten Farbgestaltung gelegt, indem sie ein Regressionmodell zur Bewertung der Ästhetik von Farbpaletten der Größe 5 entwickelten. Hierfür wurde in Training an den Datenbeständen von Farbpaletten-Communities wie z.B. Adobe Color\footnote{\url{https://color.adobe.com/de/explore/}} durchgeführt. Dabei hat sich unter anderem ergeben, dass die auf geometrischen Strukturen im Farbkreis beruhenden Modelle der klassischen Farbentheorie nicht zur Vorhersage von Farbhamonie geeignet sind. Hierzu zählen zum Beispiel die Farbton-Schablonen von \citet{itten} oder \citet{munsell}. Dies ist insofern bemerkenswert, als dass diese Modelle in zahlreichen Unterstützungswerkzeugen zur Farbgestaltung ihre Umsetzung finden. Die Grenzen des trainierten Modells liegen in der Bewertung der Harmonie von Farben im tatsächlichen Anwendungskontext, da die Auswirkungen der räumlichen Ausprägung von Farben nicht überprüft werden \citep{webpage, patterns}. Eine Matlab-Implementierung des Modells zur Überprüfung von Farbharmonien steht öffentlich zum Download bereit \footnote{\url{http://www.dgp.toronto.edu/~donovan/color/}}.
 
-Das Konzept der Color Swatches wird in dieser Arbeit für die CPE bevorzugt, da über die Farbeigenschaften eines Bildes keine Annahmen getroffen werden können. Die Bereitstellung eines Farbtons in verschiedenen Schattierungen ermöglicht jedoch den flexiblen Einsatz von Farben, der bei Bildern mit wenig Farben notwendig ist. So ist z.B. der selbe Farbton sowohl für Interaktionselement, oder in einer hellen Schattierung für den Hintergrund einsetzbar. 
+\citet{patterns} haben sich 2013 mit einer Lösung für eine sehr grundlegende Form für ein Färbungsproblems auseinandergesetzt: Die Kolorierung von Mustern nach dem Prinzip "Malen nach Zahlen". Hierfür wurde ein probabilistisches Modell entwickelt, indem über 8000 von Künstlern entworfene Muster von der Seite \url{http://www.colourlovers.com/} ausgewertet wurden. Eine vorgeschlagene Anwendung stellt die Umkehrung des Ziels dieser Arbeit dar: Die Anpassung eines Musters an das Farbschema einer Webseite. Die Autoren stellen Eigenschaften zur Bestimmung von Hintergrund- und Vordergrundfarben sowie zur Kontrastberechnung vor, die für diese Arbeit genutzt werden können. Zur Lösungssuche wird \emph{Factor Graph} modelliert, welcher ebenfalls ein Ansatz für die vorliegende Arbeit darstellt. Das Modell von \citet{colorcomp} wird als externer Bestandteil des Graphen hinzugefügt, um eine globale Kompatibilität der eingesetzten Farben zu gewährleisten.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.48\textwidth]{img/material_design.png}
-\caption{Auszug der Color Swatches in der Farbpalette des Google Material Designs (oben) mit Einsatzbeispiel (unten). (Quelle: \citep{google})}
-\label{fig:swatches}
-\end{figure}
+\citet{webpage} haben sich 2016 mit der automatisierten Farbgestaltung von Webseiten. Durch die Auswertung von 500 Webseiten wurde ein probabilistisches Modell als Optimierungsproblem mit mehreren Zielen formuliert. Eine der Zielfunktionen gewährleistet ausreichenden Kontrast zwischen den Webelementen. Eine andere Zielfunktionen passt die Farbgestaltung an ein Schlüsselwort an (z.B. \emph{Business} oder \emph{Fresh}). Die letzte Zielfunktion gewährleistet Farbharmonie, was wiederum durch das Modell von \citet{colorcomp} implementiert wird. Die Optimierung wird durch eine lexikographische Strategie realisiert, bei welcher in Interaktion mit einem Gestalter die Zielfunktionen nacheinander angewendet werden. In einer Anwendung extrahieren die Autoren ebenfalls eine Farbpalette aus einer Grafik und nutzen diese als Grundlage zur Färbung der Webseite. Im Gegensatz zum Gegenstand dieser Arbeit erfordert der vorgestellte Prozess jedoch eine Nutzerinteraktion aufgrund der lexikographischen Strategie. Somit handelt es sich eher um ein Unterstützungswerkzeug für Gestalter und kein System zur automatisierten Bestimmung einer Farbgestaltung zur Laufzeit. Die Autoren stellen eine Systemarchitektur vor, welche als Grundlage für die vorliegende Arbeit adaptierbar ist.
 
+\citet{magazines}  haben sich 2013 mit der automatisierten Farbgestaltung von Magazin-Covers auseinander gesetzt. Vergleichbar mit \citep{webpage} wird auch hier die Optimierung des Farbkontrasts, der Farbharmonie und der Farbsemantik verfolgt.  Im Gegensatz zu den bisherigen Lösungen wird hier allerdings mit expliziten Modellen anstatt mit Trainingsdaten gearbeitet. Über Flowcharts vermitteln die Autoren Lösungsprozeduren zur Suche geeigneter Schriftfarben und Stellen konkrete Grenzwerte vor, die für diese Arbeit übernommen werden können.
 
-\subsection{Problemlösungansatz}
+\section{Problemlösungansatz und Systemarchitektur}
+
+Ausgehend von der Literaturbesprechung wird ein Verfahren zur Lösung der automatisierten Farbgestaltung ein prinzipieller Ansatz zur Problemlösung besprochen. Darauf aufbauend wird eine konkrete Architektur des zu implementierenden Systems entwickelt. Im Hauptteil werden für die einzelne Bestandteile der Architektur geeignte Methoden besprochen und ausgewählt.
+
+Es ist ein Modell zu entwickeln, welches die Abbildung $CGs \to P$ beschreibt. \citet{webpage} stellen für die automatisierte Farbgestaltung zwei grundlegende Herangehensweisen vor:
+
+\begin{enumerate}
+	\item \textbf{Regelbasiert:} Beschreibt quantitative Modelle mit festem Regelwerk.
+	\item \textbf{Datengetrieben:} Beschreibt Modelle, die die Performanz von Lösungen einer CDA auf Grundlage existierender Beispieldaten vorhersagt. \citep{webpage} haben durch die Auswertung von 500 Webseiten ein entsprechendes Modell für Webseiten entwickelt.
+\end{enumerate}
 
 Die Durchführung einer CPE zur Ermittlung von $C = c_{1 \ldots n}$ reicht zur Problemlösung noch nicht aus. Außerdem muss eine Zurodnung zwischen $C$ und den Oberflächenelementen stattfinden. Hierbei ist zu beachten, dass die Farben je nach Einsatzzweck bestimmte Eigenschaften besitzen müssen. Beispielsweise kommen für Schaltelemente wie z.B. Buttons strahlende Farben in Frage. Das machen unter anderem die Standard-Buttonfarben der populären CSS-Frameworks Bootstrap \footnote{\url{http://getbootstrap.com/css/\#buttons}}, Foundation\footnote{\url{http://foundation.zurb.com/sites/docs/button.html}} oder Semantic-UI \footnote{\url{http://semantic-ui.com/elements/button.html}} deutlich. Außerdem sind Bedingungen zu beachten, die zwischen Farben gelten sollen, wie z.B. ausreichender Kontrast zwischen Schrift und Hintergrund. Diese zu erfüllenden Eigenschaften und Bedingungen werden im Folgenden als \textbf{Constraints} bezeichnet.
 
@@ -102,6 +120,24 @@ Zur CPE in Verbindung mit Constraints werden im Folgenden zwei Herangehensweisen
 Im Rahmen des Projekts wird die zweite Herangehensweise (Constraints-Last) bevorzugt, da sie eine größere Flexibilität gewährleistet. Zum gegenwärtigen Zeitpunkt wird Angenommen, dass die Anforderungen an die Farbpalette in Bezug auf Anzahl und Constraints bis auf wenige, bereits untersuchte Sachverhalte wie z.B. der Schrift-Hintergrund-Kontrast \citep{readability}, weniger durch wissenschaftliche Literatur als vielmehr durch Webdesign-Onlinemagazine erfasst werden. In diesem Zusammenhang ist mit wechselnden Anforderungen an die Farbpalette zu rechnen. Der Constraints-Last Ansatz ermöglicht die flexible Änderung der Constraints, ohne die Implementierung der CPE zu beeinflussen. Da Farbconstraints anwendungsabhängig sind, entkoppelt das Nachschalten der Farbauswahl die Lösung vom Anwendungsbezug der Weboberflächen und erhöht die Wiederverwendbarkeit.
 
 Dementsprechend wird folgender Problemlösungsansatz zur automatisierten Farbkonfiguration von Weboberflächen aus Bildvorlagen gewählt: 1. Ermittlung der Farbobermenge $C_s$ durch einen Algorithmus zur CPE 2. Lösung eines Constraintsystems auf $C_s$, wodurch die Zuordnung der Oberflächenelemente zu den Farben der Farbpalette festgestellt wird. Die finale Farbpalette $C$ als Teilmenge von $C_s$ ergibt sich dadurch implizit als die Menge der Farben, die von den Oberflächenelementen verwendet werden.
+
+Selbst unter den gegebene Einschränkungen in Form von Color Groups und Farbpaletten ist der Raum potentieller Lösungen mit $\binom{|P|}{|CGs|} |CGs|!$ nach  wie vor groß. Für die exemplarischen Werte $|CGs| = 5$ und $|P| = 10$, d.h. 5 Colorgroups (z.B. Text, Texthintergrund, Buttons, Navigations-Hintergrundfarbe und Footer-Hintergrundfarbe) sowie eine Farbpalette mit 10 Farben, ergeben sich $30.240$ mögliche Kombinationen.
+
+\subsection{Farbpaletten in Style Guides}
+\label{sec:swatches}
+
+Style Guides zur Oberflächengestaltung beinhalten unter anderem Richtlinien für den Farbeinsatz. Dabei werden i.d.R. eine Obermenge von Farben definiert und mit Verwendungshinweisen verbunden. Einige Farben, wie z.B. die Logo-Farbe, stehen hierbei unter strikten Restriktionen. Davon abgesehen wählt der Designer eine Untermenge von Farben der Farbpalette aus dem Style Guide und legt selbst Einsatzregeln fest, wie z.B. die Farbe für Interaktionselemente.
+
+Die Apple \emph{iOS Human Interaction Guidelines} legen eine Farbpalette von 8 strahlenden Farben fest, die sich aufgrund ihrer Intenstität ausschließlich für Interaktionselemente und ausgewählte Komponenten wie z.B. Statusleisten eignen \citep{ios}. Demgegenüber beschreibt Google im \emph{Material Design Style Guide} Farben in Form eines Farbtons in abgestuften Schattierungen. Dieses Konzept wird als \emph{Color Swatch} bezeichnet. Hierbei handelt es sich um ein Erweiterung der Farbpalette, die dem Designer mehr Spielraum bei der farblichen Komposition einräumt. Ein Beispiel hierfür zeigt Abbildung \ref{fig:swatches}, auf welcher ein Auszug der Color Swatches und ein Einsatzbeispiel für den Umgang mit Schattierungen gezeigt wird. Ein anderes Beispiel hierfür zeigt das Corporate Design Hanbuch der HTWK Leipzig. Der Farb-Guide stellt Color Swatches mit zwei bis drei Schattierungen bereit \citep{htwk}.
+
+Das Konzept der Color Swatches wird in dieser Arbeit für die CPE bevorzugt, da über die Farbeigenschaften eines Bildes keine Annahmen getroffen werden können. Die Bereitstellung eines Farbtons in verschiedenen Schattierungen ermöglicht jedoch den flexiblen Einsatz von Farben, der bei Bildern mit wenig Farben notwendig ist. So ist z.B. der selbe Farbton sowohl für Interaktionselement, oder in einer hellen Schattierung für den Hintergrund einsetzbar. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/material_design.png}
+	\caption{Auszug der Color Swatches in der Farbpalette des Google Material Designs (oben) mit Einsatzbeispiel (unten). (Quelle: \citep{google})}
+	\label{fig:swatches}
+\end{figure}
 
 \section{Algortihmen zur Color Palette Estimation}
 
@@ -120,7 +156,7 @@ Bildsegmentierungs-basierte Algorithmen berücksichtigen die menschlichen Wahrne
 
 \citet{categorization} treffen eine Kategorisierung der Histogramm-basierten Verfahren in \emph{hierarchisch} und \emph{iterativ}. Hierarchisch arbeitende Algorithmen zur CPE werden auch als \emph{Pre-Clustering Verfahren} bezeichnet, da sie vor dem Erreichen der (fest zu wählenden) Farbanzahl $n$ mit mehr bzw. weniger Farben starten. Sie basieren auf der statistischen Analyse der Verteilung der Bildfarben im Farbraum. In diese Kategorie fallen \emph{top-down} bzw. \emph{bottom-up} Clustering-Algorithmen. Zu den Top-Down Verfahren zählen die in der Vergangenheit populären Raumunterteilungs-Algorithmen wie z.B. Mediancut \citep{mediancut} oder Octree\citep{octree}. Sie Zerteilen den Farbraum sukzessiv in disjunkte Teilräume und unterstellen den Clustern dabei eine Würfelform. Ergebnis der Verarbeitung ist ein Dendogram, wobei die Blätter die Farben Farbpalette repräsentieren. Ein Schnitt des Dendograms entspricht einer Partitionierung des Raums, welche jedoch auch direkt durch die iterativ arbeitenden Algorithmen erreichbar ist \citep{acopa}. Diese Verfahren werden darum auch als \emph{partitionierend} \citep{acopa} oder auch \emph{Post-Clustering} \citep{categorization} bezeichnet. Sie starten bereits mit der erforderlichen Anzahl Farben $n$ und verbessern diese iterativ. Einige Methoden dieser Klasse verwenden den quadratischen Fehler, wie z.B. K-Means \citep{kmeans, kmeanshsi} oder Fuzzy C-Means \citep{fuccycmeans}. Andere analysieren das Histogramm auf dichte bzw. weniger dichte Regionen, wie z.B. Mean-Shift \citep{meanshift}. Eine detailliertere Vorstellung von Algorithmen zur CPE bietet \citep{categorization2}.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/peppers.png}
 \caption{CPE Ergebnis von ACoPa. (a) Originalbild "Peppers" (b) Hierarchische Farbpalette. Die unterste Ebene zeigt die finalen Farben. (Quelle: \citep{acopa})}
@@ -176,7 +212,7 @@ Abbildung \ref{fig:hsi_conversion} stellt die Umrechnungsergebnisse dem Referenz
 
 Die Samples des Ausgangsbildes werden entlang der Hue-Werte sortiert. Das 1-dimensionale Hue-Histogram $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche eine Segmentierung des Histograms darstellt. Das Intervall $[{s_i}, s_{i+1}]$ wird als Segment bezeichnet. Ziel ist, dass das Histogramm in den Bereichen $[h_{s_i}, \ldots,  h_{s_{i+1}}]$, eine \glqq annähernd unimodale Verteilung aufweist\grqq \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/unimodal.png}
 \caption{Beispiele der Segmentierung eines Histograms in unimodale Abschnitte. (Quelle: \citep{acopa})}
@@ -187,7 +223,7 @@ Das Histogramm ist offensichtlich in jedem Segment unimodal, wenn $s$ mit den Mi
 
 Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation Algorithm} zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Die Repräsentanten eines Segments werden durch Mittelung der Samples gebildet, die zum jeweiligen Segment gehören. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/h_segmentation.png}
 \caption{Beispiel für eine Segmentierung des Hue-Histogramms. (a) Ausgangsbild, ein Albumcover  von Kanye West. (b) Hue-Histogram (normalisiert), mit allen Minima als initiale Segmentierung. (c) Segmentierung nach Anwendung des FTC Algorithmus. (d) Farbmittelpunkte entsprechend der Samples der jeweiligen Segmente.}
@@ -200,7 +236,7 @@ Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-S
 
 Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Verarbeitung. Die Farbpalette spiegelt die in Abschnitt \ref{sec:swatches} definierten Color Swatches wieder. \citet{acopa} empfehlen zusätzlich, die erhaltenen Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt, wie sich die Farben durch K-Means geändert haben. Es ist zu einem späteren Zeitpunkt zu entschieden, welche der beiden Paletten für die weitere Verarbeitung geeigneter ist.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/palette.png}
 \caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. (b) Farbpalette nach Anwendung von K-Means.}
