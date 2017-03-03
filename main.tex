@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,bibliography=totoc,twocolumn]{scrartcl}
+\documentclass[11pt,a4paper,bibliography=totoc,twocolumn]{scrartcl}
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
 \setlength{\parskip}{1em}
@@ -36,7 +36,7 @@
 
 
 \title{Methoden zur automatisierten Farbgestaltung von Webseiten aus Bildvorlagen}
-\subtitle{Masterprojekt Zwischenabgabe I|}
+\subtitle{Masterprojekt Zwischenabgabe Il}
 \author{Philipp Anders}
 
 \twocolumn[
@@ -54,28 +54,28 @@ Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelement
 \subsection{Problemmodellierung}
 \label{sec:modellierung}
 
+\begin{figure*}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{img/color_groups.png}
+	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. (a) Generische Farbgestaltung ohne Anpassung an das Albumcover. (b) Separate Hervorhebung der sechs Color Groups. Elemente einer Color Groups sind jeweils rot dargestellt. (c) Beispiel einer Farbgestaltung mit Anpassung an das Album Cover.}
+	\label{fig:colorgroups}
+\end{figure*}
+
 Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Elementen in Webseiten. Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden (1) Elemente, die visuell als Blöcke wahrgenommen werden (d.h. die Hintergrundfarbe \texttt{"background-color"} von \texttt{<div>}, \texttt{<button>} etc.) und (2) Texte (d.h. die Vordergrundfarbe \texttt{"color"} der Blöcke sowie von \texttt{<h1>}, \texttt{<a>}, etc.) betrachtet. Es wird also die Farbbestimmung von \textbf{Blöcken} und \textbf{Texten} fokussiert. Rahmen, Textdekoration und andere färbbare Komponenten werden vernachlässigt.
 
-Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Beispielsweise können alle Links (Textfarbe) sowie Buttons (Hintergrundfarbe) in Blau dargestellt werden. Im Folgenden wird eine Menge von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG$ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite wird als $CGs$ formalisiert. Es gilt $|CGs| = k$. Eine Webseite mit $k$ Color Groups tritt also mit $k$ Farben in Erscheinung. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musikstreaming, welche sieben Color Groups beinhaltet.
+Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Beispielsweise können alle Links (Textfarbe) sowie Buttons (Hintergrundfarbe) in Blau dargestellt werden. Im Folgenden wird eine Menge von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG$ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite wird als $CGs$ formalisiert. Es gilt $|CGs| = k$. Eine Webseite mit $k$ Color Groups tritt also mit $k$ Farben in Erscheinung. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
 
 Webdesigner verkleinern Suchraum zur Identifizierung geeigneter Farben für die Color Groups durch die Zusammenstellung einer sogenannten \textbf{Farbpalette} \citep{webpage, webdesign, webx0}. Dabei handelt es sich um eine Farbmenge $P = \{c_1, c_2, \ldots, c_n\}$ mit $n$ Farben, wobei jedes $c \in P$ als String von RGB Werten kodiert wird. Formal ist damit das Ziel dieser Arbeit die Ermittlung einer Abbildung $CGs \to P$. Die Abbildung muss injektiv sein, d.h. nicht jede Farbe der Farbpalette $P$ muss verwendet werden, jedoch dürfen mehrere Color Groups nicht gleich gefärbt werden. Es gilt $k \leq n$.
 
 Entscheidendes Kriterium für die Zuordnung ist eine funktionale Gestaltung der Webseite. Im Rahmen dieser Arbeit wird hierunter eine Farbgestaltung verstanden, die Accessibility (Lesbarkeit) und Usability (Benutzerfreundlichkeit) gewährleistet. Eine intuitiv widersinnige Färbung ist beispielsweise ein roter Text auf orangem Hintergrund mit grauem Button. Weder ist der Text lesbar (Accessibility), noch wird die Aufmerksamkeit des Nutzers auf das Interaktionselement gelenkt (Usability). 
 
-Als Besonderheit dieser Arbeit soll die Farbpalette auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die gewählte Farbgebung wesentlich für die vermittelte Atmosphäre einer Webseite ist \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv dessen Eindruck unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung zur Laufzeit möglich, wenn ein effizientes Suchverfahren umgesetzt wird. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Seite für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} zeigt hierfür ein Gegenbeispiel: keine der Farben des Cover taucht in der umgebenen Weboberfläche auf.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.48\textwidth]{img/color_groups.png}
-	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. Oben: Originales Farbdesign. Unten: Hervorhebung der sieben Color Groups. Elemente einer Color Group erhalten die gleiche Farbe. Blöcke sind umrahmt.}
-	\label{fig:colorgroups}
-\end{figure}
+Als Besonderheit dieser Arbeit soll die Farbpalette auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die gewählte Farbgebung wesentlich für die vermittelte Atmosphäre einer Webseite ist \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv dessen Eindruck unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung zur Laufzeit möglich, wenn ein effizientes Suchverfahren umgesetzt wird. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Seite für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} (c) zeigt hierfür ein Beispiel.
 
 \subsection{Color Palette Estimation}
 
 Die Zusammenstellung einer Farbpalette aus einer Bildvorlage wird von \citet{acopa} als \textbf{Color Palette Estimation} (CPE) bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. \glqq{}Minimal\grqq{} bedeutet nach Auffassung der Autoren, dass redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden hierfür jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/ladybug.png}
 \caption{Beispiel für die Einfärbung eines Bildes mit unterschiedlichen Farbpaletten der Größe 12. Oben: Originalbild. Links: Farbpalette ohne rote Farbtöne. Rechts: Farbpalette mit roten Farbtönen, wodurch der Marienkäfer erkennbar ist (Quelle: \citep{acopa})}
@@ -123,7 +123,7 @@ Aus diesen Gründen wird sich diese Arbeit auf einen \textbf{regelbasierten} Ans
 
 Nicht jede Webseite hat die gleiche Anzahl Color Groups. Um die Komplexität des Constraint-Systems zu reduzieren, wird die Festlegung der Color Groups einer Webseite aus der Betrachtung entfernt. Dafür wird von einer Webseite als \textbf{Layout} abstrahiert. Für ein Layout wird als konstant angenommen, welche Color Groups mit welcher Semantik existieren. Beispielsweise definiert ein Layout eine Color Group, welche alle Buttons beinhaltet und deren Semantik \emph{Interaktion} ist. Aus Sicht des Constraint-Systems werden keine Farben für einzelnen Buttons, sondern eine Interaktionsfarbe gesucht. Durch das Konzept der Color Groups wird somit von den betreffenden Elementen abstrahiert.
 
-\begin{figure*}
+\begin{figure*}[h]
 	\centering
 	\includegraphics[width=1\textwidth]{img/architecture.png}
 	\caption{System-Architektur. Der grau unterlegte Kasten visualisiert den Bereich, für den algorithmische Lösungen gefunden werden müssen. Die Eingabeparameter sind eine Bildvorlage und eine Menge von Color Groups, welche von einem Layout definiert werden. Das System setzt zwei Suchverfahren um, welche mit $f1$ und $f2$ bezeichnet werden. $f1$ ermittelt zuerst eine Farbpalette aus der Bildvorlage (CPE).  $f2$ ordnet Colour Groups Farben aus der Palette, in dem ein entsprechendes Constraint System gelöst wird. Nachdem eine Farbabbildung gefunden wurde, wird das kolorierte Layout ausgegeben. }
