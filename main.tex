@@ -27,6 +27,12 @@
 \usepackage[all]{nowidow}
 \usepackage[style=base, margin=5mm]{caption}
 \usepackage{siunitx}
+
+%math packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
 \geometry{a4paper,left=16mm,right=16mm, top=25mm, bottom=3cm} 
 \setlength{\columnsep}{16pt}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -67,7 +73,7 @@ Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Elementen
 
 Webdesigner verkleinern Suchraum zur Identifizierung geeigneter Farben für die Color Groups durch die Zusammenstellung einer sogenannten \textbf{Farbpalette} \citep{webpage, webdesign, webx0}. Dabei handelt es sich um eine Farbmenge $P = \{c_1, c_2, \ldots, c_n\}$ mit $n$ Farben, wobei jedes $c \in P$ als String von RGB Werten kodiert wird. Formal ist damit das Ziel dieser Arbeit die Ermittlung einer Abbildung $CGs \to P$. Die Abbildung muss injektiv sein, d.h. nicht jede Farbe der Farbpalette $P$ muss verwendet werden, jedoch dürfen mehrere Color Groups nicht gleich gefärbt werden. Es gilt $k \leq n$.
 
-Entscheidendes Kriterium für die Zuordnung ist eine funktionale Gestaltung der Webseite. Im Rahmen dieser Arbeit wird hierunter eine Farbgestaltung verstanden, die Accessibility (Lesbarkeit) und Usability (Benutzerfreundlichkeit) gewährleistet. Eine intuitiv widersinnige Färbung ist beispielsweise ein roter Text auf orangem Hintergrund mit grauem Button. Weder ist der Text lesbar (Accessibility), noch wird die Aufmerksamkeit des Nutzers auf das Interaktionselement gelenkt (Usability). 
+Entscheidendes Kriterium für die Zuordnung ist eine funktionale Gestaltung der Webseite. Im Rahmen dieser Arbeit wird hierunter eine Farbgestaltung verstanden, die Lesbarkeit und Benutzerführung gewährleistet. Eine intuitiv widersinnige Färbung ist beispielsweise ein roter Text auf orangem Hintergrund mit grauem Button. Weder ist der Text lesbar, noch wird die Aufmerksamkeit des Nutzers auf das Interaktionselement gelenkt.
 
 Als Besonderheit dieser Arbeit soll die Farbpalette auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die gewählte Farbgebung wesentlich für die vermittelte Atmosphäre einer Webseite ist \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv dessen Eindruck unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung zur Laufzeit möglich, wenn ein effizientes Suchverfahren umgesetzt wird. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Seite für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} (c) zeigt hierfür ein Beispiel.
 
@@ -126,7 +132,7 @@ Nicht jede Webseite hat die gleiche Anzahl Color Groups. Um die Komplexität des
 \begin{figure*}
 	\centering
 	\includegraphics[width=1\textwidth]{img/architecture.png}
-	\caption{System-Architektur. Der grau unterlegte Kasten visualisiert den Bereich, für den algorithmische Lösungen gefunden werden müssen. Die Eingabeparameter sind eine Bildvorlage und eine Menge von Color Groups, welche von einem Layout definiert werden. Das System setzt zwei Suchverfahren um, welche mit $f1$ und $f2$ bezeichnet werden. $f1$ ermittelt zuerst eine Farbpalette aus der Bildvorlage (CPE).  $f2$ ordnet Colour Groups Farben aus der Palette, in dem ein entsprechendes Constraint System gelöst wird. Nachdem eine Farbabbildung gefunden wurde, wird das kolorierte Layout ausgegeben. }
+	\caption{System-Architektur. Der grau unterlegte Kasten visualisiert den Bereich, für den algorithmische Lösungen gefunden werden müssen. Die Eingabeparameter sind eine Bildvorlage und eine Menge von Color Groups, welche von einem Layout definiert werden. Das System setzt zwei Suchverfahren um, welche mit $f1$ und $f2$ bezeichnet werden. $f1$ ermittelt zuerst eine Farbpalette aus der Bildvorlage (CPE). $f2$ ordnet Colour Groups Farben aus der Palette, in dem ein entsprechendes Constraint System gelöst wird. Nachdem eine Farbabbildung gefunden wurde, wird das kolorierte Layout ausgegeben. }
 	\label{fig:architecture}
 \end{figure*}
 
@@ -149,6 +155,38 @@ Abbildung \ref{fig:architecture} fasst den Ablauf der automatisierten Farbgestal
 Im Folgenden sind konkrete Verfahren für die beiden Teilprobleme CPE und CSP zu implementieren. Ausgangspunkt hierfür sind Prinzipien für eine funktionale Gestaltung von Webseiten. Diese werden im Folgenden durch Webdesign-Literatur sowie die Analyse von Farbdefinitionen aus Style Guides ermittelt.
 
 \section{Farbgestaltung von Webseiten}
+Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Im Folgenden werden Gestaltungsprinzipien für diese beiden Ziele herausgearbeitet und als Grundlage für die weiteren Entscheidungen zur Problemlösung betrachtet.
+
+\subsection{Lesbarkeit}
+
+Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je farbiger er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei stark farbigem Hintergrund zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Luminanz des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
+\begin{enumerate}
+	\item Dunkle Schrift: $rgba(0, 0, 0, 0.87)$
+	\item Helle Schrift: $rgba(255, 255, 255, 1.0)$
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/text_color.png}
+	\caption{Empfohlene Textfarbe bei farbigem Hintergrund. (a) Textfarbe $rgb(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $rgba(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert (Transparenz) von $54\%$. Die Textfarbe ergibt sich zu einer Schattierung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
+	\label{fig:text_color}
+\end{figure}
+
+Im Folgenden wird die Textfarbe mit Ausnahme von Fällen, in denen die Schrift aus stilistischen Gründen bunt erscheinen soll, auf diese Werte festgelegt. Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text- und Hintergrundfarbe sowie der Textgröße an. Die Formel lautet zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
+
+$$
+L_c(c_1, c_2) = \frac{L(c_1) + 0.05}{L(c_2) + 0.05} \;, L(c_1) \geq L(c_2)
+$$
+
+mit $L_c \in [1, ... , 22]$, wobei $L_c(weiss, schwarz) = 22$ und $c_1 = c_2: \;L_c(c_1, c_2) = 1$. Die Berechnungsvorschrift der normalisierten relativen Luminanz einer Farbe $L$ ist \citep{wcag-rel-luminance} zu entnehmen.
+Es gelten die Grenzwerte \citep{wcag}:
+
+\begin{equation}
+  	L_c(c_1, c_2) \geq
+	\begin{cases}
+		3.0, \text{Schriftgroesse} \geq 18pt \lor yo \\
+	\end{cases}
+\end{equation}
 
 \subsection{Farbpaletten in Style Guides}
 \label{sec:swatches}
