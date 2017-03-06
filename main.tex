@@ -67,9 +67,15 @@ Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelement
 	\label{fig:colorgroups}
 \end{figure*}
 
-Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Elementen in Webseiten. Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden (1) Elemente, die visuell als Blöcke wahrgenommen werden (d.h. die Hintergrundfarbe \texttt{"background-color"} von \texttt{<div>}, \texttt{<button>} etc.) und (2) Texte (d.h. die Vordergrundfarbe \texttt{"color"} der Blöcke sowie von \texttt{<h1>}, \texttt{<a>}, etc.) betrachtet. Es wird also die Farbbestimmung von \textbf{Blöcken} und \textbf{Texten} fokussiert. Rahmen, Textdekoration und andere färbbare Komponenten werden vernachlässigt.
+Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Elementen in Webseiten. Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenkomponenten betrachtet:
+\begin{enumerate}
+	\item \textbf{Texte}: Elemente mit transparentem Hintergrund (\texttt{background-color: transparent}) und definierter Vordergrundfarbe (\texttt{color}). 
+\end{enumerate}
+\texttt{<h1>}, \texttt{<a>}, etc.) betrachtet. Elemente, die visuell als Blöcke wahrgenommen werden (d.h. die Hintergrundfarbe \texttt{"background-color"} von \texttt{<div>}, \texttt{<button>} etc.) und (2)  Es wird also die Farbbestimmung von \textbf{Blöcken} und \textbf{Texten} fokussiert. Rahmen, Textdekoration und andere färbbare Komponenten werden vernachlässigt.
 
-Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Beispielsweise können alle Links (Textfarbe) sowie Buttons (Hintergrundfarbe) in Blau dargestellt werden. Im Folgenden wird eine Menge von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG$ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite wird als $CGs$ formalisiert. Es gilt $|CGs| = k$. Eine Webseite mit $k$ Color Groups tritt also mit $k$ Farben in Erscheinung. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
+Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Beispielsweise können alle Links (Textfarbe) sowie Buttons (Hintergrundfarbe) in Blau dargestellt werden. Im Folgenden wird eine Menge von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG$ bezeichnet \citep[siehe auch][]{webpage, patterns}. 
+
+ Die Menge aller Color Groups einer Webseite wird als $CGs$ formalisiert. Es gilt $|CGs| = k$. Eine Webseite mit $k$ Color Groups tritt also mit $k$ Farben in Erscheinung. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
 
 Webdesigner verkleinern Suchraum zur Identifizierung geeigneter Farben für die Color Groups durch die Zusammenstellung einer sogenannten \textbf{Farbpalette} \citep{webpage, webdesign, webx0}. Dabei handelt es sich um eine Farbmenge $P = \{c_1, c_2, \ldots, c_n\}$ mit $n$ Farben, wobei jedes $c \in P$ als String von RGB Werten kodiert wird. Formal ist damit das Ziel dieser Arbeit die Ermittlung einer Abbildung $CGs \to P$. Die Abbildung muss injektiv sein, d.h. nicht jede Farbe der Farbpalette $P$ muss verwendet werden, jedoch dürfen mehrere Color Groups nicht gleich gefärbt werden. Es gilt $k \leq n$.
 
@@ -161,32 +167,72 @@ Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und 
 
 Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je farbiger er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei stark farbigem Hintergrund zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Luminanz des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
 \begin{enumerate}
-	\item Dunkle Schrift: $rgba(0, 0, 0, 0.87)$
-	\item Helle Schrift: $rgba(255, 255, 255, 1.0)$
+	\item Dunkle Schrift: $\text{rgba}(0, 0, 0, 0.87)$
+	\item Helle Schrift: $\text{rgba}(255, 255, 255, 1.0)$
 \end{enumerate}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.48\textwidth]{img/text_color.png}
-	\caption{Empfohlene Textfarbe bei farbigem Hintergrund. (a) Textfarbe $rgb(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $rgba(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert (Transparenz) von $54\%$. Die Textfarbe ergibt sich zu einer Schattierung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
+	\caption{Empfohlene Textfarbe bei farbigem Hintergrund. (a) Textfarbe $\text{rgb}(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $\text{rgba}(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert (Transparenz) von $54\%$. Die Textfarbe ergibt sich zu einer Schattierung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
 	\label{fig:text_color}
 \end{figure}
 
 Im Folgenden wird die Textfarbe mit Ausnahme von Fällen, in denen die Schrift aus stilistischen Gründen bunt erscheinen soll, auf diese Werte festgelegt. Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text- und Hintergrundfarbe sowie der Textgröße an. Die Formel lautet zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
 
-$$
-L_c(c_1, c_2) = \frac{L(c_1) + 0.05}{L(c_2) + 0.05} \;, L(c_1) \geq L(c_2)
-$$
+\begin{equation}
+	\begin{split}
+		L_c(c_1, c_2) = \frac{L(c_1) + 0.05}{L(c_2) + 0.05} \;,\\ L(c_1) \geq L(c_2)
+	\end{split}
+\end{equation}
 
 mit $L_c \in [1, ... , 22]$, wobei $L_c(weiss, schwarz) = 22$ und $c_1 = c_2: \;L_c(c_1, c_2) = 1$. Die Berechnungsvorschrift der normalisierten relativen Luminanz einer Farbe $L$ ist \citep{wcag-rel-luminance} zu entnehmen.
-Es gelten die Grenzwerte \citep{wcag}:
-
+Es gelten zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \emph{AA} beschreibt die Minimalanforderung an lesbaren Text:
 \begin{equation}
-  	L_c(c_1, c_2) \geq
+  	AA: L_c(c_1, c_2) \geq
 	\begin{cases}
-		3.0, \text{Schriftgroesse} \geq 18pt \lor yo \\
+		\begin{split}3.0, \; \text{Schriftgr.} \geq 18pt \lor \\ \geq 14pt \land fett\end{split} \\
+		4.5,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
+
+Die Klasse \emph{AAA} enthält höhere Grenzwerte und beschreibt verstärkte Lesbarkeit:
+
+\begin{equation}
+  	AAA: L_c(c_1, c_2) \geq
+	\begin{cases}
+		\begin{split}4.5, \; \text{Schriftgr.} \geq 18pt \; \lor \\ \geq 14pt \land fett\end{split} \\
+		7,  \;  \text{sonst}
+	\end{cases}
+\end{equation}
+
+\subsection*{Schlussfolgerungen für die automatisierte Farbgestaltung}
+Für Color Groups werden standardmäßig die Textfarben (\texttt{color}) 
+
+\subsection{Benutzerführung}
+Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch auch visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente strukturiert und priorisiert werden.
+\citet{webdesign} unterteilt folgende Möglichkeiten zur Benutzerführung durch Farbeinsatz:
+
+\begin{itemize}
+	\item \textbf{Themengruppen:} Bedeutet die farbliche Kodierung inhaltlich definierter Bereiche. Hierbei handelt es sich um eine vom Gestalter erfundene, subjektive Farbsystemlogik, die kein System, sondern eine Gestaltungsstuktur darstellt, die dem Anwender zu lernen aufgezwungen wird. Dies resultiert automatisch in Buntheit, welche Aufmerksamkeit erregt und somit kontraproduktiv für die Bildung einer visuellen Hierarchie ist. Aus diesen Gründen ist von dieser Variante abzuraten. Abbildung \ref{fig:theme_coding} verdeutlicht dies am Beispiel eines Online-Magazins.
+	\item \textbf{Funktionsbereiche:} Bedeutet die farbliche Kodierung von Bereichen entsprechend ihrer Funktion. So sind beispielsweise Navigations-, Inhalts- und Servicebereich farblich differenzierbar. Diese Variante ist zu empfehlen, wenn nicht mehr als drei Farben verwendet werden und die betreffenden Bereiche gleichzeitig und somit im Bezug zueinander sichtbar sind. Abbildung \ref{fig:functional_areas} verdeutlicht dies am Beispiel einer farblichen Abgrenzung von Navigationsbereichen.
+	\item \textbf{Funktionen und Funktionszustände:} 
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/theme_coding.png}
+	\caption{Farbkodierung von Themengruppen am Beispiel von \url{www.smashingmagazine.com/}. Es ist unklar, weshalb die gewählten Farben mit den jeweiligen Bereichen assoziiert werden.}
+	\label{fig:theme_coding}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/functional_areas}
+	\caption{Farbkodierung von Funktionsbereichen am Beispiel von \url{www.leipzig-studieren.de}. Navigationsbereiche (orange) werden zueinander in Bezug gebracht und vom Inhalt (weiß) abgegrenzt.}
+	\label{fig:functional_areas}
+\end{figure}
+
 
 \subsection{Farbpaletten in Style Guides}
 \label{sec:swatches}
