@@ -210,13 +210,14 @@ Die Klasse \emph{AAA} enthält höhere Grenzwerte und beschreibt verstärkte Les
 Für Color Groups werden standardmäßig die Textfarben (\texttt{color}) 
 
 \subsection{Benutzerführung}
-Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch auch visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente strukturiert und priorisiert werden.
+\label{sec:usability}
+Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch als visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente strukturiert und priorisiert werden.
 \citet{webdesign} unterteilt folgende Möglichkeiten zur Benutzerführung durch Farbeinsatz:
 
 \begin{itemize}
 	\item \textbf{Themengruppen:} Bedeutet die farbliche Kodierung inhaltlich definierter Bereiche. Hierbei handelt es sich um eine vom Gestalter erfundene, subjektive Farbsystemlogik, die kein System, sondern eine Gestaltungsstuktur darstellt, die dem Anwender zu lernen aufgezwungen wird. Dies resultiert automatisch in Buntheit, welche Aufmerksamkeit erregt und somit kontraproduktiv für die Bildung einer visuellen Hierarchie ist. Aus diesen Gründen ist von dieser Variante abzuraten. Abbildung \ref{fig:theme_coding} verdeutlicht dies am Beispiel eines Online-Magazins.
 	\item \textbf{Funktionsbereiche:} Bedeutet die farbliche Kodierung von Bereichen entsprechend ihrer Funktion. So sind beispielsweise Navigations-, Inhalts- und Servicebereich farblich differenzierbar. Diese Variante ist zu empfehlen, wenn nicht mehr als drei Farben verwendet werden und die betreffenden Bereiche gleichzeitig und somit im Bezug zueinander sichtbar sind. Abbildung \ref{fig:functional_areas} verdeutlicht dies am Beispiel einer farblichen Abgrenzung von Navigationsbereichen.
-	\item \textbf{Funktionen und Funktionszustände:} 
+	\item \textbf{Funktionen und Zustände:} Bedeutet die farbliche Kodierung von funktionstragenden Elemte oder deren Funktionszustände. Beispielsweise sind anklickbare Elemente (z.B. Links und Buttons) durch eine einheitliche Farbe signalisierbar. Abbildung \ref{fig:functions} zeigt hierfür ein Beispiel Elemente mit destruktiver Funktion, z.B. Buttons zum Löschen oder Abbrechen einer Aktion, können einheitlich rot gefärbt werden. Wurde eine Farbe einmal mit einer Funktion belegt, sollte sie einheitlich verwendet werden. Beispielsweise würde ein nicht-anklickbares, blaues Element in der Oberfläche aus Abbildung \ref{fig:functions} würde verwirren.
 \end{itemize}
 
 \begin{figure}[h]
@@ -228,10 +229,31 @@ Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unte
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.48\textwidth]{img/functional_areas}
+	\includegraphics[width=0.48\textwidth]{img/functional_areas.png}
 	\caption{Farbkodierung von Funktionsbereichen am Beispiel von \url{www.leipzig-studieren.de}. Navigationsbereiche (orange) werden zueinander in Bezug gebracht und vom Inhalt (weiß) abgegrenzt.}
 	\label{fig:functional_areas}
 \end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.48\textwidth]{img/functions.png}
+	\caption{Farbkodierung von Funktionen am Beispiel von \url{www.github.com}. Nur anklickbare Elemente sind blau, aktive Elemente werden zusätzlich braun markiert.}
+	\label{fig:functions}
+\end{figure}
+
+\subsection{Farbfunktionen}
+Aus \autoref{sec:usability} geht hervor, dass Elemente entsprechend ihrer Funktion gefärbt werden, nicht aus rein dekorativen Gründen oder zur thematischen Strukturierung. Aus diesen Gründen wird zwischen die Abbildung $CGs \to P$ eine Abstraktionsschicht mit der Bezeichnung \textbf{Farbfunktionen} $F$ geschoben, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch $S = \{\text{Primärfarbe}, \text{Sekundärfarbe}, \text{Interaktionsfarbe},\\ \text{Akzentfarbe}, \text{Textfarbe}, \text{Text-Hintergrund}\}$ definiert. Die einzelnen Farbunktionen lauten wie folgt:
+\begin{itemize}
+	\item \textbf{Primärfarbe:} Wird in Relation zu den anderen Farben am häufigsten eingesetzt und bildet so die farbliche Grundstimmung der Oberfläche \citep{awwwards}.
+	\item \textbf{Sekundärfarbe:} Unterstützt die Farbstimmung der Primärfarbe und orientiert sich dementsprechend an deren Farbton. Durch die Wahl einer unbunteren Farbe tritt sie in der visuellen Hierarchie stärker in den Hintergrund \citep{visual-hierarchy}, eignet sich besser als Hintergrund für Fließtext und unterstützt durch den Qualitätskontrast die Wirkung der Primärfarbe \citep{webdesign}.
+	\item \textbf{Interaktionsfarbe:} Signalisiert Elemente, mit denen eine Interaktion möglich ist, z.B. klicken. Dies trifft nicht zwangsläufig auf Elemente zu, bei denen der Nutzer eine Interaktionsmöglichkeit aufgrund ihrer Funktionsgruppe bereits erwartet, wie z.B. in der Seitennavigation.
+	\item \textbf{Akzentfarbe:} Signalisiert Elemente mit hoher Priorität in der visuellen Hierarchie. Dies ist erreichbar durch einen verhältnismäßg seltenen (Quantitätskontrast, \citep{webdesign}) Einsatz einer bunten \citep{visual-hierarchy} Farbe.
+\end{itemize}
+
+TODO Kontraste in den Anhang.
+
+Abhängig von den Ansprüchen der Webseite sind weitere Funktionsgruppen möglich, z.B. wenn zwischen verschiedenen Formen der Interaktion differenziert werden soll (wischen und drücken). Die hier genannten Farbfunktionen stellen lediglich einen Konsens der Literatur dar.
+
 
 
 \subsection{Farbpaletten in Style Guides}
