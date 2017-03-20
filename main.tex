@@ -263,25 +263,12 @@ Diese Definition eines Farbschemas unterscheidet sich von der Verwendung des Beg
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.48\textwidth]{img/colorschemes.png}
-	\caption{}
+	\caption{Beispiele für monochrome, duale und tertiäre Farbschemata. Der Farbeindruck der Seite wird durch Quantitäts-, Qualitäts- und Bunt-Unbunt-Kontraste bestimmt.}
 	\label{fig:colorschemes}
 \end{figure}
 
-\subsection{Farbpaletten in Style Guides}
-\label{sec:swatches}
-
-Style Guides zur Oberflächengestaltung beinhalten unter anderem Richtlinien für den Farbeinsatz. Dabei wird i.d.R. eine Obermenge von Farben definiert und mit Verwendungshinweisen verbunden. Einige Farben, wie z.B. die Logo-Farbe, stehen hierbei unter strikten Restriktionen. Davon abgesehen wählt der Designer eine Untermenge von Farben der Farbpalette aus dem Style Guide und legt selbst Einsatzregeln fest, wie z.B. die Farbe für Interaktionselemente.
-
-Die Apple \emph{iOS Human Interaction Guidelines} legen eine Farbpalette von 8 strahlenden Farben fest, die sich aufgrund ihrer Intenstität ausschließlich für Interaktionselemente und ausgewählte Komponenten wie z.B. Statusleisten eignen \citep{ios}. Demgegenüber beschreibt Google im \emph{Material Design Style Guide} Farben in Form eines Farbtons in abgestuften Schattierungen. Dieses Konzept wird als \emph{Color Swatch} bezeichnet. Hierbei handelt es sich um ein Erweiterung der Farbpalette, die dem Designer mehr Spielraum bei der farblichen Komposition einräumt. Ein Beispiel hierfür zeigt Abbildung \ref{fig:swatches}, auf welcher ein Auszug der Color Swatches und ein Einsatzbeispiel für den Umgang mit Schattierungen gezeigt wird. Ein anderes Beispiel hierfür zeigt das Corporate Design Hanbuch der HTWK Leipzig. Der Farb-Guide stellt Color Swatches mit zwei bis drei Schattierungen bereit \citep{htwk}.
-
-Das Konzept der Color Swatches wird in dieser Arbeit für die CPE bevorzugt, da über die Farbeigenschaften eines Bildes keine Annahmen getroffen werden können. Die Bereitstellung eines Farbtons in verschiedenen Schattierungen ermöglicht jedoch den flexiblen Einsatz von Farben, der bei Bildern mit wenig Farben notwendig ist. So ist z.B. der selbe Farbton sowohl für Interaktionselement, oder in einer hellen Schattierung für den Hintergrund einsetzbar. 
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.48\textwidth]{img/material_design.png}
-	\caption{Auszug der Color Swatches in der Farbpalette des Google Material Designs (oben) mit Einsatzbeispiel (unten). (Quelle: \citep{google})}
-	\label{fig:swatches}
-\end{figure}
+\subsection*{Zusammenfassung}
+Zur Unterstützung der Benutzerführung werden in Webseiten Funktionsbereiche und Elemente mit einheitlicher Funktion bzw. Funktionszustand farblich kodiert. Dementsprechend werden für eine Webseite eine Menge an Farbfunktionen $F$ definiert, wie z.B. die Interaktionsfarbe, welche klickbare Elemente signalisiert. Ein Farbschema $S: F \to P$ ist eine Abbildung der Farbfunktionen auf die Farben einer Palette $P$. Eine Abbildung soll höchstens drei verschiedene Farbtöne enthalten. Für Fließtext sowie dessen Hintergrund werden standardmäßig Graustufen festgelegt. Zur Benutzerführung realisieren Webseiten somit einen Bunt-Unbunt- sowie Quantitätskontrast, welcher das zentrale Gestaltungsmittel des Screendesigns darstellt \citep{webdesign, webx0}.
 
 \section{Algortihmen zur Color Palette Estimation}
 
@@ -378,7 +365,7 @@ Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-
 
 Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-Segmentierung. Dabei wird zuerst der $h$-, danach der $s$- und abschließend der $i$- Kanal segmentiert. Dabei werden in jedem Schritt die Samples der entstandenen Segmente separiert und die Histogramme der nächsten Ebene getrennt berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (h) wurden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene werden die Farbtöne jeweils in unterschiedliche Sättigungen aufgeteilt, wenn nötig. Auf der dritten Ebene (i) werden von den Sättigungen zusätzlich Helligkeitsabstufungen gebildet.
 
-Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Verarbeitung. Die Farbpalette spiegelt die in Abschnitt \ref{sec:swatches} definierten Color Swatches wieder. \citet{acopa} empfehlen zusätzlich, die erhaltenen Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt, wie sich die Farben durch K-Means geändert haben. Es ist zu einem späteren Zeitpunkt zu entschieden, welche der beiden Paletten für die weitere Verarbeitung geeigneter ist.
+Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Verarbeitung. \citet{acopa} empfehlen zusätzlich, die erhaltenen Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt, wie sich die Farben durch K-Means geändert haben. Es ist zu einem späteren Zeitpunkt zu entschieden, welche der beiden Paletten für die weitere Verarbeitung geeigneter ist.
 
 \begin{figure}[h]
 \centering
