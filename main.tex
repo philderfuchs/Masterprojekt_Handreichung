@@ -1,7 +1,7 @@
-\documentclass[11pt,a4paper,bibliography=totoc,twocolumn]{scrartcl}
+\documentclass[11pt, bibliography=totoc]{scrartcl}
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
-\setlength{\parskip}{1em}
+\setlength{\parskip}{5.5pt}
 \setlength{\parindent}{1em}
 \usepackage{hyperref}
 \usepackage{mathtools}
@@ -28,15 +28,16 @@
 \usepackage[style=base, margin=5mm]{caption}
 \usepackage{siunitx}
 
+\geometry{a4paper,left=30mm,right=30mm, top=30mm, bottom=35mm} 
+
 %math packages
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
-\geometry{a4paper,left=16mm,right=16mm, top=25mm, bottom=3cm} 
-\setlength{\columnsep}{16pt}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\counti}{count}
+%header
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\chead{\nouppercase{\leftmark}}\cfoot{\thepage}
 
 \begin{document}
 
@@ -45,15 +46,15 @@
 \subtitle{Masterprojekt Zwischenabgabe Il}
 \author{Philipp Anders}
 
-\twocolumn[
-  \begin{@twocolumnfalse}
-    \maketitle
-    \begin{abstract}
+\maketitle
+
+\begin{abstract}
 Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelemente von Webseiten (Text, Buttons, Hintergründe, etc.) aus Bildvorlagen. Dabei wird das Problem in zwei Teilprobleme zerlegt: 1. Das Bilden einer Obermenge von Farben durch einen Algorithmus zur Color Palette Estimation (CPE). 2. Die Identifizierung von Farben für bestimmte Oberflächenelemente aus dieser Obermenge durch Lösung eines Constraintsystems. Für die CPE wird der ACoPa-Algorhitmus von \citet{acopa} ausgewählt und implementiert, da dessen Ergebnis den aus Styleguides bekannten Farbpaletten-Definitionen in Form von Color Swatches ähnelt.
-  \vspace*{1cm}
-    \end{abstract}
-  \end{@twocolumnfalse}
-]
+\end{abstract}
+
+\pagebreak
+\tableofcontents
+\pagebreak
 
 \section{Einleitung}
 
@@ -101,6 +102,7 @@ Da Grafikpuffer mittlerweile über ausreichend Kapazität verfügen, liegt die A
 Dieser Befund hebt hervor, dass die Güte einer Farbpalette in Bezug auf die Bildvorlage subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Beurteilung der zu ermittelnden Farbpalette keine objektive Bewertungsfunktion herangezogen. Stattdessen wird die Zweckmäßigkeit der Farbpalette in Hinblick auf die farbliche Gestaltung von Webseiten fokussiert. Das bedeutet, dass die aus der Bildvorlage hervorgehende Farbpalette eine Teilmenge an Farben beinhalten muss, mit welcher die automatisierte Farbgestaltung einer Webseite lösbar ist. Hierfür müssen Kriterien abgeleitet werden, indem Prinzipien für eine funktionale Gestaltung von Webseiten sowie Farbdefinitionen aus Style Guides analysiert werden. Davon ausgehend wird eine geeigneter Algorithmus zur Bestimmung einer solchen Farbpalette aus einer Bildvorlage ermittelt.
 
 \subsection{Einordnung und Literaturbesprechung}
+\label{sec:literatur}
 
 Die Arbeit ordnet sich in das Gebiet der automatisierten Farbgestaltung (Color Design Automation) ein. In diesem Bereich hat in den letzten Jahren Forschung in verschiedenen Anwendungsbezügen stattgefunden, wobei überwiegend Methoden des maschinellen Lernens zur Problemlösung eingesetzt wurden.
 
@@ -112,55 +114,12 @@ Die Arbeit ordnet sich in das Gebiet der automatisierten Farbgestaltung (Color D
 
 \citet{magazines}  haben sich 2013 mit der automatisierten Farbgestaltung von Magazin-Covers auseinandergesetzt. Vergleichbar mit \citep{webpage} wird auch hier die Optimierung des Farbkontrasts, der Farbharmonie und der Farbsemantik verfolgt.  Im Gegensatz zu den bisherigen Lösungen wird hier allerdings mit expliziten Regeln zur Bewertung von Farbharmonien- \citep{itten} und Kontrasten anstatt mit Modellen gearbeitet, die sich aus Trainingsdaten ableiten. Über Flowcharts vermitteln die Autoren Lösungsprozeduren zur Suche geeigneter Schriftfarben und Stellen konkrete Grenzwerte vor, die für diese Arbeit übernommen werden können.
 
-\section{Problemlösungansatz und Systemarchitektur}
 
-Ausgehend von der Literaturbesprechung wird ein Ansatz zur Problemlösung besprochen. Darauf aufbauend wird eine konkrete Architektur des zu implementierenden Systems entwickelt. Anschließend werden für die einzelnen Teilaufgaben der Architektur geeignete Methoden besprochen und ausgewählt.
 
-\subsection{Regelbasierter oder probabilistischer Ansatz}
 
-\citet{webpage} stellen für die automatisierte Farbgestaltung zwei grundlegende Herangehensweisen vor:
-
-\begin{enumerate}
-	\item \textbf{Regelbasiert:} Beschreibt quantitative Modelle mit determinstischem Regelwerk. Die Arbeit von \citet{magazines} stellt hierfür ein Beispiel dar. Durch die Analyse von Farbharmonie-Modellen wurden Regeln für die automatisierte Gestaltung von Magazin-Covers abgeleitet.
-	\item \textbf{Datengetrieben:} Beschreibt Modelle, welche die Performanz möglicher Lösungen einer automatisierten Farbgestaltung auf Grundlage existierender Beispieldaten vorhersagt.
-\end{enumerate}
-
-Die regelbasierten Modelle treffen feste Aussagen im Gegensatz zu probabilistischen Modellen, tendieren jedoch zur zu starken Vereinfachung des Problems und abstrahieren damit vom Anwendungsbezug. Im Gegensatz dazu stützen sich die Modelle des datengetriebenen Ansatzes auf reale Beispiele und tendieren daher zu robusteren Ergebnissen in der Anwendungsdomäne \citep{webpage}.
-
-Da bei den probabilistischen Modellen alle potentiellen Lösungen bewertet und gegeneinander abgewogen werden müssen, sind hohe Laufzeiten möglich. Die bereits entwickelte Lösung von \citet{webpage} zur automatisierten Farbgestaltung von Webseiten benötigt selbst nach einer Optimierung des Suchverfahrens, bei der unwahrscheinliche Lösungen frühzeitig ausgeschlossen werden, 2 Stunden zur Konvergenz. Außerdem ist deren vorgestellter Prozess zur Anpassung der Farbgestaltung einer Webseite an eine Bildvorlage nicht im eigentlichen Sinne automatisiert: Einerseits erfordert die Verwendung des K-Means Algorithmus zur CPE die Eingabe der Farbanzahl (k) vom Gestalter, andererseits erfordert die lexikographische Strategie einen Nutzerinteraktion während des Optimierungsprozess.
-
-Aus diesen Gründen wird sich diese Arbeit auf einen \textbf{regelbasierten} Ansatz \textbf{ohne Nutzerinteraktion} konzentrieren. Auch ohne die Auswertung großer Datenmengen existieren quantitative Modelle, um die Accessibility einer Webseite zur gewährleisten. Beispielsweise geben die \emph{Web Content Accessibility Guidelines} \citep{wcag} quantitative Grenzwerte für die Lesbarkeit von Texten an. Es sind Eigenschaften und Bedingungen zu erarbeiten, die für Farben einzelner Color Groups sowie zwischen diesen gelten sollen. Diese Einschränkungen werden im Folgenden als \textbf{Constraints} bezeichnet. Ein System von Constraints mit endlichem Wertebereich (in diesem Fall $P$) wird als \textbf{Constraint Satisfaction Problem} (CSP) bezeichnet \citep{constraint-programmierung}. \citet{magazines} haben gezeigt, dass eine Lösung eines solchen Constraint-Systems beispielsweise über Faktor-Graphs möglich ist.
-
-\subsection{Layouts}
-
-Nicht jede Webseite hat die gleiche Anzahl Color Groups. Um die Komplexität des Constraint-Systems zu reduzieren, wird die Festlegung der Color Groups einer Webseite aus der Betrachtung entfernt. Dafür wird von einer Webseite als \textbf{Layout} abstrahiert. Für ein Layout wird als konstant angenommen, welche Color Groups mit welcher Semantik existieren. Beispielsweise definiert ein Layout eine Color Group, welche alle Buttons beinhaltet und deren Semantik \emph{Interaktion} ist. Aus Sicht des Constraint-Systems werden keine Farben für einzelnen Buttons, sondern eine Interaktionsfarbe gesucht. Durch das Konzept der Color Groups wird somit von den betreffenden Elementen abstrahiert.
-
-\begin{figure*}
-	\centering
-	\includegraphics[width=1\textwidth]{img/architecture.png}
-	\caption{System-Architektur. Der grau unterlegte Kasten visualisiert den Bereich, für den algorithmische Lösungen gefunden werden müssen. Die Eingabeparameter sind eine Bildvorlage und eine Menge von Color Groups, welche von einem Layout definiert werden. Das System setzt zwei Suchverfahren um, welche mit $f1$ und $f2$ bezeichnet werden. $f1$ ermittelt zuerst eine Farbpalette aus der Bildvorlage (CPE). $f2$ ordnet Colour Groups Farben aus der Palette, in dem ein entsprechendes Constraint System gelöst wird. Nachdem eine Farbabbildung gefunden wurde, wird das kolorierte Layout ausgegeben. }
-	\label{fig:architecture}
-\end{figure*}
-
-\subsection{Aufteilung der Suchverfahren}
-
-Zur Lösungssuche mit einem regelbasierten Ansatz existieren zwei Herangehensweisen:
-\begin{enumerate}
-    \item \textbf{Constraints-First}: Setze $n = k$. Hierbei wird die Lösungssuche zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Color Groups ist hier der Suchraum das Histogram der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwenden ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
-    \item \textbf{Constraints-Last}: Setze $k \leq n$. $P$ wird unabhängig vom Layout ermittelt. Der Suchraum beschränkt sich dann auf die Elemente in $P$. Dieser Ansatz wird unter anderem von \citet{documentpalette} bei der automatisierten Farbgestaltung von Dokumenten verfolgt. Nach der Bestimmung einer Farbpalette aus einer Bildvorlage werden sukzessive geeignete Farben aus $P$ ausgewählt. Zuerst wird die Hintergrundfarbe des Dokuments komplementär zum Hintergrund des Bildes gewählt, welche via Bildsegmentierung bestimmt wird. Daraufhin wird die Textfarbe unter Beachtung des Kontrastes aus $P$ gewählt.
-\end{enumerate}
-
-Für diese Arbeit wird die Herangehensweise \textbf{Constraints-Last} bevorzugt. Sie beinhaltet die Aufteilung des Problems in zwei getrennte Suchverfahren: Ein Suchverfahren für die Bestimmung von $P$ und ein Suchverfahren zur Bestimmung der Abbildung $CGs \to P$. Dadurch wird eine Wiederverwendung einmal bestimmter Farbpaletten für verschiedene Layouts ermöglicht. Für die Arbeit bedeutet dies, dass eine Problemlösung anhand eines exemplarischen Layouts mit bestimmten Color Groups gezeigt wird, eine Übertragung auf andere Layouts jedoch möglich ist. Schlussendlich ermöglicht ein Cashing bereits berechneter Farbpaletten das Einsatzpotential der automatisierten Farbgestaltung zur Laufzeit, da nur noch eines des Suchverfahren durchgeführt werden muss.
-
-Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete Ermittlung einer Farbpalette ist die Menge potentieller Lösungen mit $\binom{n}{k} k!$ nach wie vor groß. Als Beispiel sei ein Layout mit 5 Colorgroups (z.B. Text, Texthintergrund, Buttons, Navigations-Hintergrundfarbe und Footer-Hintergrundfarbe) sowie eine Farbpalette mit 10 Farbe gegeben. Das bedeutet $|CGs| = k = 5$ und $|P| = n = 10$, wodurch sich $\binom{10}{5} 5! = 30.240$ mögliche Kombinationen ergeben. Es ist ein effektives Suchverfahren zur Ermittlung von $CGs \to P$ zu identifizieren. Der bereits vorgestellte, hierarchische Ansatz von \citet{documentpalette} stellt hierfür eine Inspiration dar, bei welchem entscheidende Farbzuordnungen zuerst getroffen werden und dadurch der Suchraum für folgende Color Groups eingeschränkt wird (z.B. erst Hintergrund, dann Textfarbe).
-
-\subsection*{Zusammenfassung}
-
-Abbildung \ref{fig:architecture} fasst den Ablauf der automatisierten Farbgestaltung einer Webseite zusammen. Das zu entwickelnde System bildet eine Bildvorlage auf eine Farbpalette ab. Das Suchverfahren hierfür wird was als Color Palette Estimation (CPE) bezeichnet. Die entstandene Palette wird zum Suchraum möglicher Farben von Color Groups, welche durch ein Layout definiert werden. Da bei dieser Abbildung der Wertebereich einer Color Group dementsprechend beschränkt ist, handelt es sich um ein Constraint Satisfaction Problem (CSP). Letztendlich wird eine kolorierte Variante des Layouts ausgegeben.
-
-Im Folgenden sind konkrete Verfahren für die beiden Teilprobleme CPE und CSP zu implementieren. Ausgangspunkt hierfür sind Prinzipien für eine funktionale Gestaltung von Webseiten. Diese werden im Folgenden durch Webdesign-Literatur sowie die Analyse von Farbdefinitionen aus Style Guides ermittelt.
 
 \section{Farbgestaltung von Webseiten}
+\label{sec:farbgestaltung}
 Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Im Folgenden werden Gestaltungsprinzipien für diese beiden Ziele herausgearbeitet und als Grundlage für die weiteren Entscheidungen zur Problemlösung betrachtet.
 
 \subsection{Lesbarkeit}
@@ -240,7 +199,7 @@ Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unte
 \end{figure}
 
 \subsection{Farbfunktionen}
-Aus \autoref{sec:usability} geht hervor, dass Elemente entsprechend ihrer Funktion gefärbt werden, nicht aus rein dekorativen Gründen oder zur thematischen Strukturierung. Aus diesen Gründen wird zwischen die Abbildung $CGs \to P$ eine Abstraktionsschicht mit der Bezeichnung \textbf{Farbfunktionen} $F$ geschoben, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch $F = \{\text{Primär}, \text{Sekundär}, text{Interaktion}, \text{Akzent}, \text{Text Hell},\\ \text{Text Dunkel}, \text{Hintergrund}\}$ definiert. Die einzelnen Farbunktionen lauten wie folgt:
+Aus \autoref{sec:usability} geht hervor, dass Elemente entsprechend ihrer Funktion gefärbt werden, nicht aus rein dekorativen Gründen oder zur thematischen Strukturierung. Aus diesen Gründen wird zwischen die Abbildung $CGs \to P$ eine Abstraktionsschicht mit der Bezeichnung \textbf{Farbfunktionen} $F$ geschoben, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch $F = \{\text{Primär}, \text{Sekundär}, \text{Interaktion}, \text{Akzent}, \text{Text Hell}, \text{Text Dunkel}, \text{Hintergrund}\}$ definiert. Die einzelnen Farbunktionen lauten wie folgt:
 \begin{itemize}
 	\item \textbf{Primärfarbe:} Wird in Relation zu den anderen Farben am häufigsten eingesetzt und bildet so die farbliche Grundstimmung der Oberfläche \citep{awwwards}.
 	\item \textbf{Sekundärfarbe:} Unterstützt die Farbstimmung der Primärfarbe und orientiert sich dementsprechend an deren Farbton. Durch die Wahl einer unbunteren Farbe tritt sie in der visuellen Hierarchie stärker in den Hintergrund \citep{visual-hierarchy}, eignet sich besser als Hintergrund für Fließtext und unterstützt durch den Qualitätskontrast die Wirkung der Primärfarbe \citep{webdesign}.
@@ -269,6 +228,82 @@ Diese Definition eines Farbschemas unterscheidet sich von der Verwendung des Beg
 
 \subsection*{Zusammenfassung}
 Zur Unterstützung der Benutzerführung werden in Webseiten Funktionsbereiche und Elemente mit einheitlicher Funktion bzw. Funktionszustand farblich kodiert. Dementsprechend werden für eine Webseite eine Menge an Farbfunktionen $F$ definiert, wie z.B. die Interaktionsfarbe, welche klickbare Elemente signalisiert. Ein Farbschema $S: F \to P$ ist eine Abbildung der Farbfunktionen auf die Farben einer Palette $P$. Eine Abbildung soll höchstens drei verschiedene Farbtöne enthalten. Für Fließtext sowie dessen Hintergrund werden standardmäßig Graustufen festgelegt. Zur Benutzerführung realisieren Webseiten somit einen Bunt-Unbunt- sowie Quantitätskontrast, welcher das zentrale Gestaltungsmittel des Screendesigns darstellt \citep{webdesign, webx0}.
+
+
+
+
+
+
+
+
+
+\section{Problemlösungansatz und Systemarchitektur}
+
+Ausgehend von der Besprechung der Literatur in \autoref{sec:literatur} sowie der Farbgestaltung von Webseiten in \autoref{sec:farbgestaltung} wird ein Ansatz zur Problemlösung besprochen. Darauf aufbauend wird eine konkrete Architektur des zu implementierenden Systems entwickelt. Anschließend werden für die einzelnen Teilaufgaben der Architektur geeignete Methoden besprochen und ausgewählt.
+
+\subsection{Regelbasierter oder probabilistischer Ansatz}
+
+\citet{webpage} stellen für die automatisierte Farbgestaltung zwei grundlegende Herangehensweisen vor:
+
+\begin{enumerate}
+	\item \textbf{Regelbasiert:} Beschreibt quantitative Modelle mit determinstischem Regelwerk. Die Arbeit von \citet{magazines} stellt hierfür ein Beispiel dar. Durch die Analyse von Farbharmonie-Modellen wurden Regeln für die automatisierte Gestaltung von Magazin-Covern abgeleitet.
+	\item \textbf{Datengetrieben:} Beschreibt Modelle, welche die Performanz möglicher Lösungen einer automatisierten Farbgestaltung auf Grundlage existierender Beispieldaten vorhersagt.
+\end{enumerate}
+
+Die regelbasierten Modelle treffen strickte Aussagen auf einem gewissen Abstraktionsgrad durch eine Vereinfachung des Problems bis zu einer Ebene, auf der Entscheidungen auf Grundlage von Parametern getroffen werden können (z.B. durch die Angabe fester Grenzwerte). Im Gegensatz dazu stützen sich die Modelle des datengetriebenen Ansatzes auf reale Beispiele und tendieren daher zu robusteren Ergebnissen in der Anwendungsdomäne \citep{webpage}. Durch die Vielfalt der Beispieldaten finden hier probabilistische Modelle häufig Anwendung \citep[siehe z.B.][]{webpage, patterns}.
+
+Da bei probabilistischen Modellen alle potentiellen Lösungen bewertet und gegeneinander abgewogen werden müssen, sind hohe Laufzeiten möglich. Die bereits entwickelte Lösung von \citet{webpage} zur automatisierten Farbgestaltung von Webseiten benötigt selbst nach einer Optimierung des Suchverfahrens, bei der unwahrscheinliche Lösungen frühzeitig ausgeschlossen werden, 2 Stunden zur Konvergenz. Außerdem ist deren vorgestellter Prozess zur Anpassung der Farbgestaltung einer Webseite an eine Bildvorlage nicht im eigentlichen Sinne automatisiert: Einerseits erfordert die Verwendung des K-Means Algorithmus zur CPE die Eingabe der Farbanzahl ($k$) vom Gestalter, andererseits erfordert die lexikographische Strategie einen Nutzerinteraktion während des Optimierungsprozess.
+
+Aus diesen Gründen wird sich diese Arbeit auf einen \textbf{regelbasierten} Ansatz \textbf{ohne Nutzerinteraktion} konzentrieren. Auch ohne die Auswertung großer Datenmengen existieren quantitative Modelle, um die Accessibility einer Webseite zur gewährleisten. Beispielsweise geben die \emph{Web Content Accessibility Guidelines} \citep{wcag} quantitative Grenzwerte für die Lesbarkeit von Texten an. Es sind Eigenschaften und Bedingungen zu erarbeiten, die für Farben einzelner Color Groups sowie zwischen diesen gelten sollen. Diese Einschränkungen werden im Folgenden als \textbf{Constraints} bezeichnet.
+
+???
+Ein System von Constraints mit endlichem Wertebereich (in diesem Fall $P$) wird als \textbf{Constraint Satisfaction Problem} (CSP) bezeichnet \citep{constraint-programmierung}. \citet{magazines} haben gezeigt, dass eine Lösung eines solchen Constraint-Systems beispielsweise über Faktor-Graphs möglich ist.
+???
+
+\subsection{Layouts}
+
+Aus \autoref{sec:farbgestaltung} geht hervor, dass es von den individuellen Bedürfnissen einer Webseite abhängt, welche Farbfunktionen benötigt werden. Während der Begriff Webseite bisher als abstrakter Oberbegriff für verschiedene Seiten mit einheitlicher Farbgestaltung verwendet wurde, ist das Ziel dieser Arbeit die Färbung eines konkreten HTML-Dokuments. Das Parsing eines solchen Dokuments zur Erschließung aller Elemente einer Color Groups führt jedoch eine zusätzliche Ebene der Komplexität in das Constraint System ein. Der CSS-Standard sieht ohnehin durch die Klassen-Selektoren \citep{css3-selectors} bereits die Auszeichnung einheitlicher darzustellender Elemente bereits auf der Ebene der Dokumentenbeschreibung vor.
+
+Dementsprechend wird von der konkreten HTML-Beschreibung einer Webseite als  \textbf{Layout} abstrahiert. Ein Layout definiert:
+\begin{enumerate}
+	\item Die Menge der Farbfunktionen $F$. Entsprechend \autoref{sec:farbgestaltung} wird diese standardmäßig auf $F = \{\text{Primär}, \text{Sekundär}, \text{Interaktion},\\ \text{Akzent}, \text{Text Hell}, \text{Text Dunkel}, \text{Hintergrund}\}$ festgelegt.
+	\item Die Menge aller Color Groups $CGs$ sowie die Festlegung der Menge der konkreten Elemente, die Teil einer $CG$ sind.
+ 	\item Die Abbildung der Color Groups auf Farbfunktionen $CGs \to F$. Beispielsweise definiert ein Layout selbst, welche Elementen interaktiv sind und somit zur Farbfunktion \emph{Interaktion} gehören.
+\end{enumerate}
+
+Somit wird die Komplexität der Problemlösung reduziert, indem die Festlegung der Color Groups einer Webseite als gegeben angesehen und somit aus Betrachtung entfernt wird.
+
+[TODO] Exemplarisches Layout
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=1\textwidth]{img/architecture.png}
+	\caption{System-Architektur. Der grau unterlegte Kasten visualisiert den Bereich, für den algorithmische Lösungen gefunden werden müssen. Die Eingabeparameter sind eine Bildvorlage und eine Menge von Color Groups, welche von einem Layout definiert werden. Das System setzt zwei Suchverfahren um, welche mit $f1$ und $f2$ bezeichnet werden. $f1$ ermittelt zuerst eine Farbpalette aus der Bildvorlage (CPE). $f2$ ordnet Colour Groups Farben aus der Palette, in dem ein entsprechendes Constraint System gelöst wird. Nachdem eine Farbabbildung gefunden wurde, wird das kolorierte Layout ausgegeben. }
+	\label{fig:architecture}
+\end{figure*}
+
+\subsection{Aufteilung der Suchverfahren mit Systemarchitektur}
+
+Zur Lösungssuche mit einem regelbasierten Ansatz existieren zwei Herangehensweisen:
+\begin{enumerate}
+    \item \textbf{Constraints-First}: Setze $|P| = n = k = |CGs|$. Die Hierbei wird die Lösungssuche zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Color Groups ist hier der Suchraum das Histogram der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwenden ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
+    \item \textbf{Constraints-Last}: Setze $k \leq n$. $P$ wird unabhängig vom Layout ermittelt. Der Suchraum beschränkt sich dann auf die Elemente in $P$. Dieser Ansatz wird unter anderem von \citet{documentpalette} bei der automatisierten Farbgestaltung von Dokumenten verfolgt. Nach der Bestimmung einer Farbpalette aus einer Bildvorlage werden sukzessive geeignete Farben aus $P$ ausgewählt. Zuerst wird die Hintergrundfarbe des Dokuments komplementär zum Hintergrund des Bildes gewählt, welche via Bildsegmentierung bestimmt wird. Daraufhin wird die Textfarbe unter Beachtung des Kontrastes aus $P$ gewählt.
+\end{enumerate}
+
+Für diese Arbeit wird die Herangehensweise \textbf{Constraints-Last} bevorzugt. Sie beinhaltet die Aufteilung des Problems in zwei getrennte Suchverfahren: Ein Suchverfahren für die Bestimmung von $P$ und ein Suchverfahren zur Bestimmung der Abbildung $CGs \to P$. Dadurch wird eine Wiederverwendung einmal bestimmter Farbpaletten für verschiedene Layouts ermöglicht. Für die Arbeit bedeutet dies, dass eine Problemlösung anhand eines exemplarischen Layouts mit bestimmten Color Groups gezeigt wird, eine Übertragung auf andere Layouts jedoch möglich ist. Schlussendlich ermöglicht ein Cashing bereits berechneter Farbpaletten das Einsatzpotential der automatisierten Farbgestaltung zur Laufzeit, da nur noch eines des Suchverfahren durchgeführt werden muss.
+
+Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete Ermittlung einer Farbpalette ist die Menge potentieller Lösungen mit $\binom{n}{k} k!$ nach wie vor groß. Als Beispiel sei ein Layout mit 5 Colorgroups (z.B. Text, Texthintergrund, Buttons, Navigations-Hintergrundfarbe und Footer-Hintergrundfarbe) sowie eine Farbpalette mit 10 Farbe gegeben. Das bedeutet $|CGs| = k = 5$ und $|P| = n = 10$, wodurch sich $\binom{10}{5} 5! = 30.240$ mögliche Kombinationen ergeben. Es ist ein effektives Suchverfahren zur Ermittlung von $CGs \to P$ zu identifizieren. Der bereits vorgestellte, hierarchische Ansatz von \citet{documentpalette} stellt hierfür eine Inspiration dar, bei welchem entscheidende Farbzuordnungen zuerst getroffen werden und dadurch der Suchraum für folgende Color Groups eingeschränkt wird (z.B. erst Hintergrund, dann Textfarbe).
+
+\subsection*{Zusammenfassung}
+
+Abbildung \ref{fig:architecture} fasst den Ablauf der automatisierten Farbgestaltung einer Webseite zusammen. Das zu entwickelnde System bildet eine Bildvorlage auf eine Farbpalette ab. Das Suchverfahren hierfür wird was als Color Palette Estimation (CPE) bezeichnet. Die entstandene Palette wird zum Suchraum möglicher Farben von Color Groups, welche durch ein Layout definiert werden. Da bei dieser Abbildung der Wertebereich einer Color Group dementsprechend beschränkt ist, handelt es sich um ein Constraint Satisfaction Problem (CSP). Letztendlich wird eine kolorierte Variante des Layouts ausgegeben.
+
+Im Folgenden sind konkrete Verfahren für die beiden Teilprobleme CPE und CSP zu implementieren. Ausgangspunkt hierfür sind Prinzipien für eine funktionale Gestaltung von Webseiten. Diese werden im Folgenden durch Webdesign-Literatur sowie die Analyse von Farbdefinitionen aus Style Guides ermittelt.
+
+
+
+
+
 
 \section{Algortihmen zur Color Palette Estimation}
 
