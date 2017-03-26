@@ -49,7 +49,6 @@
 \maketitle
 
 \begin{abstract}
-Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelemente von Webseiten (Text, Buttons, Hintergründe, etc.) aus Bildvorlagen. Dabei wird das Problem in zwei Teilprobleme zerlegt: 1. Das Bilden einer Obermenge von Farben durch einen Algorithmus zur Color Palette Estimation (CPE). 2. Die Identifizierung von Farben für bestimmte Oberflächenelemente aus dieser Obermenge durch Lösung eines Constraintsystems. Für die CPE wird der ACoPa-Algorhitmus von \citet{acopa} ausgewählt und implementiert, da dessen Ergebnis den aus Styleguides bekannten Farbpaletten-Definitionen in Form von Color Swatches ähnelt.
 \end{abstract}
 
 \pagebreak
@@ -57,6 +56,8 @@ Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelement
 \pagebreak
 
 \section{Einleitung}
+
+Ziel dieser Arbeit ist die Untersuchung von Methoden zur automatisierten Bestimmung der Farbwerte von Oberflächenelementen in Webseiten, welche sich an einer Bildvorlage orientieren. Die Beantwortung dieser Fragestellung erfolgt durch den Vorschlag und die Umsetzung eines konkreten Verfahrens. \autoref{sec:modellierung} unternimmt eine grundlegende Modellierung des Färbungsproblems in Bezug auf Webseiten und legt  den Rahmen der Zielstellung fest. \autoref{sec:cpe} stellt das Teilproblem der Ermittlung repräsentativer Farben eines Bildes vor. \autoref{sec:literatur} ordnet die Arbeit in den aktuellen Forschungskontext ein.
 
 \subsection{Problemmodellierung}
 \label{sec:modellierung}
@@ -68,7 +69,7 @@ Ziel des Projekts ist die automatische Farbkonfiguration der Oberflächenelement
 	\label{fig:colorgroups}
 \end{figure*}
 
-Ziel dieser Arbeit ist die automatisierte Bestimmung der Farbwerte von Oberflächenelementen einer Webseite aus einer Bildvorlage. Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenelementen $e = (c_\text{text}, c_\text{background}) = C \times C$ betrachtet:
+Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenelementen $e = (c_\text{text}, c_\text{background}) = C \times C$ betrachtet:
 \begin{enumerate}
 	\item \textbf{Textelemente} $e_\text{Text}$: Elemente mit transparentem Hintergrund und definierter Vordergrundfarbe (z.B. \texttt{<h1>}, \texttt{<a>}, etc.). Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color: transparent}, \texttt{color:} $e.c_\text{text}$\}.\\ Dementsprechend gilt: $type(e) = \text{Text} \implies e.c_\text{background} = "\text{transparent}"$.\\
 	\item  \textbf{Blockelement} $e_\text{Block}$: Elemente, die visuell als Blöcke wahrgenommen werden (z.B. \texttt{<div>}, \texttt{<button>}, etc.). Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color:} $e.c_\text{background}$, \texttt{color:} $e.c_\text{text}$\}.
@@ -98,6 +99,7 @@ Entscheidendes Kriterium für die Zuordnung  ist eine funktionale Gestaltung der
 Die Farbpalette soll auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die Farben einer Webseite wesentlich für deren vermittelte Atmosphäre sind \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv den Eindruck des Bildes unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung der Farbgestaltung einer Webseite zur Laufzeit möglich. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Webanwendung für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} (c) zeigt hierfür ein Beispiel. Die Ermittlung von $P$ aus einer Grafik wird als Color Palette Estimation bezeichnet und im Folgenden besprochen.
 
 \subsection{Color Palette Estimation}
+\label{sec:cpe}
 
 Die Abbildung einer Bildvorlage $I$ auf eine Farbpalette $P$ wird von \citet{acopa} als \textbf{Color Palette Estimation} (CPE) $f_{CPE}: I \to P$, bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. \glqq{}Minimal\grqq{} bedeutet nach Auffassung der Autoren, dass redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden hierfür jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
 
@@ -110,12 +112,12 @@ Die Abbildung einer Bildvorlage $I$ auf eine Farbpalette $P$ wird von \citet{aco
 
 Historisch geht die CPE aus der Farbquantisierung hervor, bei der die Farben von Grafiken aufgrund der damals zu kleinen Kapazität von Grafikpuffern vor deren Anzeige reduziert (Farbreduktion) und dann auf die reduzierte Farbpalette abgebildet wurden (Quantisierung) \citep{variance}. Aus diesem Kontext kommt das formale Kriterium der Summe des quadratischen Fehlers, welcher in diesem Anwendungsfall auch als \emph{Recoloring Error} bezeichnet wird \citep{colorthemes}. Da Grafikpuffer mittlerweile über ausreichend Kapazität verfügen liegt die Anwendung der CPE in anderen Bereichen, wie z.B. der farbbasierten Indizierung von Grafiken in Datenbanken oder der Zusammenstellung von Farbpalletten zu Gestaltungszwecken. \citet{colorthemes} zeigen, dass in letzterem Kontext der Recoloring Error keine geeignete Metrik zur Beurteilung der Güte einer Farbpalette in Bezug auf die Bildvorlage ist. Dies beruht auf den menschlichen Wahrnehmungseigenschaften, wobei Bilder auf Komponenten- und nicht auf Pixelebene erfasst werden. Stattdessen werden eine Reihe anderer Metriken vorgestellt, die diesen Umstand berücksichtigen. Die Autoren zeigen zusätzlich empirisch, dass abhängig vom Individuum ein und dieselbe Farbpalette im Bezug auf die Bildvorlage als unterschiedlich repräsentativ bewertet wird.
 
-Dieser Befund hebt hervor, dass die Güte der Abbildung $I \to P$ subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Beurteilung der zu ermittelnden Farbpalette keine objektive Bewertungsfunktion herangezogen. Stattdessen wird die Ermittlung eines Algorithmus zur CPE fokussiert, dessen resultierende Farbpalette zweckmäßig in Hinblick auf die farbliche Gestaltung von Webseiten ist. Hierfür werden in \autoref{sec:farbgestaltung} Prinzipien für eine funktionale Gestaltung von Webseiten sowie Farbdefinitionen in Style Guides analysiert.
+Dieser Befund hebt hervor, dass die Güte der Abbildung $I \to P$ subjektiv ist und vom Anwendungsbezug abhängt. Aus diesem Grund wird für die Beurteilung der zu ermittelnden Farbpalette keine objektive Bewertungsfunktion herangezogen. Stattdessen wird die Auswahl eines Algorithmus zur CPE fokussiert, dessen resultierende Farbpalette zweckmäßig in Hinblick auf die farbliche Gestaltung von Webseiten ist. Hierfür werden in \autoref{sec:farbgestaltung} Prinzipien für eine funktionale Gestaltung von Webseiten sowie Farbdefinitionen in Style Guides analysiert.
 
 \subsection{Einordnung und Literaturbesprechung}
 \label{sec:literatur}
 
-Die Arbeit ordnet sich in das Gebiet der automatisierten Farbgestaltung (Color Design Automation) ein. In diesem Bereich hat in den letzten Jahren Forschung in verschiedenen Anwendungsbezügen stattgefunden, wobei überwiegend Methoden des maschinellen Lernens zur Problemlösung eingesetzt wurden.
+Diese Arbeit ordnet sich in das Gebiet der automatisierten Farbgestaltung (\emph{Color Design Automation}) ein. In diesem Bereich hat in den letzten Jahren Forschung in verschiedenen Anwendungsbezügen stattgefunden, wobei überwiegend Methoden des maschinellen Lernens zur Problemlösung zum Einsatz kamen.
 
 \citet{colorcomp} haben 2011 eine Grundlage für datengetriebene Farbgestaltungssysteme gelegt, indem sie ein Regressionmodell zur Bewertung der Farbkompatibilität von 5 Farben entwickelt haben, d.h. die Bewertung der Farbharmonie von fünf-farbigen Paletten. Hierfür wurde ein Training an den Datenbeständen von Farbpaletten-Communities wie z.B. Adobe Color\footnote{\url{https://color.adobe.com/de/explore/}} durchgeführt. Dabei hat sich unter anderem ergeben, dass die auf geometrischen Strukturen im Farbkreis beruhenden Modelle der klassischen Farbentheorie Farbhamonien nicht zufriedenstellend voraussagen können und in bestimmten Fällen sogar kontraproduktiv sind. Hierzu zählen zum Beispiel die Farbton-Schablonen von \citet{itten} oder \citet{munsell}. Dies ist insofern bemerkenswert, als dass diese Modelle in zahlreichen Unterstützungswerkzeugen zur Farbgestaltung ihre Umsetzung finden. Die Grenzen des trainierten Modells liegen in der Bewertung der Harmonie von Farben mit unterschiedlicher räumlicher Ausprägung \citep{webpage, patterns}. Eine Matlab-Implementierung des Modells zur Überprüfung von Farbharmonien steht öffentlich zum Download bereit \footnote{\url{http://www.dgp.toronto.edu/~donovan/color/}}.
 
