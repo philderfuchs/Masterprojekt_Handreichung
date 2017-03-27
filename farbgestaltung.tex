@@ -34,7 +34,7 @@ Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wi
 	\end{split}
 \end{equation}
 
-mit $L_c \in [1, ... , 22]$, wobei $L_c(rgb(255, 255, 255), rgb(0, 0, 0)) = 22$ und $c_1 = c_2 \implies L_c(c_1, c_2) = 1$ gilt. Die Berechnungsvorschrift der normalisierten relativen Luminanz $L()$ einer Farbe ist \citep{wcag-rel-luminance} zu entnehmen.
+mit $L_c \in [1, ... , 22]$, wobei $L_c(rgb(255, 255, 255), rgb(0, 0, 0)) = 22$ und $e.c_\text{text} = e.c_\text{background} \implies L_c(e.c_\text{text}, e.c_\text{background}) = 1$ gilt. Die Berechnungsvorschrift der normalisierten relativen Luminanz $L()$ einer Farbe ist \citep{wcag-rel-luminance} zu entnehmen.
 
 Es gibt zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \emph{AA} beschreibt die Minimalanforderung an lesbaren Text:
 \begin{equation}
@@ -61,26 +61,26 @@ Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unte
 \citet{webdesign} unterteilt folgende Möglichkeiten zur Benutzerführung durch Farbeinsatz:
 
 \begin{itemize}
-	\item \textbf{Themengruppen:} Bedeutet die farbliche Kodierung inhaltlich definierter Bereiche. Hierbei handelt es sich um eine vom Gestalter erfundene, subjektive Farbsystemlogik, die kein System, sondern eine Gestaltungsstuktur darstellt, die dem Anwender zu lernen aufgezwungen wird. Dies resultiert automatisch in Buntheit, welche Aufmerksamkeit erregt und somit kontraproduktiv für die Bildung einer visuellen Hierarchie ist. Aus diesen Gründen ist von dieser Variante abzuraten. Abbildung \ref{fig:theme_coding} verdeutlicht dies am Beispiel eines Online-Magazins.
-	\item \textbf{Funktionsbereiche:} Bedeutet die farbliche Kodierung von Bereichen entsprechend ihrer Funktion. So sind beispielsweise Navigations-, Inhalts- und Servicebereich farblich differenzierbar. Diese Variante ist zu empfehlen, wenn nicht mehr als drei Farben verwendet werden und die betreffenden Bereiche gleichzeitig und somit im Bezug zueinander sichtbar sind. Abbildung \ref{fig:functional_areas} verdeutlicht dies am Beispiel einer farblichen Abgrenzung von Navigationsbereichen.
-	\item \textbf{Funktionen und Zustände:} Bedeutet die farbliche Kodierung von funktionstragenden Elemte oder deren Funktionszustände. Beispielsweise sind anklickbare Elemente (z.B. Links und Buttons) durch eine einheitliche Farbe signalisierbar. Abbildung \ref{fig:functions} zeigt hierfür ein Beispiel Elemente mit destruktiver Funktion, z.B. Buttons zum Löschen oder Abbrechen einer Aktion, können einheitlich rot gefärbt werden. Wurde eine Farbe einmal mit einer Funktion belegt, sollte sie einheitlich verwendet werden. Beispielsweise würde ein nicht-anklickbares, blaues Element in der Oberfläche aus Abbildung \ref{fig:functions} würde verwirren.
+	\item \textbf{Themengruppen:} Bedeutet die farbliche Kodierung inhaltlich definierter Bereiche. Hierbei handelt es sich um eine vom Gestalter erfundene, subjektive Farbsystemlogik. Sie stellt kein System, sondern eine Gestaltungsstuktur dar, die dem Anwender zu lernen aufgezwungen wird. Dies resultiert automatisch in Buntheit, welche Aufmerksamkeit erregt und somit kontraproduktiv für die Bildung einer visuellen Hierarchie ist. Aus diesen Gründen ist von dieser Variante abzuraten. Abbildung \ref{fig:theme_coding} verdeutlicht dies am Beispiel eines Online-Magazins.
+	\item \textbf{Funktionsbereiche:} Bedeutet die farbliche Abgrenzung von Bereichen mit einheitlicher Funktion. Dies beinhaltet beispielsweise die farbliche Differenzierung von Navigations-, Inhalts- und Servicebereichen. Diese Variante ist zu empfehlen, wenn nicht mehr als drei Farben verwendet werden und die betreffenden Bereiche gleichzeitig und somit im Bezug zueinander sichtbar sind. Abbildung \ref{fig:functional_areas} verdeutlicht dies am Beispiel der farblichen Abgrenzung verschiedener Navigationsbereiche.
+	\item \textbf{Funktionen und Zustände:} Bedeutet die farbliche Kodierung verschiedener Elemente mit einheitlicher Funktion. Beispielsweise sind alle anklickbaren Elemente (z.B. Links und Buttons) einer Seite durch eine einheitliche Farbe signalisierbar. Abbildung \ref{fig:functions} zeigt hierfür ein Beispiel. Bestimme Wirkungen können zusätzlich farblich hervorgehoben werden, wie z.B. die rote Färbung von Buttons zum Löschen oder Abbrechen einer Aktion. Wurde eine Farbe einmal mit einer Funktion belegt, soll sie einheitlich verwendet werden. Beispielsweise würde ein nicht-anklickbares, blaues Element in der Oberfläche aus Abbildung \ref{fig:functions} den Nutzer verwirren.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[]
 	\centering
 	\includegraphics[width=0.48\textwidth]{img/theme_coding.png}
 	\caption{Farbkodierung von Themengruppen am Beispiel von \url{www.smashingmagazine.com/}. Es ist unklar, weshalb die gewählten Farben mit den jeweiligen Bereichen assoziiert werden.}
 	\label{fig:theme_coding}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
 	\centering
 	\includegraphics[width=0.48\textwidth]{img/functional_areas.png}
 	\caption{Farbkodierung von Funktionsbereichen am Beispiel von \url{www.leipzig-studieren.de}. Navigationsbereiche (orange) werden zueinander in Bezug gebracht und vom Inhalt (weiß) abgegrenzt.}
 	\label{fig:functional_areas}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[]
 	\centering
 	\includegraphics[width=0.48\textwidth]{img/functions.png}
 	\caption{Farbkodierung von Funktionen am Beispiel von \url{www.github.com}. Nur anklickbare Elemente sind blau, aktive Elemente werden zusätzlich braun markiert.}
