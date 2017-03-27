@@ -59,15 +59,8 @@
 
 \include{farbgestaltung}
 
-
-
-
-
-
-
-
-
 \section{Problemlösungansatz und Systemarchitektur}
+\label{sec:architecture}
 
 Ausgehend von der Besprechung der Literatur in \autoref{sec:literatur} sowie der Farbgestaltung von Webseiten in \autoref{sec:farbgestaltung} wird ein Ansatz zur Problemlösung besprochen. Darauf aufbauend wird eine konkrete Architektur des zu implementierenden Systems entwickelt. Anschließend werden für die einzelnen Teilaufgaben der Architektur geeignete Methoden besprochen und ausgewählt.
 
@@ -165,7 +158,7 @@ Bildsegmentierungs-basierte Algorithmen berücksichtigen die menschlichen Wahrne
 
 Der Algorithmus zur CPE soll eine Obermenge $C_s$ von Farben bilden, aus welcher im einem nachfolgenden Schritt eine Teilmenge von Farben $C$ entsprechend ihrer Eignung für bestimmte Oberflächenelemente ausgewählt werden. Analog dazu werden Farbpaletten in Styleguides als Obermenge von Farben beschrieben, aus welcher der Designer eine Untermenge von Farben für die konkrete Oberfläche auswählt. Bestimmte Styleguides erweitern dabei das Farbpalettenkonzept um Color Swatches, bei welchen Farbtöne in zusätzliche Schattierungen aufgefächert werden. Dadurch hat der der Designer eine größere Flexibilität beim Einsatz der Farbpalette.
 
-Aus diesen Gründen wird der ACoPa Algorithmus von \citet{acopa} zur CPE gewählt.Da er Farbwerte automatisch in verschiedenen Sättigungen und Schattierungen ermittelt, imitiert er die Farbdefinition in Form von Color Swatches in Styleguides. Durch seine parameterfreie Arbeitsweise ermittelt er selbstständig die Anzahl repräsentativer Farben im Bild. Dadurch wird automatisch die erforderliche Obermenge zur Bildung der finalen Farbpalette bereitgestellt, wenn das Bild ausreichend viele Farben enthält. Das erzwingen eines großen Farbpalette mit anderen Clusteringverfahren, z.B. über einen pauschal großen K Parameter bei K-Means, führt hingegen unter Umständen zu einer Partitionierung des Farbraums, die nicht der Clusterstruktur des Histogramms entspricht.
+Aus diesen Gründen wird der ACoPa Algorithmus von \citet{acopa} zur CPE gewählt. Da er Farbwerte automatisiert in verschiedenen Sättigungen und Schattierungen ermittelt, imitiert er die Farbdefinition in Form von Color Swatches in Styleguides. Durch seine parameterfreie Arbeitsweise ermittelt er selbstständig die Anzahl repräsentativer Farben im Bild. Dadurch wird automatisch die erforderliche Obermenge zur Bildung der finalen Farbpalette bereitgestellt, wenn das Bild ausreichend viele Farben enthält. Das erzwingen eines großen Farbpalette mit anderen Clusteringverfahren, z.B. über einen pauschal großen K Parameter bei K-Means, führt hingegen unter Umständen zu einer Partitionierung des Farbraums, die nicht der Clusterstruktur des Histogramms entspricht.
 
 \section{ACoPa}
 

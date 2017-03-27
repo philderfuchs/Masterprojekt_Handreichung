@@ -1,11 +1,11 @@
 \section{Farbgestaltung von Webseiten}
 \label{sec:farbgestaltung}
-Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Im Folgenden werden Gestaltungsprinzipien für diese beiden Ziele herausgearbeitet und als Grundlage für die weiteren Entscheidungen zur Problemlösung betrachtet.
+Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Konkrete Kriterien für die Textlesbarkeit werden in \autoref{sec:lesbarkeit} vorgestellt. In  \autoref{sec:usability} werden Gestaltungsprinzipien für eine Benutzerführung im Webdesign herausgearbeitet. Davon ausgehend wird in \autoref{sec:architecture} ein konkreter Vorschlag für eine Systemarchitektur zur automatisierten Farbgestaltung von Webseiten erarbeitet.
 
 \subsection{Lesbarkeit}
 \label{sec:lesbarkeit}
 
-Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je farbiger er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei stark farbigem Hintergrund zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Luminanz des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
+Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text in HTML-Dokumenten fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je bunter er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei Hintergrund mit hoher Buntheit zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Helligkeit des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
 \begin{enumerate}
 	\item Dunkle Schrift: $\text{rgba}(0, 0, 0, 0.87)$
 	\item Helle Schrift: $\text{rgba}(255, 255, 255, 1.0)$
@@ -13,12 +13,12 @@ Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text fast ausschli
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.48\textwidth]{img/text_color.png}
-	\caption{Empfohlene Textfarbe bei farbigem Hintergrund. (a) Textfarbe $\text{rgb}(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $\text{rgba}(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert (Transparenz) von $54\%$. Die Textfarbe ergibt sich zu einer Schattierung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
+	\includegraphics[width=0.7\textwidth]{img/text_color.png}
+	\caption{Empfohlene Textfarbe bei buntem Hintergrund. (a) Textfarbe $\text{rgb}(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $\text{rgba}(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert  von $54\%$. Die Textfarbe ergibt sich zu einer Verschwärzlichung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
 	\label{fig:text_color}
 \end{figure}
 
-Im Folgenden wird die Textfarbe mit Ausnahme von Fällen, in denen die Schrift aus stilistischen Gründen bunt erscheinen soll, auf diese Werte festgelegt. Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text- und Hintergrundfarbe sowie der Textgröße an. Die Formel lautet zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
+Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text-, der Hintergrundfarbe sowie der Textgröße an. Die Formel zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
 
 \begin{equation}
 	\begin{split}
@@ -26,23 +26,24 @@ Im Folgenden wird die Textfarbe mit Ausnahme von Fällen, in denen die Schrift a
 	\end{split}
 \end{equation}
 
-mit $L_c \in [1, ... , 22]$, wobei $L_c(weiss, schwarz) = 22$ und $c_1 = c_2: \;L_c(c_1, c_2) = 1$. Die Berechnungsvorschrift der normalisierten relativen Luminanz einer Farbe $L$ ist \citep{wcag-rel-luminance} zu entnehmen.
-Es gelten zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \emph{AA} beschreibt die Minimalanforderung an lesbaren Text:
+mit $L_c \in [1, ... , 22]$, wobei $L_c(rgb(255, 255, 255), rgb(0, 0, 0)) = 22$ und $c_1 = c_2 \implies L_c(c_1, c_2) = 1$ gilt. Die Berechnungsvorschrift der normalisierten relativen Luminanz $L()$ einer Farbe ist \citep{wcag-rel-luminance} zu entnehmen.
+
+Es gibt zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \emph{AA} beschreibt die Minimalanforderung an lesbaren Text:
 \begin{equation}
   	AA: L_c(c_1, c_2) \geq
 	\begin{cases}
-		\begin{split}3.0, \; \text{Schriftgr.} \geq 18pt \lor \\ \geq 14pt \land fett\end{split} \\
+	3.0, \; \text{Schriftgr.} \geq 18\text{pt} \lor \geq 14pt \land \text{fett}\\
 		4.5,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
 
-Die Klasse \emph{AAA} enthält höhere Grenzwerte und beschreibt verstärkte Lesbarkeit:
+Die Klasse \emph{AAA} beschreibt bessere Lesbarkeit durch die Verwendung höherer Grenzwerte:
 
 \begin{equation}
   	AAA: L_c(c_1, c_2) \geq
 	\begin{cases}
-		\begin{split}4.5, \; \text{Schriftgr.} \geq 18pt \; \lor \\ \geq 14pt \land fett\end{split} \\
-		7,  \;  \text{sonst}
+		4.5, \; \text{Schriftgr.} \geq 18\text{pt} \; \lor \geq 14pt \land \text{fett}\\
+		7.0,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
 
