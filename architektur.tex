@@ -45,7 +45,7 @@ In \autoref{sec:architektur} wurde ein regelbasierter Ansatz zur Lösungssuche g
 
 Für diese Arbeit wird die Herangehensweise \textbf{Constraints-Last} bevorzugt, um Flexibilität in Bezug auf unterschiedliche Layouts zu gewährleisten. Für die Arbeit bedeutet dies, dass eine Problemlösung anhand eines exemplarischen Layouts mit einer definierten Menge an Funktionsfarben $F$ veranschaulicht wird, eine Übertragung auf andere Layouts jedoch möglich ist.
 
-Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete Ermittlung einer Farbpalette ist die Menge potentieller Lösungen mit $\binom{n}{k} k!$ nach wie vor groß. Als Beispiel sei ein Layout mit 5 Funktionsfarben sowie eine Farbpalette mit 10 Farben gegeben. Somit gilt $|F| = k = 5$ und $|P| = n = 10$, wodurch sich $\binom{10}{5} 5! = 30.240$ mögliche Kombinationen ergeben.
+Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete Ermittlung einer Farbpalette ist die Menge potentieller Lösungen mit $\binom{n}{k} k!$ nach wie vor groß. Als Beispiel sei ein Layout mit 5 Funktionsfarben sowie eine Farbpalette mit 10 Farben gegeben. Somit gilt $|F| = k = 5$ und $|P| = n = 10$, wodurch sich $\binom{10}{5} 5! = 30.240$ mögliche Kombinationen ergeben. Dementsprechend ist ein effektives Suchverfahren für die Ermittlung des Farbschemas zu ermitteln. Die von \citet{patterns} verwendeten Factor Graphs stellen hierfür einen Ansatz dar.
 
 \subsection{Systemarchitektur}
 \label{sec:architektur}
