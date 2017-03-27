@@ -5,7 +5,14 @@ Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und 
 \subsection{Lesbarkeit}
 \label{sec:lesbarkeit}
 
-Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text in HTML-Dokumenten fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je bunter er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei Hintergrund mit hoher Buntheit zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Helligkeit des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/webzeitgeist_textcolors.png}
+	\caption{Die 40 populärsten Textfarben in Webseiten machen $70\%$ aller verwendeten Textfarben aus. (Quelle: \citep{webzeitgeist})}
+	\label{fig:webzeitgeist_textcolors}
+\end{figure}
+
+\autoref{fig:webzeitgeist_textcolors} zeigt, dass gemäß einer Auswertung von über 100.000 Webseiten Text in HTML-Dokumenten fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je bunter er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei Hintergrund mit hoher Buntheit zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Helligkeit des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
 \begin{enumerate}
 	\item Dunkle Schrift: $\text{rgba}(0, 0, 0, 0.87)$
 	\item Helle Schrift: $\text{rgba}(255, 255, 255, 1.0)$
@@ -13,7 +20,7 @@ Eine Auswertung von über 100.000 Webseiten hat ergeben, dass Text in HTML-Dokum
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{img/text_color.png}
+	\includegraphics[width=0.95\textwidth]{img/text_color.png}
 	\caption{Empfohlene Textfarbe bei buntem Hintergrund. (a) Textfarbe $\text{rgb}(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $\text{rgba}(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert  von $54\%$. Die Textfarbe ergibt sich zu einer Verschwärzlichung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
 	\label{fig:text_color}
 \end{figure}
