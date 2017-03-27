@@ -5,13 +5,6 @@ Ziel dieser Arbeit ist die Untersuchung von Methoden zur automatisierten Bestimm
 \subsection{Problemmodellierung}
 \label{sec:modellierung}
 
-\begin{figure*}[h]
-	\centering
-	\includegraphics[width=1\textwidth]{img/color_groups.png}
-	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. (a) Generische Farbgestaltung ohne Anpassung an das Albumcover. (b) Separate Hervorhebung der sechs Color Groups. Elemente einer Color Groups sind jeweils rot dargestellt. (c) Beispiel einer Farbgestaltung mit Anpassung an das Album Cover.}
-	\label{fig:colorgroups}
-\end{figure*}
-
 Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenelementen $e = (c_\text{text}, c_\text{background}) = C \times C$ betrachtet:
 \begin{enumerate}
 	\item \textbf{Textelemente} $e_\text{Text}$: Elemente mit transparentem Hintergrund und definierter Vordergrundfarbe (z.B. \texttt{<h1>}, \texttt{<a>}, etc.). Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color: transparent}, \texttt{color:} $e.c_\text{text}$\}.\\ Dementsprechend gilt: $type(e) = \text{Text} \implies e.c_\text{background} = "\text{transparent}"$.\\
@@ -19,7 +12,14 @@ Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert
 \end{enumerate}
 Es wird also die Farbbestimmung von Vorder- und Hintergrundfarben fokussiert. Rahmen, Textdekoration und andere färbbare Eigenschaften werden vernachlässigt.
 
-Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Ein Beispiel ist die Darstellung aller Links ($e.c_\text{text}$) sowie Buttons ($e.c_\text{background}$) in Blau. Im Folgenden wird eine Liste von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG = (e_1, e_2, ...) $ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite heißt \textbf{Color Groups} $CGs = \{CG_1, ... CG_k\}$ mit $|CGs| = k$. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
+Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die gleiche Farbe abgebildet. Ein Beispiel ist die Darstellung aller Links ($e.c_\text{text}$) sowie Buttons ($e.c_\text{background}$) in Blau. Im Folgenden wird eine Liste von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG = (e_1, e_2, ...) $ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite heißt \textbf{Color Groups} $CGs = \{CG_1, ... CG_m\}$ mit $|CGs| = m$. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=1\textwidth]{img/color_groups.png}
+	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. (a) Generische Farbgestaltung ohne Anpassung an das Albumcover. (b) Separate Hervorhebung der sechs Color Groups. Elemente einer Color Groups sind jeweils rot dargestellt. (c) Beispiel einer Farbgestaltung mit Anpassung an das Album Cover.}
+	\label{fig:colorgroups}
+\end{figure}
 
 \textcolor{red}{TODO: Abbildung updaten}
 
