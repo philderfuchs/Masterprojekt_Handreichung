@@ -1,11 +1,11 @@
 \section{Farbgestaltung von Webseiten}
 \label{sec:farbgestaltung}
-Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Konkrete Kriterien für die Textlesbarkeit werden in \autoref{sec:lesbarkeit} vorgestellt. In  \autoref{sec:usability} werden Gestaltungsprinzipien für eine Benutzerführung im Webdesign herausgearbeitet. Davon ausgehend wird in \autoref{sec:architecture} ein konkreter Vorschlag für eine Systemarchitektur zur automatisierten Farbgestaltung von Webseiten erarbeitet.
+Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Konkrete Kriterien für die Textlesbarkeit werden in \autoref{sec:lesbarkeit} vorgestellt. In  \autoref{sec:usability} wird der Begriff Benutzerführung erläutert und damit im Zusammenhang stehende Gestaltungsprinzipien im Webdesign herausgearbeitet. Davon ausgehend wird in \autoref{sec:architecture} ein konkreter Vorschlag für eine Systemarchitektur zur automatisierten Farbgestaltung von Webseiten erarbeitet.
 
 \subsection{Lesbarkeit}
 \label{sec:lesbarkeit}
 
-\begin{figure}[h]
+\begin{figure}[]
 	\centering
 	\includegraphics[width=0.7\textwidth]{img/webzeitgeist_textcolors.png}
 	\caption{Die 40 populärsten Textfarben in Webseiten machen $70\%$ aller verwendeten Textfarben aus. (Quelle: \citep{webzeitgeist})}
@@ -29,7 +29,8 @@ Es ist zu entscheiden, wann die dunkle und wann die helle Textfarbe verwendet wi
 
 \begin{equation}
 	\begin{split}
-		L_c(c_1, c_2) = \frac{L(c_1) + 0.05}{L(c_2) + 0.05} \;,\\ L(c_1) \geq L(c_2)
+		L_c(e.c_\text{text}, e.c_\text{background}) = \frac{L(e.c_\text{text}) + 0.05}{L(e.c_\text{background}) + 0.05} \;,\\
+		L(e.c_\text{text}) \geq L(e.c_\text{background})
 	\end{split}
 \end{equation}
 
@@ -37,9 +38,9 @@ mit $L_c \in [1, ... , 22]$, wobei $L_c(rgb(255, 255, 255), rgb(0, 0, 0)) = 22$ 
 
 Es gibt zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \emph{AA} beschreibt die Minimalanforderung an lesbaren Text:
 \begin{equation}
-  	AA: L_c(c_1, c_2) \geq
+  	AA: L_c(e.c_\text{text}, e.c_\text{background}) \geq
 	\begin{cases}
-	3.0, \; \text{Schriftgr.} \geq 18\text{pt} \lor \geq 14pt \land \text{fett}\\
+	3.0, \; \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land \text{weight}(e) = \text{bold}\\
 		4.5,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
@@ -49,14 +50,14 @@ Die Klasse \emph{AAA} beschreibt bessere Lesbarkeit durch die Verwendung höhere
 \begin{equation}
   	AAA: L_c(c_1, c_2) \geq
 	\begin{cases}
-		4.5, \; \text{Schriftgr.} \geq 18\text{pt} \; \lor \geq 14pt \land \text{fett}\\
+		4.5, \; \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land \text{weight}(e) = \text{bold}\\
 		7.0,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
 
 \subsection{Benutzerführung}
 \label{sec:usability}
-Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch als visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente strukturiert und priorisiert werden.
+Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch als visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente bei der Wahrnehmung strukturiert und priorisiert werden.
 \citet{webdesign} unterteilt folgende Möglichkeiten zur Benutzerführung durch Farbeinsatz:
 
 \begin{itemize}
@@ -86,7 +87,7 @@ Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unte
 	\label{fig:functions}
 \end{figure}
 
-\subsection{Farbfunktionen}
+\subsubsection{Farbfunktionen}
 Aus \autoref{sec:usability} geht hervor, dass Elemente entsprechend ihrer Funktion gefärbt werden, nicht aus rein dekorativen Gründen oder zur thematischen Strukturierung. Aus diesen Gründen wird zwischen die Abbildung $CGs \to P$ eine Abstraktionsschicht mit der Bezeichnung \textbf{Farbfunktionen} $F$ geschoben, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch $F = \{\text{Primär}, \text{Sekundär}, \text{Interaktion}, \text{Akzent}, \text{Text Hell}, \text{Text Dunkel}, \text{Hintergrund}\}$ definiert. Die einzelnen Farbunktionen lauten wie folgt:
 \begin{itemize}
 	\item \textbf{Primärfarbe:} Wird in Relation zu den anderen Farben am häufigsten eingesetzt und bildet so die farbliche Grundstimmung der Oberfläche \citep{awwwards}.
