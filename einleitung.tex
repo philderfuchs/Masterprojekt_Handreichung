@@ -5,9 +5,9 @@ Ziel dieser Arbeit ist die Untersuchung von Methoden zur automatisierten Bestimm
 \subsection{Problemmodellierung}
 \label{sec:modellierung}
 
-Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenelementen $e = (c_\text{text}, c_\text{background}) = C \times C$ betrachtet:
+Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert mehr als 10 Eigenschaften zur farblichen Gestaltung, wobei einige spezifisch für bestimmte  HTML-Elemente sind  \citep{css3-color}. In dieser Arbeit werden die Farbeigenschaften von zwei verschiedenen Arten von Oberflächenelementen $e = (c_\text{text}, c_\text{background}) \in C \times C$ betrachtet:
 \begin{enumerate}
-	\item \textbf{Textelemente} $e_\text{Text}$: Elemente mit transparentem Hintergrund und definierter Vordergrundfarbe (z.B. \texttt{<h1>}, \texttt{<a>}, etc.). Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color: transparent}, \texttt{color:} $e.c_\text{text}$\}.\\ Dementsprechend gilt: $type(e) = \text{Text} \implies e.c_\text{background} = "\text{transparent}"$.\\
+	\item \textbf{Textelemente} $e_\text{Text}$: Elemente mit transparentem Hintergrund und definierter Vordergrundfarbe (z.B. \texttt{<h1>}, \texttt{<a>}, etc.).\\Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color: }$transparent$\texttt{ , color:} $e.c_\text{text}$\}, wobei der Farbwert $transparent$ als $rgba(0, 0, 0, 0)$ definiert wird. Dementsprechend gilt: $type(e) = \text{Text} \implies e.c_\text{background} = transparent$.\\
 	\item  \textbf{Blockelement} $e_\text{Block}$: Elemente, die visuell als Blöcke wahrgenommen werden (z.B. \texttt{<div>}, \texttt{<button>}, etc.). Diese besitzen die CSS-Eigenschaften \{ \texttt{background-color:} $e.c_\text{background}$, \texttt{color:} $e.c_\text{text}$\}.
 \end{enumerate}
 Es wird also die Farbbestimmung von Vorder- und Hintergrundfarben fokussiert. Rahmen, Textdekoration und andere färbbare Eigenschaften werden vernachlässigt.

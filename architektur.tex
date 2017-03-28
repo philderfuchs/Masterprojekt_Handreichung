@@ -57,7 +57,30 @@ Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete
 	\label{fig:architecture}
 \end{figure}
 
-Abbildung \ref{fig:architecture} fasst die Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage Weiß und Schwarz für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette um die in \autoref{sec:lesbarkeit} genannten Werte ergänzt, $P = f_{CPE}(I) \cup \{rgba(255, 255, 255, 1.0), rgba(0, 0, 0, .87)\}$
+Abbildung \ref{fig:architecture} fasst die Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage $weiss$ und $schwarz$ für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette entsprechend ergänzt: $P = f_{CPE}(I) \cup \{weiss, schwarz\}$.
 
-Parameter 2 sind die Funktionsgruppen, welche in \autoref{sec:funktionsgruppen} festgelegt wurden. Durch ein Suchverfahren $f_\text{scheme}$ werden Farben für die einzelnen Funktionsgruppen gesucht, d.h. es wird ein Farbschema gebildet. Hierfür wird ein Constraint System Modelliert und durch die von \citet{patterns} vorgestellten Factor Graphs implementiert.
+Parameter 2 sind die Funktionsgruppen, welche in \autoref{sec:funktionsgruppen} festgelegt wurden. Durch ein Suchverfahren $f_\text{scheme}$ werden Farben für $\forall fg \in FGs$ gesucht, d.h. es wird ein Farbschema gebildet. Hierfür wird ein Constraint System modelliert, welches durch die von \citet{patterns} vorgestellten Factor Graphs realisiert wird.
+
+Durch die Funktionsgruppen wird im Constraint System von der konkreten Topologie der Oberflächenelemente innerhalb der Webseite abstrahiert. Dies spiegelt sich darin wieder, dass für die Funktionsgruppe \glqq{}Text (neutral)\grqq{} keine bestimmte Farbe durch das Constraint System festgelegt wird, sondern sowohl $weiss$ als auch $schwarz$ zur Auswahl gestellt werden. Darum wird auf der Layout-Ebene für Block-Elemente pauschal diejenige Textfarbe festgelegt, welche unter Verwendung der Formel zur Berechnung des Konstrastverhältnisses $L_c$ aus \autoref{sec:lesbarkeit} den besseren Kontrast liefert:
+
+
+\begin{equation}
+\begin{gathered}
+	    \forall FG \in FGs:\\
+	    f_\text{scheme}(FG) = c \implies \forall e \in CG \to FG:
+  	\begin{cases}
+		e = (c, transparent),\; \text{wenn } type(e) = \text{Text} \\
+		e = (f_\text{textcolor}(c), c), \; \text{wenn } type(e) = \text{Block}
+	\end{cases}\\
+	  \mathclap{\rule{4cm}{0.4pt}}\\
+ 	f_\text{textcolor}: c \to c, f(c) =
+  		   	\begin{cases}
+  		   		schwarz,\; \text{wenn } L_c(schwarz, c) \geq L_c(weiss, c) \\
+		weiss,\; \text{sonst} \\
+	\end{cases}
+\end{gathered}
+\end{equation}
+
+
+  
 
