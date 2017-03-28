@@ -30,7 +30,7 @@ Für eine detailliertere Vorstellung von Algorithmen zur CPE verweist der Autor 
 
 \citet{acopa} kritisieren an den bisherigen Algorithmen, dass die Anzahl $n$ gesuchter Farben zuvor bekannt sein muss und dass Farben kleiner Bilddetails im Sinne der Definition aus \ref{sec:bildvorlagen} nur unzureichend repräsentiert werden. Dies begründet sich in der Tatsache, dass die bisherigen Verfahren eine Raumunterteilung vornehmen, ohne die Spezifika von Farbräumen zu beachten.
 
-Demgegenüber stellen \citet{acopa} und \citet{image-based-schemes} zwei ähnliche Verfahren vor, die sich die Verwandtschaft der menschlichen Farbbeschreibung mit der Farbkodierung in zylindrischer Farbräumen zu Nutze machen. Sie basieren auf der hierarchischen Segmentierung eindimensionaler Histogramme. Die Algorithmen ermitteln zunächst die grundlegenden Farbtöne (Hue) der Bildvorlage, welche daraufhin sukzessive in Sättigungsstufen (Saturation) und diese wiederum in Helligkeitsstufen aufgespalten werden. Abbildung \ref{fig:peppers} veranschaulicht exemplarisch die hierarchische Arbeitsweise. Die Identifizierung verschiedener Farbtöne der Bildvorlage vereinfacht die Bildung \emph{monochromer}, \emph{dualer} und \emph{triadischer} Farbschemen, welche in \autoref{sec:farbschemata} vorgestellt wurden. Darum werden diese beiden Algorithmen für die weitere Diskussion ausgewählt.
+Demgegenüber stellen \citet{acopa} und \citet{image-based-schemes} zwei ähnliche, hierarchische Verfahren vor, die sich die Verwandtschaft der menschlichen Farbbeschreibung mit der Farbkodierung in zylindrischer Farbräumen zu Nutze machen. Sie basieren auf der hierarchischen Segmentierung eindimensionaler Histogramme. Die Algorithmen ermitteln zunächst die grundlegenden Farbtöne (Hue) der Bildvorlage, welche daraufhin sukzessive in Sättigungsstufen (Saturation) und diese wiederum in Helligkeitsstufen aufgespalten werden. Abbildung \ref{fig:peppers} veranschaulicht exemplarisch die hierarchische Arbeitsweise. Die Identifizierung verschiedener Farbtöne der Bildvorlage vereinfacht die Bildung \emph{monochromer}, \emph{dualer} und \emph{triadischer} Farbschemen, welche in \autoref{sec:farbschemata} vorgestellt wurden. Darum werden diese beiden Algorithmen für die weitere Diskussion ausgewählt.
 
 Der von \citet{acopa} vorgeschlagene Algorithmus lautet  \textbf{Automatic Color Palette (ACoPa)} und verwendet den HSI-Farbraum. Er arbeitet parameterfrei und bestimmt $n$ automatisch. Der Algorithmus von \citet{image-based-schemes} verwendet den HLS-Farbraum und ist parameterabhängig, d.h. er benötigt Angaben in Bezug auf $n$. Die Autoren schlagen jedoch interessante Vorverarbeitungsschritte für die Histogramm-Bildung vor, welche die menschlichen Wahrnehmungseigenschaften stärker berücksichtigen und somit eine Brücke zu den segmentierungs-basierten Verfahren schlagen.
 
@@ -41,9 +41,10 @@ Um dem Ziel einer vollautomatisierten Methode zur Farbgestaltung von Webseiten a
 \subsection{ACoPa}
 \label{sec:cpe_acopa}
 
-Im Folgenden wird die grundlegende Arbeitsweise des ACoPa Algorithmus nach \citet{acopa} vorgestellt. Dabei werden die Herausforderungen, die bei der Implementierung aufgetreten sind, besprochen. Abschließend werden exemplarisch Anwendungsergebnisse präsentiert.
+Der ACoPa Algorithmus \citep{acopa} basiert auf der Darstellung des Histograms im HSI Raum. Die Konvertierung wird in Abschnitt \ref{sec:hsi-raum} vorgestellt. Daraufhin werden Farben identifiziert, indem Segmentierungen der eindimendionalen H-, S- und I-Histogramme durchgeführt werden. Das zugehörige Verfahren wird als \emph{Fine-to-Coarse Segmentation} bezeichnet und in Abschnitt \ref{sec:segmentierung} vorgestellt. Abschnitt \ref{sec:hierarchische-farbpalette} bespricht die letztendliche Bildung der Farbpalette und stellt Ergebnisse vor.
 
 \subsubsection{Konvertierung in den HSI-Raum}
+\label{sec:hsi-raum}
 
 \begin{figure*}
 \centering
@@ -77,6 +78,7 @@ H = \arccos{(\frac{\frac{1}{2}((R-G)+(R-B))}{\sqrt{(R-G)^2+(R-B)(G-B))}})}
 Abbildung \ref{fig:hsi_conversion} stellt die Umrechnungsergebnisse dem Referenz HSI Raum (R) gegenüber. Keine der Umrechnungsvorschriften führt zu einem Doppelkegel. Weder Formel \ref{eq:hsi_acopa} noch Formel \ref{eq:hsi_colorimage} projiziert die Farben mit 100\% Sättigung ($s = 1$) in eine Ebene. Formel \ref{eq:hsi_acopa} führt lediglich zu einer Drehung und Stauchung des RGB-Würfels, Formel \ref{eq:hsi_colorimage} führt zu einem nach unten geöffneten Kegel. Da schlussendlich keine Formel gefunden werden konnte, die zu einem korrekten Doppelkegel führt, wurde die Berechnung mit Formel \ref{eq:hsi_acopa} fortgeführt.
 
 \subsubsection{Histogramm-Segmentierung}
+\label{sec:segmentierung}
 
 Die Samples des Ausgangsbildes werden entlang der Hue-Werte sortiert. Das 1-dimensionale Hue-Histogram $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche eine Segmentierung des Histograms darstellt. Das Intervall $[{s_i}, s_{i+1}]$ wird als Segment bezeichnet. Ziel ist, dass das Histogramm in den Bereichen $[h_{s_i}, \ldots,  h_{s_{i+1}}]$, eine \glqq annähernd unimodale Verteilung aufweist\grqq \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
 
@@ -99,6 +101,7 @@ Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-
 \end{figure}
 
 \subsubsection{Bildung der hierarchischen Farbpalette}
+\label{sec:hierarchische-farbpalette}
 
 Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-Segmentierung. Dabei wird zuerst der $h$-, danach der $s$- und abschließend der $i$- Kanal segmentiert. Dabei werden in jedem Schritt die Samples der entstandenen Segmente separiert und die Histogramme der nächsten Ebene getrennt berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (h) wurden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene werden die Farbtöne jeweils in unterschiedliche Sättigungen aufgeteilt, wenn nötig. Auf der dritten Ebene (i) werden von den Sättigungen zusätzlich Helligkeitsabstufungen gebildet.
 
