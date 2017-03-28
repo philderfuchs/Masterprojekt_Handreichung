@@ -1,6 +1,6 @@
 \section{Einleitung}
 
-Ziel dieser Arbeit ist die Untersuchung von Methoden zur automatisierten Bestimmung der Farbwerte von Oberflächenelementen in Webseiten, welche sich an einer Bildvorlage orientieren. Die Beantwortung dieser Fragestellung erfolgt durch den Vorschlag und die Umsetzung eines konkreten Verfahrens. \autoref{sec:modellierung} unternimmt eine grundlegende Modellierung des Färbungsproblems in Bezug auf Webseiten und legt  den Rahmen der Zielstellung fest. \autoref{sec:cpe} stellt das Teilproblem der Ermittlung repräsentativer Farben eines Bildes vor. \autoref{sec:literatur} ordnet die Arbeit in den aktuellen Forschungskontext ein.
+Ziel dieser Arbeit ist die Untersuchung von Methoden zur automatisierten Bestimmung der Farbwerte von Oberflächenelementen in Webseiten, welche sich an einer Bildvorlage orientieren. Die Beantwortung dieser Fragestellung erfolgt durch den Vorschlag und die Umsetzung eines konkreten Verfahrens. \autoref{sec:modellierung} unternimmt eine grundlegende Modellierung des Färbungsproblems in Bezug auf Webseiten und legt  den Rahmen der Zielstellung fest. \autoref{sec:bildvorlagen} stellt das Teilproblem der Ermittlung repräsentativer Farben eines Bildes vor. \autoref{sec:literatur} ordnet die Arbeit in den aktuellen Forschungskontext ein.
 
 \subsection{Problemmodellierung}
 \label{sec:modellierung}
@@ -41,8 +41,8 @@ Entscheidendes Kriterium für die Zuordnung  ist eine funktionale Gestaltung der
 
 Die Farbpalette soll auf einer Bildvorlage basieren. So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die Farben einer Webseite wesentlich für deren vermittelte Atmosphäre sind \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv den Eindruck des Bildes unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist eine Berechnung der Farbgestaltung einer Webseite zur Laufzeit möglich. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Webanwendung für Musikstreaming an das gespielte Albumcover. Abbildung \ref{fig:colorgroups} (c) zeigt hierfür ein Beispiel. Die Ermittlung von $P$ aus einer Grafik wird als Color Palette Estimation bezeichnet und im Folgenden besprochen.
 
-\subsection{Color Palette Estimation}
-\label{sec:cpe}
+\subsection{Farbpaletten aus Bildvorlagen}
+\label{sec:bildvorlagen}
 
 Die Abbildung einer Bildvorlage $I$ auf eine Farbpalette $P$ wird von \citet{acopa} als \textbf{Color Palette Estimation} (CPE) $f_{CPE}: I \to P$, bezeichnet und als die Repräsentation eines Bildes mit einer minimalen Menge von Farben beschrieben. \glqq{}Minimal\grqq{} bedeutet nach Auffassung der Autoren, dass redundante Farben reduziert und die seltenen Farben der für die Wahrnehmung wichtigen Objekte erhalten bleiben. Formale Kriterien werden hierfür jedoch nicht geliefert. Abbildung \ref{fig:ladybug} veranschaulicht diese intuitive Definition am Beispiel eines Bildes mit einem Marienkäfer, dessen Sichtbarkeit von der Wahl der Farbpalette abhängt.
 
