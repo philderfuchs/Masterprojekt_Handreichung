@@ -2,41 +2,48 @@
 \section{Color Palette Estimation}
 \label{sec:cpe}
 
-Im Folgenden wird eine Algorithmus zur Lösung des Teilproblems der Ermittlung der Farbobermenge $C_s$ gesucht. Hierzu findet eine Betrachtung von Typen vorhandener Algorithmen zur CPE statt. Abschließend wird ein geeigneter Algorithmus ausgewählt
+In diesem Abschnitt wird eine Algorithmus zur Lösung des Teilproblems $f_{CPE}$ ermittelt. Dies bedeutet die Festlegung eines Verfahrens zur Abbildung $I \to P$, wobei $P = (c_1, ..., c_n)$ die Bildvorlage $I$ mit einer minimalen Menge von Farben repräsentiert. \autoref{sec:cpe-ueberblick} bietet einen Überblick über vorhandene Algorithmen zur CPE. Im Anschluss wird  eine konkrete Methoden ausgewählt und in \autoref{sec:cpe_acopa} erläutert.
 
 \subsection{Überblick}
+\label{sec:cpe-ueberblick}
 
 Grundlegend sind zwei Ansätze zur CPE zu unterscheiden:
 \begin{enumerate}
-    \item \textbf{Hisgoram-basiert}: Algorithmen, die nur auf dem Histogramm des Bildes arbeiten und somit die Positionsinformationen der Farben nicht beachten. Es handelt sich (bis auf Ausnahmen) um Clustering-Verfahren, die durch eine Partitionierung des Farbraums Gruppen ähnlicher Farben im Histogramm identifizieren.
-    \item \textbf{Bildsegmentierungs-basiert}: Algorithmen, die durch eine Segmentierung des Bildes zunächst zusammenhängende Komponenten identifizieren und für diese dann repräsentative Farben identifizieren.
+    \item \textbf{Histogramm-basiert}: Algorithmen, die von der räumliche Anordnung der Farben im Bild abstrahieren und $P$ auf Grundlage der globalen Farbinformation bilden, d.h. des Histogramms. Da der Definitionsbereich eines Histogramm eine Teilmenge des Farbraums bildet, entspricht dieser Fall der unüberwachten Klassifizierung des Farbraums. Die Umsetzung erfolgt überwiegend durch Clustering-Verfahren, die Gruppen ähnlicher Farben im Bild identifizieren.
+    \item \textbf{Segmentierungs-basiert}: Algorithmen, die die räumliche Anordnung der Farben im Bild berücksichtigen. Durch eine Segmentierung des Bildes werden zusammenhängende Komponenten identifiziert, für welche im Folgenden repräsentative Farben ermittelt werden. Die menschlichen Wahrnehmungseigenschaften auf Komponentenebene werden auf diese Weise besser berücksichtigt, gleichzeitig wird durch die zusätzliche Betrachtung der Positionsinformation eine weitere Ebene der Komplexität eingeführt \citep{colorthemes}.
 \end{enumerate}
 
+\citet{image-based-schemes} kritisieren an den segmentierungs-basierten Verfahren, dass sie von einer akkuraten Bildsegmentierung abhängen, welche nicht für jede Bildstruktur gewährleistet ist (z.B. in stark texturierten Bereichen). Aus diesem Grund wird für die weitere Diskussion der Fokus auf die histogramm-basierten Verfahren gelegt.
 
-Bildsegmentierungs-basierte Algorithmen berücksichtigen die menschlichen Wahrnehmungseigenschaften auf Komponentenebene, führen aber durch die zusätzliche Betrachtung der Positionsinformation eine weitere Komplexitätsebene ein \citep{colorthemes}.
+\citet{categorization} treffen eine Kategorisierung der histogramm-basierten Verfahren in \emph{hierarchisch} und \emph{iterativ}. Hierarchische Verfahren starten vor dem Erreichen der (fest zu wählenden) Farbanzahl $n$ mit mehr (\emph{bottom-up}) bzw. weniger (\emph{top-down}) Clustern. Die Aufspaltung bzw. Vereinigung von Clustern basiert auf der statistischen Analyse der Verteilung der Bildfarben im Farbraum. Hierzu zählen unter anderem die in der Vergangenheit populären top-down Raumunterteilungs-Algorithmen wie z.B. Mediancut \citep{mediancut} oder Octree \citep{octree}, welche den Farbraum sukzessiv in disjunkte Teilräume zerlegen und dabei den Clustern eine Würfelform unterstellen. Hierin begründet ebenfalls die Kritik an diesen Verfahren. Ergebnis der Verarbeitung ist ein Dendogram, dessen Blätter die Farben der Farbpalette repräsentieren.
 
-\citet{categorization} treffen eine Kategorisierung der Histogramm-basierten Verfahren in \emph{hierarchisch} und \emph{iterativ}. Hierarchisch arbeitende Algorithmen zur CPE werden auch als \emph{Pre-Clustering Verfahren} bezeichnet, da sie vor dem Erreichen der (fest zu wählenden) Farbanzahl $n$ mit mehr bzw. weniger Farben starten. Sie basieren auf der statistischen Analyse der Verteilung der Bildfarben im Farbraum. In diese Kategorie fallen \emph{top-down} bzw. \emph{bottom-up} Clustering-Algorithmen. Zu den Top-Down Verfahren zählen die in der Vergangenheit populären Raumunterteilungs-Algorithmen wie z.B. Mediancut \citep{mediancut} oder Octree\citep{octree}. Sie Zerteilen den Farbraum sukzessiv in disjunkte Teilräume und unterstellen den Clustern dabei eine Würfelform. Ergebnis der Verarbeitung ist ein Dendogram, wobei die Blätter die Farben Farbpalette repräsentieren. Ein Schnitt des Dendograms entspricht einer Partitionierung des Raums, welche jedoch auch direkt durch die iterativ arbeitenden Algorithmen erreichbar ist \citep{acopa}. Diese Verfahren werden darum auch als \emph{partitionierend} \citep{acopa} oder auch \emph{Post-Clustering} \citep{categorization} bezeichnet. Sie starten bereits mit der erforderlichen Anzahl Farben $n$ und verbessern diese iterativ. Einige Methoden dieser Klasse verwenden den quadratischen Fehler, wie z.B. K-Means \citep{kmeans, kmeanshsi} oder Fuzzy C-Means \citep{fuccycmeans}. Andere analysieren das Histogramm auf dichte bzw. weniger dichte Regionen, wie z.B. Mean-Shift \citep{meanshift}. Eine detailliertere Vorstellung von Algorithmen zur CPE bietet \citep{categorization2}.
+Ein Schnitt des Dendograms entspricht einer Partitionierung des Raums, was dem Ergebnis der iterative Verfahren entspricht.  Sie starten bereits mit der erforderlichen Anzahl Clustern $n$ und optimieren deren Position iterativ entsprechend einer Zielfunktion. Ein Beispiel ist die Minimierung des quadratischen Fehler, wie z.B. bei K-Means \citep{kmeans, kmeanshsi} oder Fuzzy C-Means \citep{fuccycmeans}. Andere Verfahren analysieren das Histogramm auf dichte bzw. weniger dichte Regionen, wie z.B. der Mean-Shift Algorithmus \citep{meanshift}. Die Kritik der iterativen Verfahren begründet sich in deren Abhängigkeit von den Startbedingungen \citep{acopa}.
+
+Für eine detailliertere Vorstellung von Algorithmen zur CPE verweist der Autor auf \citet{categorization2}.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/peppers.png}
-\caption{CPE Ergebnis von ACoPa. (a) Originalbild "Peppers" (b) Hierarchische Farbpalette. Die unterste Ebene zeigt die finalen Farben. (Quelle: \citep{acopa})}
+\caption{CPE Ergebnis von ACoPa. (a) Originalbild "Peppers". (b) Hierarchische Farbpalette. Die oberste Ebene identifiziert die wesentlichen Farbtöne. Ebene 2 bildet Sättigungsstufen. Ebene 3 schlüsselt das Ergebnis weiterhin in Helligkeitsstufen auf und zeigt die finalen Farben. (Quelle: \citep{acopa})}
 \label{fig:peppers}
 \end{figure}
 
-\citet{acopa} kritisieren an den bisherigen Algorithmen, dass die Anzahl gesuchten Farben $n$ zuvor bekannt sein muss, dass die Ergebnisse abhängig von der Initialisierung sind und dass Farben kleiner Bilddetails im Sinne der Definition in Abschnitt \ref{sec:modellierung} nur unzureichend repräsentiert werden, wie im Paper experimentell nachgewiesen wird. Aus diesem Grund stellen sie den \textbf{Automatic Color Palette (ACoPa)} Algorithmus vor, welcher durch die Analyse von Spitzen des Histogramms im HSI Raums eine Farbpalette erstellt und dabei deren Größe selbstständig bestimmt. Der Algorithmus ermittelt dabei zunächst die grundlegenden Farbtöne (Hue) des Bildes und schlüsselt diese daraufhin sukzessive nach deren Sättigungen (Saturation) und Schattierungen (Intensity) auf. Abbildung \ref{fig:peppers} veranschaulicht exemplarisch die hierarchische Arbeitsweise, bei der in jeder Ebene zusätzliche Sättigungen und Schattierungen der enthaltenen roten und grünen Farbtöne gebildet werden.
+\citet{acopa} kritisieren an den bisherigen Algorithmen, dass die Anzahl $n$ gesuchter Farben zuvor bekannt sein muss und dass Farben kleiner Bilddetails im Sinne der Definition aus \ref{sec:bildvorlagen} nur unzureichend repräsentiert werden. Dies begründet sich in der Tatsache, dass die bisherigen Verfahren eine Raumunterteilung vornehmen, ohne die Spezifika von Farbräumen zu beachten.
 
-\subsection*{Zusammenfassung und Wahl des Algorithmus zur CPE}
+Demgegenüber stellen \citet{acopa} und \citet{image-based-schemes} zwei ähnliche Verfahren vor, die sich die Verwandtschaft der menschlichen Farbbeschreibung mit der Farbkodierung in zylindrischer Farbräumen zu Nutze machen. Sie basieren auf der hierarchischen Segmentierung eindimensionaler Histogramme. Die Algorithmen ermitteln zunächst die grundlegenden Farbtöne (Hue) der Bildvorlage, welche daraufhin sukzessive in Sättigungsstufen (Saturation) und diese wiederum in Helligkeitsstufen aufgespalten werden. Abbildung \ref{fig:peppers} veranschaulicht exemplarisch die hierarchische Arbeitsweise. Die Identifizierung verschiedener Farbtöne der Bildvorlage vereinfacht die Bildung \emph{monochromer}, \emph{dualer} und \emph{triadischer} Farbschemen, welche in \autoref{sec:farbschemata} vorgestellt wurden. Darum werden diese beiden Algorithmen für die weitere Diskussion ausgewählt.
 
-Der Algorithmus zur CPE soll eine Obermenge $C_s$ von Farben bilden, aus welcher im einem nachfolgenden Schritt eine Teilmenge von Farben $C$ entsprechend ihrer Eignung für bestimmte Oberflächenelemente ausgewählt werden. Analog dazu werden Farbpaletten in Styleguides als Obermenge von Farben beschrieben, aus welcher der Designer eine Untermenge von Farben für die konkrete Oberfläche auswählt. Bestimmte Styleguides erweitern dabei das Farbpalettenkonzept um Color Swatches, bei welchen Farbtöne in zusätzliche Schattierungen aufgefächert werden. Dadurch hat der der Designer eine größere Flexibilität beim Einsatz der Farbpalette.
+Der von \citet{acopa} vorgeschlagene Algorithmus lautet  \textbf{Automatic Color Palette (ACoPa)} und verwendet den HSI-Farbraum. Er arbeitet parameterfrei und bestimmt $n$ automatisch. Der Algorithmus von \citet{image-based-schemes} verwendet den HLS-Farbraum und ist parameterabhängig, d.h. er benötigt Angaben in Bezug auf $n$. Die Autoren schlagen jedoch interessante Vorverarbeitungsschritte für die Histogramm-Bildung vor, welche die menschlichen Wahrnehmungseigenschaften stärker berücksichtigen und somit eine Brücke zu den segmentierungs-basierten Verfahren schlagen.
 
-Aus diesen Gründen wird der ACoPa Algorithmus von \citet{acopa} zur CPE gewählt. Da er Farbwerte automatisiert in verschiedenen Sättigungen und Schattierungen ermittelt, imitiert er die Farbdefinition in Form von Color Swatches in Styleguides. Durch seine parameterfreie Arbeitsweise ermittelt er selbstständig die Anzahl repräsentativer Farben im Bild. Dadurch wird automatisch die erforderliche Obermenge zur Bildung der finalen Farbpalette bereitgestellt, wenn das Bild ausreichend viele Farben enthält. Das erzwingen eines großen Farbpalette mit anderen Clusteringverfahren, z.B. über einen pauschal großen K Parameter bei K-Means, führt hingegen unter Umständen zu einer Partitionierung des Farbraums, die nicht der Clusterstruktur des Histogramms entspricht.
+Um dem Ziel einer vollautomatisierten Methode zur Farbgestaltung von Webseiten aus Bildvorlagen gerecht zu werden, wird als Implementierungsgrundlage der ACoPa-Algorithmus gewählt, da er keine Nutzerinteraktion in Form der Bestimmung von $n$ benötigt. Er wird im folgenden \autoref{sec:cpe_acopa} vorgestellt. Daraufhin werden in \autoref{sec:vorverarbeitung} die Adaptionen dieses Algorithmus von \citet{image-based-schemes} beschrieben.
 
-\section{ACoPa}
+
+
+\subsection{ACoPa}
+\label{sec:cpe_acopa}
 
 Im Folgenden wird die grundlegende Arbeitsweise des ACoPa Algorithmus nach \citet{acopa} vorgestellt. Dabei werden die Herausforderungen, die bei der Implementierung aufgetreten sind, besprochen. Abschließend werden exemplarisch Anwendungsergebnisse präsentiert.
 
-\subsection{Konvertierung in den HSI-Raum}
+\subsubsection{Konvertierung in den HSI-Raum}
 
 \begin{figure*}
 \centering
@@ -69,7 +76,7 @@ H = \arccos{(\frac{\frac{1}{2}((R-G)+(R-B))}{\sqrt{(R-G)^2+(R-B)(G-B))}})}
 
 Abbildung \ref{fig:hsi_conversion} stellt die Umrechnungsergebnisse dem Referenz HSI Raum (R) gegenüber. Keine der Umrechnungsvorschriften führt zu einem Doppelkegel. Weder Formel \ref{eq:hsi_acopa} noch Formel \ref{eq:hsi_colorimage} projiziert die Farben mit 100\% Sättigung ($s = 1$) in eine Ebene. Formel \ref{eq:hsi_acopa} führt lediglich zu einer Drehung und Stauchung des RGB-Würfels, Formel \ref{eq:hsi_colorimage} führt zu einem nach unten geöffneten Kegel. Da schlussendlich keine Formel gefunden werden konnte, die zu einem korrekten Doppelkegel führt, wurde die Berechnung mit Formel \ref{eq:hsi_acopa} fortgeführt.
 
-\subsection{Histogramm-Segmentierung}
+\subsubsection{Histogramm-Segmentierung}
 
 Die Samples des Ausgangsbildes werden entlang der Hue-Werte sortiert. Das 1-dimensionale Hue-Histogram $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche eine Segmentierung des Histograms darstellt. Das Intervall $[{s_i}, s_{i+1}]$ wird als Segment bezeichnet. Ziel ist, dass das Histogramm in den Bereichen $[h_{s_i}, \ldots,  h_{s_{i+1}}]$, eine \glqq annähernd unimodale Verteilung aufweist\grqq \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
 
@@ -91,7 +98,7 @@ Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-
 \label{fig:h_segmentation}
 \end{figure}
 
-\subsection{Bildung der hierarchischen Farbpalette}
+\subsubsection{Bildung der hierarchischen Farbpalette}
 
 Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-Segmentierung. Dabei wird zuerst der $h$-, danach der $s$- und abschließend der $i$- Kanal segmentiert. Dabei werden in jedem Schritt die Samples der entstandenen Segmente separiert und die Histogramme der nächsten Ebene getrennt berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (h) wurden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene werden die Farbtöne jeweils in unterschiedliche Sättigungen aufgeteilt, wenn nötig. Auf der dritten Ebene (i) werden von den Sättigungen zusätzlich Helligkeitsabstufungen gebildet.
 
@@ -103,4 +110,8 @@ Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Vera
 \caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. (b) Farbpalette nach Anwendung von K-Means.}
 \label{fig:palette}
 \end{figure}
+
+\subsection{Vorverarbeitung des Histogramms}
+\label{sec:vorverarbeitung}
+
 
