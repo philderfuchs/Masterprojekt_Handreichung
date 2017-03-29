@@ -141,6 +141,7 @@ In \autoref{sec:architektur} wurde durch $P_\text{neutral}$ festgelegt, dass die
 \citet{image-based-schemes} argumentieren, dass zusammenhängende Bereiche mit gleichem Farbton und hoher Sättigung einen besonders hohen visuellen Effekt bei der Wahrnehmung von Bildern besitzen. Darum wird eine Gewichtung der Samples im Histogramm vorgeschlagen. Für den Häufigkeitswert $h(c)$ einer Farbe $c$ im Histogramm wird folgende Formel verwendet:
 
 \begin{equation}
+\label{eq:weight}
 \begin{gathered}
 	h(c) = I_c + \sum_{(x, y) \in I_c} \frac{ \text{saturation}(x, y) }{ N(x, y) }\\
   \mathclap{\rule{8cm}{0.4pt}}\\[2mm] 
@@ -151,9 +152,9 @@ In \autoref{sec:architektur} wurde durch $P_\text{neutral}$ festgelegt, dass die
 
 Dementsprechend erhalten Samples mit hohem Sättigungswert und ähnlichen Farbwerten in deren 8ter-Umgebung eine höhere Gewichtung, was sich auf die Bewertung der Häufigkeit eines Farbwerts im Histogramm auswirkt. \autoref{fig:sample_weighting} veranschaulicht dies an einem Beispiel. Die linke Bildvorlage enthält ein $128px*64px$ großes, magentafarbenes Rechteck. Bei der rechten Bildvorlage ist die gleiche Anzahl magentafarbener Pixel im Bild verstreut, was zu einem geringeren visuellen Effekt führt. Durch die Gewichtungsfunktion wird Magenta bei der Blockvariante in die Farbpalette übernommen, bei der Streuungsvariante jedoch nicht.
 
-\begin{figure}[]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{img/sample_weighting.png}
-\caption{Einfluss der Gewichtung von Samples bei der Bildung des Histogramms. Links: Ein zusammenhängender Block magentafarbener Pixel. Der Block führt zu einem sichtbaren Berg im Hue-Histogramm (unten). Rechts: Die gleiche Menge magentafarbener Pixel ist im Bild verstreut und hat einen geringen visuellen Effekt. Dies wird durch einen flacheren Berg im Histogramm wiedergespiegelt, wodurch Magenta nicht Teil der Farbpalette wird. Ein ähnlicher Effekt ist bei den Brauntönen zu erkennen. }
+\caption{Einfluss der Gewichtung von Samples bei der Bildung des Histogramms. Links: Ein zusammenhängender Block magentafarbener Pixel. Der Block führt zu einem sichtbaren Berg im Hue-Histogramm (unten). Rechts: Die gleiche Menge magentafarbener Pixel ist im Bild verstreut und hat einen geringen visuellen Effekt. Dies wird durch einen flacheren Berg im Histogramm wiedergespiegelt, wodurch Magenta nicht Teil der Farbpalette wird. Ein ähnlicher Effekt ist bei den Brauntönen zu erkennen.}
 \label{fig:sample_weighting}
 \end{figure}
