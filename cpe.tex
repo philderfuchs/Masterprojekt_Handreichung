@@ -127,7 +127,7 @@ Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial ersc
 \subsection{Vorverarbeitung des Histogramms}
 \label{sec:vorverarbeitung}
 
-In \autoref{sec:architektur} wurde festgelegt, dass die Farbpalette in jedem Fall durch Graustufen ergänzt wird. Bei der Ermittlung des Farbschemas $f_\text{scheme}$ würden Farben mit geringer Sättigung, die aus dem ACoPa Algorithmus resultieren, mit diesen Graustufen konkurrieren. Aus diesem Grund wird der \glqq{}Grau-Zylinder\grqq{} \citep{acopa} aus dem Histogramm $h$ im HSI-Raum gefiltert. Hierbei werden alle Samples $\in$ Histogramm mit einem Sättigungswert $< \theta$ aus $h$ entfernt. $\theta$ wurde experimentell auf $0.1$ festgelegt.
+In \autoref{sec:architektur} wurde durch $P_\text{neutral}$ festgelegt, dass die Farbpalette in jedem Fall durch Graustufen ergänzt wird. Bei der Ermittlung des Farbschemas $f_\text{scheme}$ würden Farben mit geringer Sättigung, die aus dem ACoPa Algorithmus resultieren, mit diesen Graustufen konkurrieren. Aus diesem Grund wird der \glqq{}Grau-Zylinder\grqq{} \citep{acopa} aus dem Histogramm $h$ im HSI-Raum gefiltert. Hierbei werden alle Samples $\in$ Histogramm mit einem Sättigungswert $< \theta$ aus $h$ entfernt. $\theta$ wurde experimentell auf $0.1$ festgelegt.
 
 \autoref{fig:h_segmentation} lässt außerdem erkennen, dass die resultierende Farbpalette zwar die Farbdetails der Bildvorlage berücksichtigt, umgekehrt jedoch nicht sofort jede Farbe der Palette intuitiv einer Bildkomponente zugeordnet werden kann. \citet{image-based-schemes} schlagen daher die Anwendung eines Weichzeichnungsfilter (Mittelwert) zur Reduzierung der gebildeten Abstufungen vor. \autoref{fig:grey_cylinder} veranschaulicht das Resultat nach Filterung des Grau-Zylinders und Weichzeichnung des Histogramms. Als Nebeneffekt wird auf diese Weise der Suchraum für die Ermittlung des Farbschemas reduziert, wodurch Laufzeiten verbessert werden.
 
@@ -157,5 +157,3 @@ Dementsprechend erhalten Samples mit hohem Sättigungswert und ähnlichen Farbwe
 \caption{Einfluss der Gewichtung von Samples bei der Bildung des Histogramms. Links: Ein zusammenhängender Block magentafarbener Pixel. Der Block führt zu einem sichtbaren Berg im Hue-Histogramm (unten). Rechts: Die gleiche Menge magentafarbener Pixel ist im Bild verstreut und hat einen geringen visuellen Effekt. Dies wird durch einen flacheren Berg im Histogramm wiedergespiegelt, wodurch Magenta nicht Teil der Farbpalette wird. Ein ähnlicher Effekt ist bei den Brauntönen zu erkennen. }
 \label{fig:sample_weighting}
 \end{figure}
-
-\section{Erstellung des Farbschemas}

@@ -57,7 +57,7 @@ Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete
 	\label{fig:architecture}
 \end{figure}
 
-Abbildung \ref{fig:architecture} fasst die Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage $weiss$ und $schwarz$ für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette entsprechend ergänzt: $P = f_{CPE}(I) \cup \{weiss, schwarz\}$.
+Abbildung \ref{fig:architecture} fasst die Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage $weiss$ und $schwarz$ für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette entsprechend ergänzt: $P_\text{neutral} = f_{CPE}(I) \cup \{weiss, schwarz\}$.
 
 Parameter 2 sind die Funktionsgruppen, welche in \autoref{sec:funktionsgruppen} festgelegt wurden. Durch ein Suchverfahren $f_\text{scheme}$ werden Farben für $\forall fg \in FGs$ gesucht, d.h. es wird ein Farbschema gebildet. Hierfür wird ein Constraint System modelliert, welches durch die von \citet{patterns} vorgestellten Factor Graphs realisiert wird.
 
