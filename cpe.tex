@@ -101,26 +101,26 @@ Für $\forall j \in \; ]s_{i-1}, s_{i+1}[$ werden $h_{[s_{i-1}, s_{i+1}]}$ und $
 \label{fig:grenander}
 \end{figure}
 
-Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation Algorithm} zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Eine repräsentierende Farbe eines Segments wird durch Mittelung der enthaltenen Samples gebildet. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
+Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation} Algorithmus zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Eine repräsentierende Farbe eines Segments wird durch Mittelung der enthaltenen Samples gebildet. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
-\includegraphics[width=0.48\textwidth]{img/h_segmentation.png}
-\caption{Beispiel für eine Segmentierung des Hue-Histogramms. (a) Ausgangsbild, ein Albumcover  von Kanye West. (b) Hue-Histogram (normalisiert), mit allen Minima als initiale Segmentierung. (c) Segmentierung nach Anwendung des FTC Algorithmus. (d) Farbmittelpunkte entsprechend der Samples der jeweiligen Segmente.}
+\includegraphics[width=0.95\textwidth]{img/h_segmentation.png}
+\caption{Beispiel für eine Segmentierung des Hue-Histogramms. (a) Bildvorlage, Albumcover \glqq{}My Beautiful Dark Twisted Fantasy\grqq{} von Kanye West. (b) Hue-Histogram (normalisiert), mit allen Minima als initiale Segmentierung. (c) Segmentierung nach Anwendung des FTC Segmentation Algorithmus. (d) Farbmittelpunkte entsprechend der Samples der jeweiligen Segmente.}
 \label{fig:h_segmentation}
 \end{figure}
 
 \subsubsection{Bildung der hierarchischen Farbpalette}
 \label{sec:hierarchische-farbpalette}
 
-Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung der Histogram-Segmentierung. Dabei wird zuerst der $h$-, danach der $s$- und abschließend der $i$- Kanal segmentiert. Dabei werden in jedem Schritt die Samples der entstandenen Segmente separiert und die Histogramme der nächsten Ebene getrennt berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (h) wurden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene werden die Farbtöne jeweils in unterschiedliche Sättigungen aufgeteilt, wenn nötig. Auf der dritten Ebene (i) werden von den Sättigungen zusätzlich Helligkeitsabstufungen gebildet.
+Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung des FTC-Segmentation Algorithmus. Dabei wird zuerst der $H$-, danach der $S$- und abschließend der $I$-Kanal segmentiert. In jedem Schritt werden die Samples der entstandenen Segmente aufgeteilt und die Histogramme der nächsten Ebene separat berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (H) werden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene (S) werden die jeweiligen Farbtöne in unterschiedliche Sättigungsstufen aufgeteilt. Auf der dritten Ebene (I) werden von den Sättigungen verschiedene Helligkeitsabstufungen gebildet.
 
-Die letzte Ebene (i) bildet die Obermenge der Farben $C_s$ für die weitere Verarbeitung. \citet{acopa} empfehlen zusätzlich, die erhaltenen Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt, wie sich die Farben durch K-Means geändert haben. Es ist zu einem späteren Zeitpunkt zu entschieden, welche der beiden Paletten für die weitere Verarbeitung geeigneter ist.
+Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial erschlossenen Farbtöne in \textbf{Hue-Groups (HG)} unterteilt. Somit wird für $\forall c \in P$ gleichzeitig erfasst, welche Farben Varianten eines gemeinsamen Farbtons sind. \citet{acopa} empfehlen zusätzlich, die Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt das Ergebnis nach Konvergenz. Obwohl die sich die Cluster den im Bild enthaltenen Farben angenähert haben, ist zu sehen, wie hierdurch die Zuordnung zu den Hue-Groups verloren geht. Entsprechend der Argumentation in \autoref{sec:cpe-ueberblick} ist diese Zuordnung jedoch günstig zur Bildung von Farbschemen. Aus diesem Grund wird auf die nachgeschaltete Anwendung des K-Means Algorithmus verzichtet.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.48\textwidth]{img/palette.png}
-\caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. (b) Farbpalette nach Anwendung von K-Means.}
+\includegraphics[width=0.95\textwidth]{img/palette.png}
+\caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. Die 14 Farben sind in 4 Hue-Groups angeordnet. Die I-Ebene bildet die Farbpalette der Bildvoralge. (b) Farbpalette nach Anwendung von K-Means.}
 \label{fig:palette}
 \end{figure}
 
