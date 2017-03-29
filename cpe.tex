@@ -41,11 +41,17 @@ Um dem Ziel einer vollautomatisierten Methode zur Farbgestaltung von Webseiten a
 \subsection{ACoPa}
 \label{sec:cpe_acopa}
 
-Der ACoPa Algorithmus \citep{acopa} basiert auf der Darstellung des Histogramms im HSI Raum. Die Konvertierung wird in Abschnitt \ref{sec:hsi-raum} vorgestellt. Daraufhin werden Farben identifiziert, indem Segmentierungen der eindimendionalen H-, S- und I-Histogramme durchgeführt werden. Das zugehörige Verfahren wird als \emph{Fine-to-Coarse Segmentation} bezeichnet und in Abschnitt \ref{sec:segmentierung} vorgestellt. Abschnitt \ref{sec:hierarchische-farbpalette} bespricht die letztendliche Bildung der Farbpalette und stellt Ergebnisse vor.
+Der ACoPa Algorithmus \citep{acopa} basiert auf der Darstellung des Histogramms im HSI Raum. Die Konvertierung wird in Abschnitt \ref{sec:hsi-raum} vorgestellt. Daraufhin werden Farben identifiziert, indem Segmentierungen der eindimendionalen H-, S- und I-Histogramme durchgeführt werden. Das zugehörige Verfahren wird als \emph{Fine-to-Coarse Segmentation} bezeichnet und in Abschnitt \ref{sec:segmentierung} vorgestellt. Abschnitt \ref{sec:hierarchische-farbpalette} bespricht die hierarchische Anwendung dieses Verfahrens auf die Komponenten des Farbraums zur Bildung der Farbpalette und stellt Ergebnisse vor.
 
 \subsubsection{Konvertierung in den HSI-Raum}
 \label{sec:hsi-raum}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{img/hsi_conversion.png}
+\caption{Visualisierung des HSI Farbraums.}
+\label{fig:hsi_conversion}
+\end{figure}
 
 
 Zunächst wird das Histogramm in den HSI Farbraum mit $\{(h, s, i) \ | \ 0 \leq h < 360 \wedge 0 \leq s, i \leq 1\}$ übertragen. Es handelt sich um eine Rotation des RGB-Würfels, der die Kodierung von Farbwerten in Polarkoordinaten ermöglicht. Die einzelnen Komponenten lauten Hue (Farbton), Saturation (Sättigung) und Intensity (Intensität, hier als Helligkeit bezeichnet). Die Umrechnungsvorschrift gemäß der ACoPa-Autoren lautet wie folgt:
@@ -72,28 +78,30 @@ H = \arccos{(\frac{\frac{1}{2}((R-G)+(R-B))}{\sqrt{(R-G)^2+(R-B)(G-B))}})}
 
 \autoref{fig:hsi_conversion} visualisiert des Konvertierungsergebnis. Das Resultat ist ein RGB-Würfel, der auf die \glqq{}schwarze Ecke gestellt wurde\grqq{}.
  
- \begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{img/hsi_conversion.png}
-\caption{Visualisierung des HSI Farbraums.}
-\label{fig:hsi_conversion}
-\end{figure}
-
-\subsubsection{Histogramm-Segmentierung}
+\subsubsection{Segmentierung des Histogramm}
 \label{sec:segmentierung}
 
-Die Samples des Ausgangsbildes werden entlang der Hue-Werte sortiert. Das 1-dimensionale Hue-Histogramm $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche eine Segmentierung des Histogramms darstellt. Das Intervall $[{s_i}, s_{i+1}]$ wird als Segment bezeichnet. Ziel ist, dass das Histogramm in den Bereichen $[h_{s_i}, \ldots,  h_{s_{i+1}}]$, eine \glqq annähernd unimodale Verteilung aufweist\grqq \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
+Ein Histogramm $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ von Markierungen des Definitionsbereichs mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche als \textbf{Segmentierung} des Histogramms bezeichnet wird. Das Intervall $[h_{s_i}, \ldots,  h_{s_{i+1}}]$ wird als \textbf{Segment} bezeichnet. Die Vereinigung aller Segmente eines Histogramms ergibt wieder das Histogramm. Ziel ist, dass das Histogramm in allen Segmenten eine \glqq{}annähernd unimodale Verteilung aufweist\grqq{} \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.48\textwidth]{img/unimodal.png}
-\caption{Beispiele der Segmentierung eines Histogramms in unimodale Abschnitte. (Quelle: \citep{acopa})}
+\caption{Beispiele der Segmentierung von Histogrammen in unimodale Abschnitte. (Quelle: \citep{acopa})}
 \label{fig:unimodal}
 \end{figure}
 
-Das Histogramm ist offensichtlich in jedem Segment unimodal, wenn $s$ mit den Minima des Histogramms initialisiert wird. Es wird nun versucht, Elemente aus $s$ zu entfernen, indem für $\forall i = 1 .. k$ überprüft wird, ob $h$ im Intervall $[h_{s_{i-1}}, \ldots,  h_{s_{i+1}}]$ die \glqq unimodale Hypothese\grqq  erfüllt. Anschaulich bedeutet das die Verschmelzung benachbarter Segmente, so dass das neu entstandene Segment nach wie vor \glqq annähernd unimodal ist\grqq. Hierfür stellen die Autoren in einer separaten Veröffentlichung \citep{ftc} einen parameterfreien statistischen Test vor, der $h$ im betrachteten Intervall mit einem Referenz-Histogramm $h^r$ vergleicht. $h^r$ ist in $[h^r_{s_{i-1}}, \ldots,  h^r_{s_{i+1}}]$ zunächst streng monoton wachsend und danach streng monoton fallend und damit in jedem Fall unimodal. Das Referenz-Histogramm wird aus dem Original-Histogramm $h$ durch Anwendung des Grenander-Operators gebildet. Die komplexen Details hierzu sind \citep{acopa, ftc} zu entnehmen. Da der parameterfreie Test verhältnismäßig aufwändig ist, wird in der eigenen Implementierung auf einen simplen T-Test zurückgegriffen. Dieser liefert ebenfalls befriedigende Ergebnisse, ist aber abhängig vom gewählten Signifikanzniveau.
+Ein Histogramm ist offensichtlich in jedem Segment unimodal, wenn $s$ mit den enthaltenen Minima initialisiert wird. Es wird nun versucht, Komponenten aus $s$ zu entfernen, indem für ein bestimmtes $i \in s_2, ..., s_{k-1}$ überprüft wird, ob $h$ im Intervall $[h_{s_{i-1}}, \ldots,  h_{s_{i+1}}]$ die \glqq{}unimodale Hypothese\grqq{} erfüllt. Anschaulich bedeutet dies die Verschmelzung benachbarter Segmente, so dass das neu entstandene Segment nach wie vor \glqq{}annähernd unimodal ist\grqq{}. Hierfür wird $h$ im betrachteten Intervall mit einem Referenz-Histogramm $h'$ verglichen. Es wird ein $j \in \; ]s_{i-1}, s_{i+1}[$ gewählt, so dass $h'$ in $[h'_{s_{i-1}}, \ldots,  h'_j]$ monoton wachsend und in $[h'_j, \ldots,  h'_{s_{i+1}}]$ monoton fallend ist, d.h. in $[h'_{s_{i-1}}, \ldots,  h'_{s_{i+1}}]$ unimodal. Das Referenz-Histogramm $h'$ wird aus dem Original-Histogramm $h$ durch Anwendung des \emph{Pool Adjacent Violators} Algorithmus im betrachteten Segment gebildet. \autoref{fig:grenander} zeigt ein Beispiel für die monoton fallende Variante. Die Bildungsvorschrift für diese Transformation ist \citep{acopa, ftc} zu entnehmen. 
 
-Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation Algorithm} zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Die Repräsentanten eines Segments werden durch Mittelung der Samples gebildet, die zum jeweiligen Segment gehören. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
+Für $\forall j \in \; ]s_{i-1}, s_{i+1}[$ werden $h_{[s_{i-1}, s_{i+1}]}$ und $h'_{[s_{i-1}, s_{i+1}]}$ durch einen parameterfreien statistischen Test verglichen, den die Autoren in einer separaten Veröffentlichung vorstellen \citep{ftc}. Ziel ist der Nachweis, dass $h$ im betrachteten Segment die \glqq{}unimodale Hypothese\grqq{} erfüllt, d.h. $h_{[s_{i-1}, s_{i+1}]}$ und $h'_{[s_{i-1}, s_{i+1}]}$ eine ähnliche Verteilung aufweisen. Bei Erfolg wird $s_i$ aus $s$ entfernt. Der von den Autoren vorgestellte Test ist verhältnismäßig aufwändig. In dieser Arbeit wird für die Implementierung auf einen einfachen T-Test zurückgegriffen. Dieser liefert ebenfalls befriedigende Ergebnisse, ist aber abhängig vom gewählten Signifikanzniveau, welcher experimentell ermittelt wurde.
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.48\textwidth]{img/grenander.png}
+\caption{Transformation eines Segments durch Anwendung des \emph{Pool Adjacent Violators} Algorithmus. Links: Betrachtetes Segment. Rechts: Monoton fallende Variante. (Quelle: \citep{acopa})}
+\label{fig:grenander}
+\end{figure}
+
+Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-to-Coarse (FTC) Segmentation Algorithm} zusammengefasst. Zunächst wird $s$ mit allen Minima des Histogramms initialisiert. Daraufhin werden so lange benachbarte Segmente durch Überprüfung der unimodalen Hypothese verschmolzen, bis keine Verschmelzung mehr möglich ist. Eine repräsentierende Farbe eines Segments wird durch Mittelung der enthaltenen Samples gebildet. Abbildung \ref{fig:h_segmentation} zeigt dies an einem Beispiel.
 
 \begin{figure}[h]
 \centering
