@@ -129,16 +129,16 @@ Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial ersc
 
 In \autoref{sec:architektur} wurde festgelegt, dass die Farbpalette in jedem Fall durch Graustufen ergänzt wird. Bei der Ermittlung des Farbschemas $f_\text{scheme}$ würden Farben mit geringer Sättigung, die aus dem ACoPa Algorithmus resultieren, mit diesen Graustufen konkurrieren. Aus diesem Grund wird der \glqq{}Grau-Zylinder\grqq{} \citep{acopa} aus dem Histogramm $h$ im HSI-Raum gefiltert. Hierbei werden alle Samples $\in$ Histogramm mit einem Sättigungswert $< \theta$ aus $h$ entfernt. $\theta$ wurde experimentell auf $0.1$ festgelegt.
 
-\autoref{fig:h_segmentation} lässt außerdem erkennen, dass die resultierende Farbpalette zwar die Farbdetails der Bildvorlage berücksichtigt, umgekehrt jedoch nicht sofort jede Farbe der Palette intuitiv einer Bildkomponente zugeordnet werden kann. Zur Reduzierung der gebildeten Abstufungen wird ein Weichzeichnungsfilter (Mittelwert) \citep{image-based-schemes} sowie Kompressor (Wurzelfunktion) auf das Histogramm angewandt. \autoref{fig:grey_cylinder} zeigt das Resultat nach Filterung des Grau-Zylinders, Weichzeichnung und anschließender Kompression des Histogramms. Als Nebeneffekt wird auf diese Weise der Suchraum für die Ermittlung des Farbschemas reduziert, wodurch Laufzeiten verbessert werden.
+\autoref{fig:h_segmentation} lässt außerdem erkennen, dass die resultierende Farbpalette zwar die Farbdetails der Bildvorlage berücksichtigt, umgekehrt jedoch nicht sofort jede Farbe der Palette intuitiv einer Bildkomponente zugeordnet werden kann. \citet{image-based-schemes} schlagen daher die Anwendung eines Weichzeichnungsfilter (Mittelwert) zur Reduzierung der gebildeten Abstufungen vor. \autoref{fig:grey_cylinder} veranschaulicht das Resultat nach Filterung des Grau-Zylinders und Weichzeichnung des Histogramms. Als Nebeneffekt wird auf diese Weise der Suchraum für die Ermittlung des Farbschemas reduziert, wodurch Laufzeiten verbessert werden.
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.95\textwidth]{img/grey_cylinder.png}
-\caption{(a) Hierarchische Farbpalette ohne Vorverarbeitung des Histogramms. (b) Hierarchische Farbpalette mit Filterung der Grau-Zylinders ($S < \theta = 0.1$), Weichzeichnung und anschließender Kompression des Histogramms. Die Hue-Group mit Farben geringer Sättigung entfällt. Es werden weniger Sättigungs- und Helligkeitsstufen gebildet, die sich intuitiver den Farben der Bildvorlage zuordnen lassen.}
+\caption{(a) Hierarchische Farbpalette ohne Vorverarbeitung des Histogramms. (b) Hierarchische Farbpalette mit Filterung der Grau-Zylinders ($S < \theta = 0.1$) und Weichzeichnung des Histogramms. Die Hue-Group mit Farben geringer Sättigung entfällt. Es werden weniger Sättigungs- und Helligkeitsstufen gebildet, die sich intuitiver den Farben der Bildvorlage zuordnen lassen.}
 \label{fig:grey_cylinder}
 \end{figure}
 
-\citet{image-based-schemes} argumentiert, dass zusammenhängende Bereiche mit gleichem Farbton und hoher Sättigung eine besondere Relevanz für die Farbwahrnehmung von Bildern besitzen. Darum wird eine Gewichtung der Samples im Histogramm vorgeschlagen. Für den Wert $h(c)$ einer Farbe $c$ im Histogramm wird folgende Formel verwendet:
+\citet{image-based-schemes} argumentieren, dass zusammenhängende Bereiche mit gleichem Farbton und hoher Sättigung einen besonders hohen visuellen Effekt bei der Wahrnehmung von Bildern besitzen. Darum wird eine Gewichtung der Samples im Histogramm vorgeschlagen. Für den Häufigkeitswert $h(c)$ einer Farbe $c$ im Histogramm wird folgende Formel verwendet:
 
 \begin{equation}
 \begin{gathered}
@@ -149,11 +149,11 @@ In \autoref{sec:architektur} wurde festgelegt, dass die Farbpalette in jedem Fal
 \end{gathered}
 \end{equation}
 
-Dementsprechend erhalten Samples mit hohem Sättigungswert sowie mit ähnlichen Samples in der 8ter-Umgebung eine höhere Gewichtung.
+Dementsprechend erhalten Samples mit hohem Sättigungswert und ähnlichen Farbwerten in deren 8ter-Umgebung eine höhere Gewichtung, was sich auf die Bewertung der Häufigkeit eines Farbwerts im Histogramm auswirkt. \autoref{fig:sample_weighting} veranschaulicht dies an einem Beispiel. Die linke Bildvorlage enthält ein $128px*64px$ großes, magentafarbenes Rechteck. Bei der rechten Bildvorlage ist die gleiche Anzahl magentafarbener Pixel im Bild verstreut, was zu einem geringeren visuellen Effekt führt. Durch die Gewichtungsfunktion wird Magenta bei der Blockvariante in die Farbpalette übernommen, bei der Streuungsvariante jedoch nicht.
 
 \begin{figure}[]
 \centering
 \includegraphics[width=0.95\textwidth]{img/sample_weighting.png}
-\caption{(a) Hierarchische Farbpalette ohne Vorverarbeitung des Histogramms. (b) Hierarchische Farbpalette mit Filterung der Grau-Zylinders ($S < \theta = 0.1$), Weichzeichnung und anschließender Kompression des Histogramms. Die Hue-Group mit Farben geringer Sättigung entfällt. Es werden weniger Sättigungs- und Helligkeitsstufen gebildet, die sich intuitiver den Farben der Bildvorlage zuordnen lassen.}
+\caption{Einfluss der Gewichtung von Samples bei der Bildung des Histogramms. Links: Ein zusammenhängender Block magentafarbener Pixel. Der Block führt zu einem sichtbaren Berg im Hue-Histogramm (unten). Rechts: Die gleiche Menge magentafarbener Pixel ist im Bild verstreut und hat einen geringen visuellen Effekt. Dies wird durch einen flacheren Berg im Histogramm wiedergespiegelt, wodurch Magenta nicht Teil der Farbpalette wird. Ein ähnlicher Effekt ist bei den Brauntönen zu erkennen. }
 \label{fig:sample_weighting}
 \end{figure}
