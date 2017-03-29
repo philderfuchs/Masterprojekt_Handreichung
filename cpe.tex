@@ -117,7 +117,7 @@ Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung des FTC-Segment
 
 Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial erschlossenen Farbtöne in \textbf{Hue-Groups (HG)} unterteilt. Somit wird für $\forall c \in P$ gleichzeitig erfasst, welche Farben Varianten eines gemeinsamen Farbtons sind. \citet{acopa} empfehlen zusätzlich, die Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt das Ergebnis nach Konvergenz. Obwohl die sich die Cluster den im Bild enthaltenen Farben angenähert haben, ist zu sehen, wie hierdurch die Zuordnung zu den Hue-Groups verloren geht. Entsprechend der Argumentation in \autoref{sec:cpe-ueberblick} ist diese Zuordnung jedoch günstig zur Bildung von Farbschemen. Aus diesem Grund wird auf die nachgeschaltete Anwendung des K-Means Algorithmus verzichtet.
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.95\textwidth]{img/palette.png}
 \caption{(a) Hierarchische Farbpalette des Covers aus Abbildung \ref{fig:h_segmentation}. Die 14 Farben sind in 4 Hue-Groups angeordnet. Die I-Ebene bildet die Farbpalette der Bildvoralge. (b) Farbpalette nach Anwendung von K-Means.}
@@ -127,4 +127,13 @@ Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial ersc
 \subsection{Vorverarbeitung des Histogramms}
 \label{sec:vorverarbeitung}
 
+In \autoref{sec:architektur} wurde festgelegt, dass die Farbpalette in jedem Fall durch Graustufen ergänzt wird. Bei der Ermittlung des Farbschemas $f_\text{scheme}$ würden Farben mit geringer Sättigung, die aus dem ACoPa Algorithmus resultieren, mit diesen Graustufen konkurrieren. Aus diesem Grund wird der \glqq{}Grau-Zylinder\grqq{} \citep{acopa} aus dem Histogramm $h$ im HSI-Raum gefiltert. Hierbei werden alle Samples $\in$ Histogramm mit einem Sättigungswert $< \theta$ aus $h$ entfernt. $\theta$ wurde experimentell auf $0.1$ festgelegt.
 
+\autoref{fig:h_segmentation} lässt außerdem erkennen, dass die resultierende Farbpalette zwar die Farbdetails der Bildvorlage berücksichtigt, umgekehrt jedoch nicht sofort jede Farbe der Palette intuitiv einer Bildkomponente zugeordnet werden kann. Zur Reduzierung der gebildeten Abstufungen wird ein Weichzeichnungsfilter (Mittelwert) \citep{image-based-schemes} sowie Kompressor (Wurzelfunktion) auf das Histogramm angewandt. \autoref{fig:grey_cylinder} zeigt das Resultat nach Filterung des Grau-Zylinders, Weichzeichnung und anschließender Kompression des Histogramms. Als Nebeneffekt wird auf diese Weise der Suchraum für die Ermittlung des Farbschemas reduziert, wodurch Laufzeiten verbessert werden.
+
+\begin{figure}[]
+\centering
+\includegraphics[width=0.95\textwidth]{img/grey_cylinder.png}
+\caption{(a) Hierarchische Farbpalette ohne Vorverarbeitung des Histogramms. (b) Hierarchische Farbpalette mit Filterung der Grau-Zylinders ($S < \theta = 0.1$), Weichzeichnung und anschließender Kompression des Histogramms. Die Hue-Group mit Farben geringer Sättigung entfällt. Es werden weniger Sättigungs- und Helligkeitsstufen gebildet, die sich intuitiver den Farben der Bildvorlage zuordnen lassen.}
+\label{fig:grey_cylinder}
+\end{figure}
