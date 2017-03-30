@@ -25,9 +25,9 @@ Aus diesen Gründen wird sich in dieser Arbeit für eine vollautomatisierte, reg
 Ziel dieser Arbeit die Färbung eines konkreten Webseite. Das Parsing eines solchen HTML-Dokuments zur Erschließung aller $e \in CG$ sowie die Speicherung aller topologischen Informationen dieser Elemente innerhalb einer Seite führt jedoch eine zusätzliche Ebene der Komplexität in das zu lösende Problem ein. Der CSS-Standard sieht durch die Klassen-Selektoren \citep{css3-selectors} ohnehin die Auszeichnung einheitlicher darzustellender Elemente bereits auf Ebene der Dokumentenbeschreibung vor. Dementsprechend wird von der konkreten HTML-Beschreibung einer Webseite als  \textbf{Layout} abstrahiert. Ein Layout definiert:
 
 \begin{enumerate}
-	\item $FGs$: Die Menge der $k$ Funktionsgruppen $FGs$. Entsprechend \autoref{sec:farbgestaltung} wird diese standardmäßig auf $FGs = \{\text{Primär}, \text{Sekundär}, \text{Akzent}, \text{Interaktion}, \text{Text (neutral)}, \text{Hintergrund (neutral)}\}$ festgelegt.
+	\item $FGs$: Die Menge der $k$ Funktionsgruppen $FGs$. Entsprechend \autoref{sec:farbgestaltung} wird diese standardmäßig auf $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\} festgelegt.
 	\item $CGs$: Die Menge der Color Groups mit den enthaltenen Elementen $CGs = \{CG_1 = (e_1, e_2, ...), ..., CG_m = (e_1, e_2, ...)\}$.
- 	\item $CGs \to FGs$: Die Abbildung der Color Groups auf Funktionsgruppen. Beispielsweise definiert ein Layout selbst, welche Elementen interaktiv sind und somit zur Farbfunktion \emph{Interaktion} gehören.
+ 	\item $CGs \to FGs$: Die Abbildung der Color Groups auf Funktionsgruppen. Beispielsweise definiert ein Layout selbst, welche Elementen interaktiv sind und somit zur Funktionsgruppe \emph{Interaktion} gehören.
 \end{enumerate}
 
 Somit wird die Komplexität der Suchverfahren reduziert, indem die Menge der Funktionsgruppen als konstant angesehen wird und die konkrete Topologie der Oberflächenelemente innerhalb des HTML-Dokuments im Verantwortungsbereich des Layouts liegt.
@@ -35,17 +35,15 @@ Somit wird die Komplexität der Suchverfahren reduziert, indem die Menge der Fun
 \subsection{Aufteilung der Suchverfahren}
 \label{sec:aufteilung}
 
-Formale stellt sich die automatisierte Farbgestaltung einer Webseite aus einer Bildvorlage als die Abbildung $f_\text{coloration}: (CPs \to FGs) \to (I \to P)$ dar. In \autoref{sec:layouts} wurde dargestellt, dass zur Lösungssuche die Ermittlung der Abbildung $CGs \to FGs$ als gegeben durch das Layout angesehen und somit aus der Betrachtung entfernt wird. Weiterhin existieren die Teilprobleme (1) $f_{CPE}: I \to P$, d.h. die Ermittlung von $n$ repräsentativen Farben einer Bildvorlage sowie (2) Die Ermittlung des Farbschemas $f_\text{scheme}: FGs \to P$, d.h. die Auswahl von $k$ Farben aus der Palette und deren Zuordnung zu den Funktionsgruppen.
+Nach den Erläuterungen in den vorangegangenen Abschnitten ergibt sich die formale Darstellung der automatisierten Farbgestaltung einer Webseite aus einer Bildvorlage als die Abbildung $f_\text{coloration}: (CPs \to FGs) \to (I \to P)$. In \autoref{sec:layouts} wurde dargestellt, dass zur Lösungssuche die Ermittlung der Abbildung $CGs \to FGs$ als gegeben durch das Layout angesehen und somit aus der Betrachtung entfernt wird. Weiterhin existieren die Teilprobleme (1) $f_{CPE}: I \to P$, d.h. die Ermittlung von $n$ repräsentativen Farben einer Bildvorlage sowie (2) Die Ermittlung des Farbschemas $f_\text{scheme}: FGs \to P$, d.h. die Auswahl von $k$ Farben aus der Palette und deren Zuordnung zu den Funktionsgruppen.
 
 In \autoref{sec:architektur} wurde ein regelbasierter Ansatz zur Lösungssuche gewählt. Die Regeln werden im Folgenden als \textbf{Constraints} bezeichnet. Es existieren zwei Herangehensweisen:
 \begin{enumerate}
-    \item \textbf{Constraints-First}: Setze $|FGs| = k = n = |P|$. $P$ wird in Abhängigkeit vom Layout ermittelt. Hierbei wird die Ermittlung des Farbschemas zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Funktionsgruppen mit deren gewünschten Eigenschaften ist der Suchraum das Histogram der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwenden ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
+    \item \textbf{Constraints-First}: Setze $|FGs| = k = n = |P|$. $P$ wird in Abhängigkeit vom Layout ermittelt. Hierbei wird die Bildung des Farbschemas zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Funktionsgruppen mit deren gewünschten Eigenschaften ist der Suchraum das Histogramm der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwenden ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
     \item \textbf{Constraints-Last}: Setze $k \leq n$. $P$ wird unabhängig vom Layout ermittelt. Der Suchraum für das Farbschema beschränkt sich auf die Farben in $P$. Dieser Ansatz wird ebenfalls von \citep{webpage} bei der datengetriebenen Färbung von Webseiten verfolgt.
 \end{enumerate}
 
 Für diese Arbeit wird die Herangehensweise \textbf{Constraints-Last} bevorzugt, um Flexibilität in Bezug auf unterschiedliche Layouts zu gewährleisten. Für die Arbeit bedeutet dies, dass eine Problemlösung anhand eines exemplarischen Layouts mit einer definierten Menge an Funktionsgruppen veranschaulicht wird, eine Übertragung auf andere Layouts jedoch möglich ist.
-
-Selbst unter den gegebenen Einschränkung des Suchraums durch die vorgeschaltete Ermittlung einer Farbpalette ist die Menge potentieller Lösungen mit $\binom{n}{k} k!$ nach wie vor groß. Als Beispiel sei ein Layout mit 5 Funktionsgruppen sowie eine Farbpalette mit 10 Farben gegeben. Somit gilt $|FGs| = k = 5$ und $|P| = n = 10$, wodurch sich $\binom{10}{5} 5! = 30.240$ mögliche Kombinationen ergeben. Dementsprechend ist ein effektives Suchverfahren für die Ermittlung des Farbschemas zu ermitteln. Die von \citet{patterns} verwendeten Factor Graphs stellen hierfür einen Ansatz dar.
 
 \subsection{Systemarchitektur}
 \label{sec:architektur}
