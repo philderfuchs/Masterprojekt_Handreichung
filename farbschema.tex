@@ -70,11 +70,19 @@ Soft Constraints:
 \label{fig:scheme_triadic}
 \end{figure}
 
-Abbildungen blabla veranschaulichen die Ergebnisse des Suchverfahrens anhand der prototypischen Weboberfläche für Musikstreaming. Dabei zeigt (b) jeweils die hierarchische Farbpalette mit den Funktionsgruppen, die durch Inferenz auf dem Factor Graph von Dimple zugeordnet wurden. \emph{Pr} steht für Primär, \emph{Se} für Sekundär, \emph{Ak} für Akzent, \emph{In} für Interaktion und \emph{Hi} für Hintergrund (neutral). Die Farbe für letztere Funktionsgruppe ist abgesetzt dargestellt, da sie nicht durch $f_{CPE}$ ermittelt wird. Der Gradient wird via CSS beschrieben und verläuft von der Primär- zur Akzentfarbe mit einem Alpha-Wert von 0.8.
+\autoref{fig:results_triadic} veranschaulicht die Ergebnisse des Suchverfahrens anhand der prototypischen Weboberfläche für Musikstreaming. Dabei zeigt (b) jeweils die hierarchische Farbpalette mit den Funktionsgruppen, die durch Inferenz auf dem Factor Graph von Dimple zugeordnet wurden. \emph{Pr} steht für Primär, \emph{Se} für Sekundär, \emph{Ak} für Akzent, \emph{In} für Interaktion und \emph{Hi} für Hintergrund (neutral). Die Farbe für letztere Funktionsgruppe ist abgesetzt dargestellt, da sie nicht durch $f_{CPE}$ ermittelt wird. Der Gradient wird via CSS beschrieben und verläuft von der Primär- zur Akzentfarbe mit einem Alpha-Wert von 0.8.
+
+\begin{itemize}
+	\item \textbf{Ergebnis Nr. 1:} Erwartungsgemäße Färbung.
+	\item \textbf{Ergebnis Nr. 2:} Blau wurde aufgrund des hohen visuellen Gewichts in der Bildvorlage als Primärfarbe selektiert. Da sich keine weitere Farbe in der selben Hue-Group befindet, wird die Sekundärfarbe auf die selbe Farbe abgebildet.
+	 \item \textbf{Ergebnis Nr. 3:} Obwohl Gelb visuell  als Akzent in der Bildvorlage hervortritt, wird es als Interaktions- und nicht als Akzentfarbe bestimmt. Grund ist deren Mitgliedschaft in der Hue-Group mit den Brauntönen, wodurch das Kriterium einer möglichst kleinen Hue-Group nicht erfüllt wird. Bei der Wahl des Farbtons ist ein ansprechender Kompromiss zwischen Farbsättigung und Textlesbarkeit gelungen.
+	 \item \textbf{Ergebnis Nr. 4:} Fall mit $\#HGs(P) > 3$. Trotz der vergleichsweise hohen Zahl möglicher Farben wird die Primärfarbe erwartungsgemäß zugeordnet. Die Interaktionsfarbe wird zu Gunsten des Lesbarkeit auf eine Farbe mit geringem visuellen Effekt in der Bildvorlage abgebildet (die Lippen der Figur).
+\end{itemize}
+	
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=1\textwidth]{img/scheme_cozytapes.png}
+\includegraphics[width=0.92\textwidth]{img/results_triadic.png}
 \caption{Ergebnis der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis.}
+\label{fig:results_triadic}
 \end{figure}
-
