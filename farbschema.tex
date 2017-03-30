@@ -1,4 +1,4 @@
-\section{Erstellung des Farbschemas}
+\section{Suchverfahren für Farbschemata}
 \label{sec:farbschema}
 
 In diesem Abschnitt wird eine Methode zur Lösung des Teilproblems $f_{scheme}: FGs \to P$ vorgeschlagen. Hierbei werden Farben aus $P$ für die Funktionsgruppen eines Layouts festgelegt, wodurch die Farbgestaltung der Webseite definiert wird. Zur Veranschaulichung wird ein prototypisches Layout für Musikstreaming verwendet. Es enthält die in \autoref{sec:architektur} festgelegten Funktionsgruppen $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\}. \autoref{fig:fgs} hebt die Funktionsgruppen des Layouts separat hervor. Für die Funktionsgruppen \{Primär, Sekundär, Akzent, Interaktion\} werden Farben verwendet, die aus ACoPa resultieren. Für die Funktionsgruppen \{Text (neutral), Hintergrund (neutral)\} wird der Suchraum auf $weiss$ und $schwarz$ beschränkt.
@@ -28,7 +28,7 @@ In \autoref{sec:farbschemata} wurde der Typ eines Farbschemas daran unterschiede
 
 Im Folgenden wird für jeden Typ ein separater Factor Graph entworfen. Die Ergebnisse werden anhand des prototypischen Layouts aus \autoref{fig:fgs} veranschaulicht.
 
-\subsection{Triadisches Farbschema}
+\subsection{Suchverfahren für triadische Farbschemata}
 
 \autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen, während die Quadrate Constraints darstellen, die sich auf die Variablen beziehen, zu denen Kantenverbindungen bestehen. Hard-Constraints sind rot dargestellt, Soft-Constraints gelb. Im Folgenden werden die Constraints erläutert.
 
@@ -63,11 +63,18 @@ Soft Constraints:
   \end{cases}
 \end{equation*}
 
-
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{img/scheme_triadic.png}
-\caption{Funktionsgruppen des Layouts einer prototypischen Webseite für Musikstreaming. Alle Oberflächenkomponenten, die zur der jeweiligen Funktionsgruppe gehören, sind rot hervorgehoben.}
+\caption{Factor Graph zur Bildung triadischer Farbschemata. Die Variablen sind rund, Hard Constraints rot und Soft Constraints gelb dargestellt.}
 \label{fig:scheme_triadic}
+\end{figure}
+
+Abbildungen blabla veranschaulichen die Ergebnisse des Suchverfahrens anhand der prototypischen Weboberfläche für Musikstreaming. Dabei zeigt (b) jeweils die hierarchische Farbpalette mit den Funktionsgruppen, die durch Inferenz auf dem Factor Graph von Dimple zugeordnet wurden. \emph{Pr} steht für Primär, \emph{Se} für Sekundär, \emph{Ak} für Akzent, \emph{In} für Interaktion und \emph{Hi} für Hintergrund (neutral). Die Farbe für letztere Funktionsgruppe ist abgesetzt dargestellt, da sie nicht durch $f_{CPE}$ ermittelt wird. Der Gradient wird via CSS beschrieben und verläuft von der Primär- zur Akzentfarbe mit einem Alpha-Wert von 0.8.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{img/scheme_cozytapes.png}
+\caption{Ergebnis der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis.}
 \end{figure}
 
