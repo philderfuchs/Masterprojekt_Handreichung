@@ -3,7 +3,7 @@
 
 In diesem Abschnitt wird eine Methode zur Lösung des Teilproblems $f_{scheme}: FGs \to P$ vorgeschlagen. Hierbei werden Farben aus $P$ für die Funktionsgruppen eines Layouts festgelegt, wodurch die Farbgestaltung der Webseite definiert wird. Zur Veranschaulichung wird ein prototypisches Layout für Musikstreaming verwendet. Es enthält die in \autoref{sec:architektur} festgelegten Funktionsgruppen $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\}. \autoref{fig:fgs} hebt die Funktionsgruppen des Layouts separat hervor. Für die Funktionsgruppen \{Primär, Sekundär, Akzent, Interaktion\} werden Farben verwendet, die aus ACoPa resultieren. Für die Funktionsgruppen \{Text (neutral), Hintergrund (neutral)\} wird der Suchraum auf $weiss$ und $schwarz$ beschränkt.
 
-\begin{figure}[]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{img/fgs.png}
 \caption{Funktionsgruppen des Layouts einer prototypischen Webseite für Musikstreaming. Alle Oberflächenkomponenten, die zur der jeweiligen Funktionsgruppe gehören, sind rot hervorgehoben.}
@@ -15,13 +15,14 @@ Für das Suchverfahren wurden Factor Graphs modelliert. Diese Methode wurde bere
 Der Constraint-Graph besteht aus Knoten $V$ und Kanten $E$. Knoten beschreiben Variablen, für die Werte bestimmt werden sollen. In diesem Falle gilt $V = FGs\; \backslash$ \{Text (neutral)\}. Die Gruppe \{Text (neutral)\} wird ausgelassen, da entsprechend der Erläuterungen in \autoref{sec:architektur} die Entscheidung über die Textfarbe der Blockelemente auf Layout-Ebene  getroffen wird und nicht Teil des Suchverfahrens ist. Der Wertebereich der Variablen ist eine finite Domain $dom = \{d_0, ..., d_{n+2}\}$, welche auf $P_\text{neutral} = f_{CPE}(I) \cup \{weiss, schwarz\}$ basiert, wobei die Farbwerte um weitere Attribute erweitert werden. Die Attribute der $d \in dom$ lauten:
 
 \begin{itemize}
-	\item \textbf{(H, S, I):} Der Farbwert im HSI-Raum.
-	\item \textbf{Gewicht:} Akkumuliertes Gewicht aller Samples des zugehörigen Segments in der hierarchischen Farbpalette (entsprechend \autoref{eq:weight}).
-	\item \textbf{Hue-Group:} Index der Hue-Group der Farbe.
-	\item \textbf{Normalisierte relative Luminanz:} Berechnung entsprechend \citet{wcag-rel-luminance}.
+	\item \textbf{$h$, $s$, $i$:} Der Farbwert im HSI Raum.
+	\item \textbf{$r$, $g$, $b$:} Der Farbwert im RGB Raum. Wird benötigt für die Berechnung des Kontrastverhältnisses.
+	\item \textbf{Gewicht $weight$:} Relatives Gewicht des Segments in der hierarchischen Farbpalette (entsprechend \autoref{eq:weight}).
+	\item \textbf{Hue-Group $hg$:} Index der Hue-Group der Farbe.
+	\item \textbf{Größe der Hue-Group} $hg_\text{size}$: Anteil der Farben aus $P$, die Teil der Hue-Group des Farbwerts sind.
 \end{itemize}
 
-Die Kanten entsprechen Constraints zwischen den Knoten. Es wird in Hard- und Soft-Constraints unterschieden \citep{patterns}. Hard-Constraints beschreiben Einschränkungen, die bei der Lösung des Systems nicht verletzt werden dürfen. Soft-Constraints beschreiben eine Gewichtung der möglichen Werte einer Variable in Form einer Bewertungsfunktion. So sind Eigenschaften einer Farbe beschreibbar, die sie für eine Funktionsgruppe besonders qualifizieren (z.B. eine möglichst hohe Sättigung für die Interaktionsgruppe).
+Die Kanten $E$ entsprechen Constraints zwischen den Knoten. Es wird in Hard und Soft Constraints unterschieden \citep{patterns}. Hard Constraints beschreiben Einschränkungen, die bei der Lösung des Systems nicht verletzt werden dürfen. Soft Constraints beschreiben eine Gewichtung der möglichen Werte einer Variable in Form einer Bewertungsfunktion $score() \to [0, 1]$, wobei 1 für eine hohe und 0 für eine niedrige Bewertung steht. So sind Eigenschaften einer Farbe beschreibbar, die sie für eine Funktionsgruppe besonders qualifizieren (z.B. eine möglichst hohe Sättigung für die Interaktionsgruppe).
 
 In \autoref{sec:farbschemata} wurde der Typ eines Farbschemas daran unterschieden, wie viele verschiedene Farbtöne es enthält. Ein monochromes Farbschema enthält einen Farbton, ein duales zwei und ein triadisches Farbschema drei verschiedene Farbtöne. Der ACoPa-Algorithmus ermittelt die Anzahl verschiedener Farbtöne eines Bildes, wodurch ebenfalls der Typ einer Farbpalette durch Analyse der Anzahl enthaltener Hue-Groups $\#HGs(P)$ feststellbar ist. Dementsprechend führt eine Farbpalette mit $\#HGs(P) = 1$ zu einem monochromen Farbschema, eine Farbpalette mit $\#HGs(P) = 2$ zu einem dualen und mit $\#HGs(P) \geq 3$ zu einem triadischen Farbschema. Auf diese Art und Weise spiegelt sich die wahrgenommene \glqq{}Buntheit\grqq{} einer Bildvorlage (immer Sinne der Anzahl enthaltener Farbtöne) in einer entsprechend bunten Weboberfläche wieder, und umgekehrt. Farbpaletten mit mehr als drei verschiedenen Farbtönen werden auf ein triadisches Farbschema reduziert, da entsprechend \autoref{sec:farbschemata} die Verwendung von mehr Farbtönen nicht sinnvoll für die Benutzerführung ist.
 
@@ -29,5 +30,44 @@ Im Folgenden wird für jeden Typ ein separater Factor Graph entworfen. Die Ergeb
 
 \subsection{Triadisches Farbschema}
 
+\autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen, während die Quadrate Constraints darstellen, die sich auf die Variablen beziehen, zu denen Kantenverbindungen bestehen. Hard-Constraints sind rot dargestellt, Soft-Constraints gelb. Im Folgenden werden die Constraints erläutert.
 
+Hard Constraints:
+\begin{itemize}
+	\item \textbf{cont:} Das Kontrastverhältnis $L_c$ muss mindestens 3.0 betragen, was den in \autoref{sec:lesbarkeit}) erläuterten Minimalvoraussetzungen für Textlesbarkeit  entspricht.\\
+		$L_c(\text{value}(V_\text{Primär}), \text{value}(V_\text{Akzent})) \geq 3.0$\\
+		$L_c(\text{value}(V_\text{Primär}), \text{value}(V_\text{Akzent})) \geq 3.0$
+	\item \textbf{diff HG:} Die Hue-Groups müssen sich unterscheiden. \\ $\text{value}(V_\text{Primär}).hg \neq \text{value}(V_\text{Akzent}).hg \neq \text{value}(V_\text{Interaktion}).hg$
+	\item \textbf{se:} Primär- und Sekundärfarbe müssen der gleichen Hue-Group angehören.\\
+		$\text{value}(V_\text{Primär}).hg = \text{value}(V_\text{Sekundär}).hg$
+\end{itemize}
+
+Soft Constraints:
+\begin{itemize}
+	\item \textbf{pr:} Die Primärfarbe solle eine möglichst hohe Gewichtung im Histogramm besitzen, was auf eine Farbe mit hoher visuellen Relevanz in der Bildvorlage schließen lässt.\\
+		$\forall d \in dom: score(d) = d.weight$
+	\item \textbf{se:} Die Sekundärfarbe soll eine geringere Sättigung als die Primärfarbe besitzen.\\
+		$\forall d \in dom: score(d) = \text{value}(V_\text{Primär}).s - d.s$
+	\item \textbf{ak:} Die Akzentfarbe soll einer möglichst kleinen Hue-Group angehören, wodurch sie mit hoher Wahrscheinlichkeit ebenfalls einen Akzent in der Bildvorlage darstellt. Außerdem soll die Sättigung möglichst hoch sein.\\
+		$\forall d \in dom: score(d) = (1 - d.hg_\text{size}) + d.s$
+	\item \textbf{in:} Die Interaktionsfarbe soll eine möglichst hohe Sättigung besitzen.\\
+		$\forall d \in dom: score(d) = d.s$
+	\item \textbf{hr:} Für die Hintergrundfarbe (neutral) werden die globalen Farbinformationen verwendet. Ist die durschnittliche Luminanz der Farbwerte der Bildvorlage $> 0.2$, wird $weiss$ verwendet, sonst $schwarz$.
+\end{itemize}
+
+\begin{equation*}
+  \text{value}(V_\text{Hintergrund}) =
+  \begin{cases}
+  	weiss, \; \text{wenn} \frac{\sum_{(x, y) \in I} L(\text{color}(x, y))}{|I|} > 0.2\\
+  	schwarz, \; sonst
+  \end{cases}
+\end{equation*}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{img/scheme_triadic.png}
+\caption{Funktionsgruppen des Layouts einer prototypischen Webseite für Musikstreaming. Alle Oberflächenkomponenten, die zur der jeweiligen Funktionsgruppe gehören, sind rot hervorgehoben.}
+\label{fig:scheme_triadic}
+\end{figure}
 
