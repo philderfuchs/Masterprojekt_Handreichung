@@ -24,13 +24,13 @@ Der Constraint-Graph besteht aus Knoten $V$ und Kanten $E$. Knoten beschreiben V
 
 Die Kanten $E$ entsprechen Constraints zwischen den Knoten. Es wird in Hard und Soft Constraints unterschieden \citep{patterns}. Hard Constraints beschreiben Einschränkungen, die bei der Lösung des Systems nicht verletzt werden dürfen. Soft Constraints beschreiben eine Gewichtung der möglichen Werte einer Variable in Form einer Bewertungsfunktion $score() \to [0, 1]$, wobei 1 für eine hohe und 0 für eine niedrige Bewertung steht. So sind Eigenschaften einer Farbe beschreibbar, die sie für eine Funktionsgruppe besonders qualifizieren (z.B. eine möglichst hohe Sättigung für die Interaktionsgruppe).
 
-In \autoref{sec:farbschemata} wurde der Typ eines Farbschemas daran unterschieden, wie viele verschiedene Farbtöne es enthält. Ein monochromes Farbschema enthält einen Farbton, ein duales zwei und ein triadisches Farbschema drei verschiedene Farbtöne. Der ACoPa-Algorithmus ermittelt die Anzahl verschiedener Farbtöne eines Bildes, wodurch ebenfalls der Typ einer Farbpalette durch Analyse der Anzahl enthaltener Hue-Groups $\#HGs(P)$ feststellbar ist. Dementsprechend führt eine Farbpalette mit $\#HGs(P) = 1$ zu einem monochromen Farbschema, eine Farbpalette mit $\#HGs(P) = 2$ zu einem dualen und mit $\#HGs(P) \geq 3$ zu einem triadischen Farbschema. Auf diese Art und Weise spiegelt sich die wahrgenommene \glqq{}Buntheit\grqq{} einer Bildvorlage (immer Sinne der Anzahl enthaltener Farbtöne) in einer entsprechend bunten Weboberfläche wieder, und umgekehrt. Farbpaletten mit mehr als drei verschiedenen Farbtönen werden auf ein triadisches Farbschema reduziert, da entsprechend \autoref{sec:farbschemata} die Verwendung von mehr Farbtönen nicht sinnvoll für die Benutzerführung ist.
+In \autoref{sec:farbschemata} wurde der Typ eines Farbschemas daran unterschieden, wie viele verschiedene Farbtöne enthalten sind. Ein monochromes Farbschema enthält einen Farbton, ein duales zwei und ein triadisches Farbschema drei verschiedene Farbtöne. Der ACoPa-Algorithmus ermittelt die Anzahl verschiedener Farbtöne eines Bildes, wodurch ebenfalls der Typ einer Farbpalette durch Analyse der Anzahl enthaltener Hue-Groups $\#HGs(P)$ feststellbar ist. Dementsprechend führt eine Farbpalette mit $\#HGs(P) = 1$ zu einem monochromen Farbschema, eine Farbpalette mit $\#HGs(P) = 2$ zu einem dualen und mit $\#HGs(P) \geq 3$ zu einem triadischen Farbschema. Auf diese Art und Weise spiegelt sich die wahrgenommene \glqq{}Buntheit\grqq{} einer Bildvorlage (immer Sinne der Anzahl enthaltener Farbtöne) in einer entsprechend bunten Weboberfläche wieder, und umgekehrt. Farbpaletten mit mehr als drei verschiedenen Farbtönen werden auf ein triadisches Farbschema reduziert, da entsprechend \autoref{sec:farbschemata} die Verwendung von mehr Farbtönen nicht sinnvoll für die Benutzerführung ist.
 
 Im Folgenden wird für jeden Typ ein separater Factor Graph entworfen. Die Ergebnisse werden anhand des prototypischen Layouts aus \autoref{fig:fgs} veranschaulicht.
 
 \subsection{Suchverfahren für triadische Farbschemata}
 
-\autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen, während die Quadrate Constraints darstellen, die sich auf die Variablen beziehen, zu denen Kantenverbindungen bestehen. Hard-Constraints sind rot dargestellt, Soft-Constraints gelb. Im Folgenden werden die Constraints erläutert.
+\autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen, während die Quadrate Constraints darstellen, die sich auf die Variablen beziehen, zu denen Kantenverbindungen bestehen. Hard Constraints sind rot dargestellt, Soft Constraints gelb. Im Folgenden werden die Constraints erläutert.
 
 Hard Constraints:
 \begin{itemize}
@@ -44,7 +44,7 @@ Hard Constraints:
 
 Soft Constraints:
 \begin{itemize}
-	\item \textbf{pr:} Die Primärfarbe solle eine möglichst hohe Gewichtung im Histogramm besitzen, was auf eine Farbe mit hoher visuellen Relevanz in der Bildvorlage schließen lässt.\\
+	\item \textbf{pr:} Die Primärfarbe soll eine möglichst hohe Gewichtung im Histogramm besitzen, was auf eine hohe visuelle Relevanz in der Bildvorlage schließen lässt.\\
 		$\forall d \in dom: score(d) = d.weight$
 	\item \textbf{se:} Die Sekundärfarbe soll eine geringere Sättigung als die Primärfarbe besitzen.\\
 		$\forall d \in dom: score(d) = \text{value}(V_\text{Primär}).s - d.s$
@@ -66,7 +66,7 @@ Soft Constraints:
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{img/scheme_triadic.png}
-\caption{Factor Graph zur Bildung triadischer Farbschemata. Die Variablen sind rund, Hard Constraints rot und Soft Constraints gelb dargestellt.}
+\caption{Factor Graph zur Bildung triadischer Farbschemata. Die Variablen werden rund, Hard Constraints rot und Soft Constraints gelb dargestellt.}
 \label{fig:scheme_triadic}
 \end{figure}
 
