@@ -1,6 +1,6 @@
 \section{Farbgestaltung von Webseiten}
 \label{sec:farbgestaltung}
-Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Konkrete Kriterien für die Textlesbarkeit werden in \autoref{sec:lesbarkeit} vorgestellt. In  \autoref{sec:usability} wird der Begriff Benutzerführung erläutert und damit im Zusammenhang stehende Gestaltungsprinzipien im Webdesign herausgearbeitet. Davon ausgehend wird in \autoref{sec:architecture} ein konkreter Vorschlag für eine Systemarchitektur zur automatisierten Farbgestaltung von Webseiten erarbeitet.
+Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und Benutzerführung. Konkrete Kriterien für die Textlesbarkeit werden in \autoref{sec:lesbarkeit} vorgestellt. In  \autoref{sec:usability} wird der Begriff Benutzerführung erläutert, woraufhin damit im Zusammenhang stehende Gestaltungsprinzipien im Webdesign herausgearbeitet werden. Davon ausgehend wird in \autoref{sec:architecture} ein konkreter Vorschlag für eine Systemarchitektur zur automatisierten Farbgestaltung von Webseiten erarbeitet.
 
 \subsection{Lesbarkeit}
 \label{sec:lesbarkeit}
@@ -12,7 +12,7 @@ Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und 
 	\label{fig:webzeitgeist_textcolors}
 \end{figure}
 
-\autoref{fig:webzeitgeist_textcolors} zeigt, dass gemäß einer Auswertung von über 100.000 Webseiten Text in HTML-Dokumenten fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je bunter er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass Aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei Hintergrund mit hoher Buntheit zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Helligkeit des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
+\autoref{fig:webzeitgeist_textcolors} zeigt, dass gemäß einer Auswertung von über 100.000 Webseiten Text in HTML-Dokumenten fast ausschließlich in Graustufen dargestellt wird \citep{webzeitgeist}. Die populärsten Farben sind Schwarz, Dunkelgrau und Weiß. \citet{webdesign} begründet dies damit, dass Text schlechter lesbar wird, je bunter er ist. Der Style Guide von Googles Material Design \citep{google} hebt hervor, dass aufgrund des Simultankontrasts die Verwendung von Grau als Textfarbe bei Hintergrund mit hoher Buntheit zu unerwünschten Effekten führt, wie Abbildung \ref{fig:text_color} veranschaulicht. Stattdessen wird in Abhängigkeit von der Helligkeit des Hintergrunds die Verwendung von Schwarz bzw. Weiß mit einem Alpha-Wert (Transparenz) empfohlen. Konkret werden folgende Werte genannt:
 \begin{enumerate}
 	\item Dunkle Schrift: $\text{rgba}(0, 0, 0, 0.87)$
 	\item Helle Schrift: $\text{rgba}(255, 255, 255, 1.0)$
@@ -24,9 +24,9 @@ Die Ziele der farblichen Gestaltung im Rahmen dieser Arbeit sind Lesbarkeit und 
 	\caption{Empfohlene Textfarbe bei buntem Hintergrund. (a) Textfarbe $\text{rgb}(114,114,114)$. Der Text ist aufgrund des Simultankontrasts unangenehmer zu lesen. (b) Textfarbe $\text{rgba}(0, 0, 0, 0.54)$, d.h. Schwarz mit einem Alphawert  von $54\%$. Die Textfarbe ergibt sich zu einer Verschwärzlichung der Hintergrundfarbe und vermeidet so den Simultankontrast. (Quelle: \citep{google})}
 	\label{fig:text_color}
 \end{figure}
-Im Folgenden wird der Farbwert $\text{rgba}(0, 0, 0, 0.87)$ als $schwarz$ und der Farbwert $\text{rgba}(255, 255, 255, 1.0)$ als $weiss$ bezeichnet.
+Im Folgenden wird der Farbwert $\text{rgba}(0, 0, 0, 0.87)$ als $schwarz$ und der Farbwert\\$\text{rgba}(255, 255, 255, 1.0)$ als $weiss$ bezeichnet.
 
-Es ist zu entscheiden,  wann $schwarz$ und wann $weiß$ als Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text-, der Hintergrundfarbe sowie der Textgröße an. Die Formel zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
+Es ist zu entscheiden,  wann $schwarz$ und wann $weiss$ als Textfarbe verwendet wird. Hierfür geben die Web Content Accessibility Guidelines (WCAG) des W3C konkrete Grenzwerte für Kontrastverhältnisse in Abhängigkeit von der Text-, der Hintergrundfarbe sowie der Textgröße an. Die Formel zur Berechnung des Kontrastverhältnisses $L_c$ lautet \citep{wcag-contrast}:
 
 \begin{equation}
 	\begin{split}
@@ -41,7 +41,9 @@ Es gibt zwei verschiedene Grenzwertklassen \citep{wcag}. Die Grenzwertklasse \em
 \begin{equation}
   	AA: L_c(e.c_\text{text}, e.c_\text{background}) \geq
 	\begin{cases}
-	3.0, \; \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land \text{weight}(e) = \text{bold}\\
+	\begin{split}
+	3.0, \; \text{wenn } \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land\\ \text{weight}(e) = \text{bold}
+	\end{split}\\
 		4.5,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
@@ -51,14 +53,16 @@ Die Klasse \emph{AAA} beschreibt bessere Lesbarkeit durch die Verwendung höhere
 \begin{equation}
   	AAA: L_c(c_1, c_2) \geq
 	\begin{cases}
-		4.5, \; \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land \text{weight}(e) = \text{bold}\\
+		\begin{split}
+	4.5, \; \text{wenn } \text{size}(e) \geq 18\text{pt} \lor \text{size}(e) \geq 14\text{pt} \land\\ \text{weight}(e) = \text{bold}
+	\end{split}\\
 		7.0,  \;  \text{sonst}
 	\end{cases}
 \end{equation}
 
 \subsection{Benutzerführung}
 \label{sec:usability}
-Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unterstützt die Bildung von Zusammenhängen \citep{webdesign}.  Dieses Konzept wird auch als visuelle Hierarchy bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente bei der Wahrnehmung strukturiert und priorisiert werden.
+Ein adäquater Farbeinsatz ermöglicht die Steuerung der Aufmerksamkeit des Nutzers und unterstützt die Bildung von Zusammenhängen \citep{webdesign}. Dieses Konzept wird auch als visuelle Hierarchie bezeichnet \citep{visual-hierarchy}, bei welchem die Oberflächenelemente bei der Wahrnehmung strukturiert und priorisiert werden.
 \citet{webdesign} unterteilt folgende Möglichkeiten zur Benutzerführung durch Farbeinsatz:
 
 \begin{itemize}
@@ -91,7 +95,7 @@ Ein adäquater Farbeinsatz ermöglicht die Steuerung von Aufmerksamkeit und unte
 \subsection{Funktionsgruppen}
 \label{sec:funktionsgruppen}
 
-Aus \autoref{sec:usability} geht hervor, dass Farbeinsatz im Webdesign der Abgrenzung von Funktionsbereichen sowie der Kennzeichnung von Elementen mit einheitlicher Funktion dient. Aus diesen Gründen wird die Abbildung $f_\text{coloration}: CGs \to P$ durch eine Abstraktionsschicht erweitert, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch die Menge der $k$ Funktionsgruppen $FGs = \{\text{Primär}, \text{Sekundär}, \text{Akzent}, \text{Interaktion}, \text{Text (neutral)}, \text{Hintergrund (neutral)}\}$ mit $|FGs| = k = 6$ definiert. Die Einzelnen Bedeutungen $\forall fg \in FGs$ lauten wie folgt:
+Aus \autoref{sec:usability} geht hervor, dass Farbeinsatz im Webdesign der Abgrenzung von Funktionsbereichen sowie der Kennzeichnung von Elementen mit einheitlicher Funktion dient. Aus diesen Gründen wird die Abbildung $f_\text{coloration}: CGs \to P$ durch eine Abstraktionsschicht erweitert, welche beschreibt, welche Funktion eine Color Group in einer Oberfläche erfüllt. In Anlehnung an \citep{google,  smashing} wird exemplarisch die Menge der $k$ Funktionsgruppen $FGs = \{\text{Primär}, \text{Sekundär}, \text{Akzent}, \text{Interaktion}, \text{Text (neutral)}, \text{Hintergrund (neutral)}\}$ mit $|FGs| = k = 6$ definiert. Die einzelnen Bedeutungen $\forall fg \in FGs$ lauten wie folgt:
 
 \begin{itemize}
 	\item \textbf{Primärfarbe:} Wird in Relation zu den anderen Farben am häufigsten eingesetzt und bildet so die farbliche Grundstimmung der Oberfläche \citep{awwwards}.
@@ -111,7 +115,7 @@ Die Abbildung zwischen den Funktionsgruppen $FGs = \{\text{fg}_1, ... , \text{fg
 
 Diese Definition eines Farbschemas unterscheidet sich von der Verwendung des Begriffs in der Literatur \citep{webdesign}. In dieser bezeichnet ein Farbschema die Charakteristik einer Farbpalette. Es beschreibt, \emph{wie viele} unterschiedliche Farbtöne eine Farbpalette enthält und in welcher \emph{geometrischen Beziehung} diese zueinander im Farbkreis stehen. Beispielsweise bezeichnet ein \emph{triadisches} Farbschema eine Farbpalette mit drei Farbtönen, die sich in einem Abstand von $120^{\circ}$ zueinander befinden. Genauer wird in  \emph{monochromatische}, \emph{komplementäre (duale)}, \emph{triadische} und \emph{tetraedische} Farbschemen unterschieden, welche Farbpaletten mit einem, zwei, drei oder vier verschiedenen Farbtönen repräsentieren. \citep{underestimated, smashing, google} empfehlen jedoch die Beschränkung auf höchstens 3 Farben im Webdesign, während Graustufen für die Darstellung von Text und Hintergründen dominieren.
     
-Dementsprechend werden die Begriffe \textbf{monochrom}, \textbf{dual} und \textbf{triadisch} als Charakterisierung der Funktion $f_\text{coloration}$ in dieser Arbeit adaptiert. \autoref{fig:colorschemes} zeigt hierfür Beispiele. Es wird eine exemplarische Farbpalette abgebildet. Die dargestellten Funktionsgruppen entsprechen der in \autoref{sec:funktionsgruppen} definierte Menge $FGs$. Es ist zu erkennen, dass die Textfarben sowie die Hintergrundfarbe bereits unabhängig von der Farbpalette vorgegeben werden. Damit realisiert jedes Farbschema im Rahmen dieser Arbeit einen \textbf{Bunt-Unbunt-Kontrast}, was nach \citep{webx0} eine allgemeine Empfehlung für das Screendesign darstellt. Die Grafik zeigt weiterhin mögliche Abbildungen zwischen den Farbfunktionen und der Farbpalette unter \glqq{}konkrete Farbschemata\grqq{}. Für die neutrale Textfarbe stehen in Abhängigkeit vom jeweiligen Hintergrund im HTML-Dokument $weiss$ bzw. $schwarz$ zur Verfügung. Standardmäßig wird $weiss$ für den neutralen Hintergrund angenommen. Die \emph{dark}-Variante eines Farbschemas veranschaulicht eine Variante mit allgemein dunkler Farbstimmung durch die Verwendung eines dunklen Hintergrundes. Ein monochromes Farbschema beschränkt sich auf einen Farbton in verschiedenen Schattierungen. Dadurch wird ein \textbf{Qualitätskontrast} gebildet, welcher die Wirkung der Farbe mit der größten Buntheit erhöht. Das duale Farbschema besitzt zwei Farbtöne. Da Interaktions- und Akzentfarben weniger häufig auftauchen als die Elemente der Primär- und Sekundärfarben wird hierdurch ein \textbf{Quantitätskontrast} gebildet, der die selteneren Farben zusätzlich betont und so zur Bildung einer visuellen Hierarchie beiträgt. Das exemplarische tertiäre Farbschema bildet die Akzent- und Interaktionsgruppen auf unterschiedliche Farben ab und differenziert diese so zusätzlich. 
+Dementsprechend werden die Begriffe \textbf{monochrom}, \textbf{dual} und \textbf{triadisch} als Charakterisierung der Funktion $f_\text{scheme}$ in dieser Arbeit adaptiert. \autoref{fig:colorschemes} zeigt hierfür Beispiele. Es wird eine exemplarische Farbpalette abgebildet. Die dargestellten Funktionsgruppen entsprechen der in \autoref{sec:funktionsgruppen} definierte Menge $FGs$. Es ist zu erkennen, dass die möglichen Textfarben sowie die Hintergrundfarbe bereits unabhängig von der Farbpalette der Bildvorlage vorgegeben werden. Damit realisiert jedes Farbschema im Rahmen dieser Arbeit einen \textbf{Bunt-Unbunt-Kontrast}, was nach \citep{webx0} eine allgemeine Empfehlung für das Screendesign darstellt. Die Grafik zeigt weiterhin mögliche Abbildungen zwischen den Farbfunktionen und der Farbpalette unter \glqq{}konkrete Farbschemata\grqq{}. Für die neutrale Textfarbe stehen in Abhängigkeit vom jeweiligen Hintergrund im HTML-Dokument $weiss$ bzw. $schwarz$ zur Verfügung. Standardmäßig wird $weiss$ für den neutralen Hintergrund angenommen. Die \emph{dark}-Variante eines Farbschemas veranschaulicht eine Variante mit allgemein dunkler Farbstimmung durch die Verwendung eines dunklen Hintergrundes. Ein monochromes Farbschema beschränkt sich auf einen Farbton in verschiedenen Schattierungen. Dadurch wird ein \textbf{Qualitätskontrast} gebildet, welcher die Wirkung der Farbe mit der größten Buntheit erhöht. Das duale Farbschema besitzt zwei Farbtöne. Da Interaktions- und Akzentfarben weniger häufig auftauchen als die Elemente der Primär- und Sekundärfarben wird hierdurch ein \textbf{Quantitätskontrast} gebildet, der die selteneren Farben zusätzlich betont und so zur Bildung einer visuellen Hierarchie beiträgt. Das exemplarische tertiäre Farbschema bildet die Akzent- und Interaktionsgruppen auf unterschiedliche Farben ab und differenziert diese so zusätzlich. 
 
 \begin{figure}[h]
 	\centering
