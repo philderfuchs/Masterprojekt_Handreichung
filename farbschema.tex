@@ -50,7 +50,7 @@ Soft Constraints:
 		$\forall d \in dom: score(d) = \text{value}(V_\text{Primär}).s - d.s$
 	\item \textbf{ak:} Die Akzentfarbe soll einer möglichst kleinen Hue-Group angehören, wodurch sie mit hoher Wahrscheinlichkeit ebenfalls einen Akzent in der Bildvorlage darstellt. Außerdem soll die Sättigung möglichst hoch sein.\\
 		$\forall d \in dom: score(d) = (1 - d.hg_\text{size}) + d.s$
-	\item \textbf{in:} Die Interaktionsfarbe soll eine möglichst hohe Sättigung besitzen.\\
+	\item \textbf{in:} Die Interaktionsfarbe soll einen möglichst hohen Sättigungsunterschied zur Primärfarbe besitzen.\\
 		$\forall d \in dom: score(d) = d.s$
 	\item \textbf{hr:} Für die Hintergrundfarbe (neutral) werden die globalen Farbinformationen verwendet. Ist die durschnittliche Luminanz der Farbwerte der Bildvorlage $> 0.2$, wird $weiss$ verwendet, sonst $schwarz$.
 \end{itemize}
@@ -78,11 +78,52 @@ Soft Constraints:
 	 \item \textbf{Ergebnis Nr. 3:} Obwohl Gelb visuell  als Akzent in der Bildvorlage hervortritt, wird es als Interaktions- und nicht als Akzentfarbe bestimmt. Grund ist deren Mitgliedschaft in der Hue-Group mit den Brauntönen, wodurch das Kriterium einer möglichst kleinen Hue-Group nicht erfüllt wird. Bei der Wahl des Farbtons ist ein ansprechender Kompromiss zwischen Farbsättigung und Textlesbarkeit gelungen.
 	 \item \textbf{Ergebnis Nr. 4:} Fall mit $\#HGs(P) > 3$. Trotz der vergleichsweise hohen Zahl möglicher Farben wird die Primärfarbe erwartungsgemäß zugeordnet. Die Interaktionsfarbe wird zu Gunsten des Lesbarkeit auf eine Farbe mit geringem visuellen Effekt in der Bildvorlage abgebildet (die Lippen der Figur).
 \end{itemize}
-	
+
+\subsection{Suchverfahren für duale Farbschemata}
+
+\autoref{fig:scheme_dual} visualisiert den Factor Graph für das duale Farbschema (Fall: $\#HGs(P) = 2$). Im Gegensatz zum triadischen Farbschema wird die Wahl von Farben unterschiedlicher Hue-Groups nur noch für die Primär- und Akzentfarbe erzwungen. Stattdessen verhindert der neue Hard Constraint \emph{diff var} die Wahl gleicher Farbwerte von Akzent-, Interaktions- und Sekundärfarbe.
+ 
+ \begin{itemize}
+	\item \textbf{Ergebnis Nr. 1:} Erwartungsgemäße Färbung.
+	\item \textbf{Ergebnis Nr. 2:} Der violette Farbton wird zur Akzentfarbe, obwohl er zur größten Hue-Group gehört. Dies ist dem Umstand geschuldet, dass Dunkelblau als bester Kompromiss zwischen Textlesbarkeit und visuellem Gewicht zur Primärfarbe wird, Akzent- und Primärfarbe jedoch Teil unterschiedlicher Hue-Groups sein müssen. Primär- und Sekundärfarbe fallen zusammen, da Türkis zur Interaktionsfarbe gewählt wird und somit in der Hue-Group der Primärfarbe kein anderer Farbton mehr zur Auswahl steht.
+\end{itemize}
+ 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{img/scheme_dual.png}
+\caption{Factor Graph zur Bildung dualer Farbschemata. Die Variablen werden rund, Hard Constraints rot und Soft Constraints gelb dargestellt.}
+\label{fig:scheme_dual}
+\end{figure}
+
+\subsection{Suchverfahren für monochrome Farbschemata}
+
+\autoref{fig:scheme_dual} visualisiert den Factor Graph für monochrome Farbschemata (Fall: $\#HGs(P) = 1$). Trotz der Orientierung der Farbgestaltung an der Bildvorlage darf die Benutzerführung nicht vernachlässigt werden. Aus diesem Grund wurde die Entscheidung getroffen, die Akzent- und Interaktionsfarbe durch die Komplementärfarbe der gewählten Primärfarbe zu ergänzen. \autoref{fig:scheme_monochrom} zeigt den Factor Graph für monochrome Farbschemata, wobei nur Primär- und Sekundärfarbe entschieden werden. Daraufhin wird der Farbton der Komplementärfarbe der Primärfarbe durch $h_\text{komplementär} = (\text{value}(V_\text{Primär}).h + 180.0) \mod 360.0$ errechnet. Abschließend wird die I-Komponente der Komplementärfarbe so lange verschoben, bis ein ausreichender Luminanzkontrast zur Primärfarbe erreicht wurde. \autoref{fig:results_monochrom} veranschaulicht das Ergebnis anhand einer Bildvorlage mit nur einer einzigen dominierenden Farbton.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{img/scheme_monochrom.png}
+\caption{Factor Graph zur Bildung monochromer Farbschemata. Die Variablen werden rund und Soft Constraints gelb dargestellt.}
+\label{fig:scheme_monochrom}
+\end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.92\textwidth]{img/results_triadic.png}
-\caption{Ergebnis der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis.}
+\caption{Ergebnis der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
 \label{fig:results_triadic}
 \end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{img/results_dual.png}
+\caption{Ergebnis der automatisierten Farbgestaltung (duales Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
+\label{fig:results_dual}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{img/results_monochrom.png}
+\caption{Ergebnis der automatisierten Farbgestaltung (duales Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen.  Die blaue Farbe wurde komplementär zur Primärfarbe berechnet. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
+\label{fig:results_monochrom}
+\end{figure}
+
