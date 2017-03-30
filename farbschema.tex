@@ -10,7 +10,7 @@ In diesem Abschnitt wird eine Methode zur Lösung des Teilproblems $f_{scheme}: 
 \label{fig:fgs}
 \end{figure}
 
-Für das Suchverfahren wird ein Factor Graph modelliert. Diese Methode wurde bereits erfolgreich in der Arbeit von \citet{magazines} zur Ermittlung der Farben von Flächen in Muster eingesetzt. Ein Factor Graph ermöglicht die Beschreibung eines Constraint Graphen. Dieser repräsentiert die Aufspaltung einer komplexen Wahrscheinlichkeitsverteilung über mehrere Variablen durch deren Zerlegung in Teilfunktionen auf einer Teilmenge der Variablen. Zur Implementierung des Graphen sowie zur Inferenz möglicher Lösungen wird die Bibliothek \emph{Dimple}\footnote{\url{http://dimple.probprog.org/}} in der Programmiersprache Java verwendet.
+Für das Suchverfahren wurden Factor Graphs modelliert. Diese Methode wurde bereits erfolgreich in der Arbeit von \citet{magazines} zur Ermittlung der Farben von Flächen in Muster eingesetzt. Ein Factor Graph ermöglicht die Beschreibung eines Constraint Graphen. Dieser repräsentiert die Aufspaltung einer komplexen Wahrscheinlichkeitsverteilung über mehrere Variablen durch deren Zerlegung in Teilfunktionen auf einer Teilmenge der Variablen. Zur Implementierung des Graphen sowie zur Inferenz möglicher Lösungen wird die Bibliothek \emph{Dimple}\footnote{\url{http://dimple.probprog.org/}} in der Programmiersprache Java verwendet.
 
 Der Constraint-Graph besteht aus Knoten $C$ und Kanten $E$. Knoten beschreiben Variablen, für die Werte bestimmt werden sollen. In diesem Falle gilt $C = FGs\; \backslash$ \{Text (neutral)\}. Die Gruppe \{Text (neutral)\} wird ausgelassen, da entsprechend der Erläuterungen in \autoref{sec:architektur} die Entscheidung über die Textfarbe der Blockelemente auf Layout-Ebene  getroffen wird und nicht Teil des Suchverfahrens ist. Der Wertebereich der Variablen ist eine finite Domain $dom = \{d_0, ..., d_{n+2}\}$, welche auf $P_\text{neutral} = f_{CPE}(I) \cup \{weiss, schwarz\}$ basiert, wobei die Farbwerte um weitere Attribute erweitert werden. Die Attribute der $d \in dom$ lauten:
 
@@ -18,7 +18,7 @@ Der Constraint-Graph besteht aus Knoten $C$ und Kanten $E$. Knoten beschreiben V
 	\item \textbf{(H, S, I):} Der Farbwert im HSI-Raum.
 	\item \textbf{Gewicht:} Akkumuliertes Gewicht aller Samples des zugehörigen Segments in der hierarchischen Farbpalette (entsprechend \autoref{eq:weight}).
 	\item \textbf{Hue-Group:} Index der Hue-Group der Farbe.
-	\item \textbf{Normalisierte relative Luminanz:} Berechnung entsprechend \citep{wcag-rel-luminance}.
+	\item \textbf{Normalisierte relative Luminanz:} Berechnung entsprechend \citet{wcag-rel-luminance}.
 \end{itemize}
 
 Die Kanten entsprechen Constraints zwischen den Knoten. Es wird in Hard- und Soft-Constraints unterschieden \citep{patterns}. Hard-Constraints beschreiben Einschränkungen, die bei der Lösung des Systems nicht verletzt werden dürfen. Soft-Constraints beschreiben eine Gewichtung der möglichen Werte einer Variable in Form einer Bewertungsfunktion. So sind Eigenschaften einer Farbe beschreibbar, die sie für eine Funktionsgruppe besonders qualifizieren (z.B. eine möglichst hohe Sättigung für die Interaktionsgruppe).

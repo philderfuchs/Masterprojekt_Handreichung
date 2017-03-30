@@ -1,28 +1,28 @@
 \section{Problemlösungsverfahren und Systemarchitektur}
 \label{sec:architecture}
 
-Ausgehend von der Literaturbesprechung in \autoref{sec:literatur} sowie den Schlussfolgerungen zur Farbgestaltung von Webseiten in \autoref{sec:farbgestaltung} wird im Folgenden eine Methode zur Problemlösung besprochen. Darauf aufbauend wird in \autoref{sec:architektur} die konkrete Architektur des zu implementierenden Systems vorgestellt.
+Ausgehend von der Literaturbesprechung in \autoref{sec:literatur} sowie den Schlussfolgerungen zur Farbgestaltung von Webseiten in \autoref{sec:farbgestaltung} wird im Folgenden ein Konzept zur Problemlösung vorgestellt. Darauf aufbauend wird in \autoref{sec:architektur} die konkrete Architektur des zu implementierenden Systems präsentiert.
 
-\subsection{Regelbasierter oder probabilistischer Ansatz}
+\subsection{Regelbasierter und probabilistischer Ansatz}
 \label{sec:ansatz}
 
 \citet{webpage} stellen für die automatisierte Farbgestaltung zwei grundlegende Herangehensweisen vor:
 
 \begin{enumerate}
 	\item \textbf{Regelbasiert:} Beschreibt quantitative Modelle mit determinstischem Regelwerk. Die Arbeit von \citet{magazines} zur automatisierten Färbung von Magazincovern stellt hierfür ein Beispiel dar. Durch die Analyse von Farbharmonie-Modellen wurden Regeln für Farbbeziehungen abgeleitet.
-	\item \textbf{Datengetrieben:} Beschreibt Modelle, welche die Performanz möglicher Lösungen einer automatisierten Farbgestaltung auf Grundlage existierender Beispieldaten vorhersagt.
+	\item \textbf{Datengetrieben:} Beschreibt Modelle, welche die Güte möglicher Lösungen einer automatisiert erzeugten Farbgestaltung auf Grundlage existierender Beispieldaten prognostiziert.
 \end{enumerate}
 
 Die regelbasierten Modelle treffen strickte Aussagen auf einem gewissen Abstraktionsgrad durch eine Vereinfachung des Problems bis zu einer Ebene, auf der Entscheidungen auf Grundlage weniger Parameter getroffen werden (z.B. durch die Angabe fester Grenzwerte). Im Gegensatz dazu stützen sich die Modelle des datengetriebenen Ansatzes auf reale Beispiele und tendieren daher zu robusteren Ergebnissen in der Anwendungsdomäne \citep{webpage}. Durch die Vielfalt der Beispieldaten findet ein verstärkter Einsatz probabilistischer Modelle statt \citep[siehe z.B.][]{webpage, patterns}.
 
-Da bei probabilistischen Modellen alle potentiellen Lösungen bewertet und gegeneinander abgewogen werden müssen, sind hohe Laufzeiten möglich. Die bereits entwickelte Lösung von \citet{webpage} zur automatisierten Farbgestaltung von Webseiten benötigt selbst nach einer Optimierung des Suchverfahrens, bei der unwahrscheinliche Lösungen frühzeitig ausgeschlossen werden, bis zu 2 Stunden zur Konvergenz. Darüber hinaus ist deren vorgestellter Prozess zur Anpassung der Farbgestaltung einer Webseite an eine Bildvorlage nicht im eigentlichen Sinne automatisiert: Einerseits erfordert die Verwendung des K-Means Algorithmus zur CPE die Eingabe der Farbanzahl ($k$) vom Gestalter, andererseits erfordert die lexikographische Strategie einen Nutzerinteraktion während des Optimierungsprozesses.
+Da bei datengetriebenen Modellen alle potentiellen Lösungen bewertet und gegeneinander abgewogen werden müssen, sind hohe Laufzeiten möglich. Die bereits entwickelte Lösung von \citet{webpage} zur automatisierten Farbgestaltung von Webseiten benötigt selbst nach einer Optimierung des Suchverfahrens, bei der unwahrscheinliche Lösungen frühzeitig ausgeschlossen werden, bis zu 2 Stunden zur Konvergenz. Darüber hinaus ist der vorgestellter Prozess zur Anpassung der Farbgestaltung einer Webseite an eine Bildvorlage nicht im eigentlichen Sinne automatisiert: Einerseits erfordert die Verwendung des K-Means Algorithmus zur CPE die Eingabe der Farbanzahl ($k$) vom Gestalter, andererseits erfordert die lexikographische Strategie einen Nutzerinteraktion während des Optimierungsprozesses.
 
 Aus diesen Gründen wird sich in dieser Arbeit für eine vollautomatisierte, regelbasierte Lösungsmethode entschieden. Auch ohne die Auswertung großer Datenmengen existieren quantitative Modelle zur Gewährleistung der Textlesbarkeit und Benutzerführung, wie z.B. die in \ref{sec:lesbarkeit} vorgestellten quantitativen Grenzwerte der \emph{Web Content Accessibility Guidelines}.
 
 \subsection{Layouts}
 \label{sec:layouts}
 
-Ziel dieser Arbeit die Färbung eines konkreten Webseite. Das Parsing eines solchen HTML-Dokuments zur Erschließung aller $e \in CG$ sowie die Speicherung aller topologischen Informationen dieser Elemente innerhalb einer Seite führt jedoch eine zusätzliche Ebene der Komplexität in das zu lösende Problem ein. Der CSS-Standard sieht durch die Klassen-Selektoren \citep{css3-selectors} ohnehin die Auszeichnung einheitlicher darzustellender Elemente bereits auf Ebene der Dokumentenbeschreibung vor. Dementsprechend wird von der konkreten HTML-Beschreibung einer Webseite als  \textbf{Layout} abstrahiert. Ein Layout definiert:
+Ziel dieser Arbeit die Färbung einer konkreten Webseite. Das Parsing eines solchen HTML-Dokuments zur Erschließung aller $e \in CG$ sowie die Speicherung aller topologischen Informationen dieser Elemente innerhalb einer Seite führt jedoch eine zusätzliche Ebene der Komplexität in das zu lösende Problem ein. Der CSS-Standard sieht durch die Klassen-Selektoren \citep{css3-selectors} ohnehin die Auszeichnung einheitlicher darzustellender Elemente bereits auf Ebene der Dokumentenbeschreibung vor. Dementsprechend wird von der konkreten HTML-Beschreibung einer Webseite abstrahiert und dieses als \textbf{Layout} betrachtet. Ein Layout definiert:
 
 \begin{enumerate}
 	\item $FGs$: Die Menge der $k$ Funktionsgruppen $FGs$. Entsprechend \autoref{sec:farbgestaltung} wird diese standardmäßig auf $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\} festgelegt.
@@ -30,16 +30,16 @@ Ziel dieser Arbeit die Färbung eines konkreten Webseite. Das Parsing eines solc
  	\item $CGs \to FGs$: Die Abbildung der Color Groups auf Funktionsgruppen. Beispielsweise definiert ein Layout selbst, welche Elementen interaktiv sind und somit zur Funktionsgruppe \emph{Interaktion} gehören.
 \end{enumerate}
 
-Somit wird die Komplexität der Suchverfahren reduziert, indem die Menge der Funktionsgruppen als konstant angesehen wird und die konkrete Topologie der Oberflächenelemente innerhalb des HTML-Dokuments im Verantwortungsbereich des Layouts liegt.
+Dadurch wird die Komplexität der Suchverfahren reduziert, indem die Menge der Funktionsgruppen als konstant angesehen wird und die konkrete Topologie der Oberflächenelemente innerhalb des HTML-Dokuments im Verantwortungsbereich des Layouts liegt.
 
 \subsection{Aufteilung der Suchverfahren}
 \label{sec:aufteilung}
 
-Nach den Erläuterungen in den vorangegangenen Abschnitten ergibt sich die formale Darstellung der automatisierten Farbgestaltung einer Webseite aus einer Bildvorlage als die Abbildung $f_\text{coloration}: (CPs \to FGs) \to (I \to P)$. In \autoref{sec:layouts} wurde dargestellt, dass zur Lösungssuche die Ermittlung der Abbildung $CGs \to FGs$ als gegeben durch das Layout angesehen und somit aus der Betrachtung entfernt wird. Weiterhin existieren die Teilprobleme (1) $f_{CPE}: I \to P$, d.h. die Ermittlung von $n$ repräsentativen Farben einer Bildvorlage sowie (2) Die Ermittlung des Farbschemas $f_\text{scheme}: FGs \to P$, d.h. die Auswahl von $k$ Farben aus der Palette und deren Zuordnung zu den Funktionsgruppen.
+Nach den Erläuterungen in den vorangegangenen Abschnitten ergibt sich die formale Darstellung der automatisierten Farbgestaltung einer Webseite aus einer Bildvorlage als die Abbildung $f_\text{coloration}: (CPs \to FGs) \to (I \to P)$. In \autoref{sec:layouts} wurde dargestellt, dass die Abbildung $CGs \to FGs$ durch das Layout gegeben ist und somit bei der Lösungssuche aus der Betrachtung entfernt wird. Weiterhin existieren die Teilprobleme (1) $f_{CPE}: I \to P$, d.h. die Ermittlung von $n$ repräsentativen Farben einer Bildvorlage sowie (2) Die Ermittlung des Farbschemas $f_\text{scheme}: FGs \to P$, d.h. die Auswahl von $k$ Farben aus der Palette und deren Zuordnung zu den Funktionsgruppen.
 
-In \autoref{sec:architektur} wurde ein regelbasierter Ansatz zur Lösungssuche gewählt. Die Regeln werden im Folgenden als \textbf{Constraints} bezeichnet. Es existieren zwei Herangehensweisen:
+In \autoref{sec:ansatz} wurde ein regelbasierter Ansatz zur Lösungssuche gewählt. Die Regeln werden im Folgenden als \textbf{Constraints} bezeichnet. Es existieren zwei Herangehensweisen:
 \begin{enumerate}
-    \item \textbf{Constraints-First}: Setze $|FGs| = k = n = |P|$. $P$ wird in Abhängigkeit vom Layout ermittelt. Hierbei wird die Bildung des Farbschemas zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Funktionsgruppen mit deren gewünschten Eigenschaften ist der Suchraum das Histogramm der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwenden ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
+    \item \textbf{Constraints-First}: Setze $|FGs| = k = n = |P|$. $P$ wird in Abhängigkeit vom Layout ermittelt. Hierbei wird die Bildung des Farbschemas zum Zeitpunkt der CPE verlagert. Unter Kenntnis der Funktionsgruppen mit deren gewünschten Eigenschaften ist der Suchraum das Histogramm der Bildvorlage. Dieser Ansatz wird unter anderem von \citet{colorcomp} verfolgt. Sie verwendeten ihr Regressionsmodell zur Bewertung der Farbharmonie, um eine alternative Optimierungsfunktionen zur Suche von $P$ im Farbraum einer Bildvorlage zu formulieren.
     \item \textbf{Constraints-Last}: Setze $k \leq n$. $P$ wird unabhängig vom Layout ermittelt. Der Suchraum für das Farbschema beschränkt sich auf die Farben in $P$. Dieser Ansatz wird ebenfalls von \citep{webpage} bei der datengetriebenen Färbung von Webseiten verfolgt.
 \end{enumerate}
 
@@ -55,9 +55,9 @@ Für diese Arbeit wird die Herangehensweise \textbf{Constraints-Last} bevorzugt,
 	\label{fig:architecture}
 \end{figure}
 
-Abbildung \ref{fig:architecture} fasst die Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage $weiss$ und $schwarz$ für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette entsprechend ergänzt: $P_\text{neutral} = f_{CPE}(I) \cup \{weiss, schwarz\}$.
+Abbildung \ref{fig:architecture} fasst die in dieser Arbeit entworfene Systemarchitektur für die die automatisierte Farbgestaltung einer Webseite zusammen. Parameter 1 ist die Bildvorlage \emph{I}, welche durch einen Algorithmus zur Color Palette Estimation $f_{CPE}$ auf eine Menge repräsentativer Farben abgebildet wird. Aus \autoref{sec:usability} folgt, dass unabhängig von der Bildvorlage $weiss$ und $schwarz$ für den neutralen Text bzw. Hintergrund benötigt werden. Darum wird die Farbpalette entsprechend ergänzt: $P_\text{neutral} = f_{CPE}(I) \cup \{weiss, schwarz\}$.
 
-Parameter 2 sind die Funktionsgruppen, welche in \autoref{sec:funktionsgruppen} festgelegt wurden. Durch ein Suchverfahren $f_\text{scheme}$ werden Farben für $\forall fg \in FGs$ gesucht, d.h. es wird ein Farbschema gebildet. Hierfür wird ein Constraint System modelliert, welches durch die von \citet{patterns} vorgestellten Factor Graphs realisiert wird.
+Parameter 2 sind die Funktionsgruppen, welche in \autoref{sec:funktionsgruppen} festgelegt wurden. Durch ein Suchverfahren $f_\text{scheme}$ werden Farben für $\forall fg \in FGs$ gesucht, d.h. es wird ein Farbschema gebildet. Hierfür wird ein Constraint System modelliert, welches durch die von \citet{patterns} vorgestellten Factor Graphs realisiert wurde.
 
 Durch die Funktionsgruppen wird im Constraint System von der konkreten Topologie der Oberflächenelemente innerhalb der Webseite abstrahiert. Dies spiegelt sich darin wieder, dass für die Funktionsgruppe \glqq{}Text (neutral)\grqq{} keine bestimmte Farbe durch das Constraint System festgelegt wird, sondern sowohl $weiss$ als auch $schwarz$ zur Auswahl gestellt werden. Darum wird auf der Layout-Ebene für Block-Elemente pauschal diejenige Textfarbe festgelegt, welche unter Verwendung der Formel zur Berechnung des Konstrastverhältnisses $L_c$ aus \autoref{sec:lesbarkeit} den besseren Kontrast liefert:
 
