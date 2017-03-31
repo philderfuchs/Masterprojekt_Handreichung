@@ -13,16 +13,14 @@ Der CSS-Standard zur Beschreibung der Formatierung von HTML-Dokumenten definiert
 \end{enumerate}
 Es wird also die Farbbestimmung von Vorder- und Hintergrundfarben fokussiert. Rahmen, Textdekoration und sonstige färbbare Eigenschaften werden nicht betrachtet.
 
-Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die selbe Farbe abgebildet. Ein Beispiel ist die Darstellung aller Links ($e.c_\text{text}$) sowie Buttons ($e.c_\text{background}$) in Blau. Im Folgenden wird eine Liste von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG = (e_1, e_2, ...) $ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite heißt \textbf{Color Groups} $CGs = \{CG_1, ... CG_m\}$ mit $|CGs| = m$. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (b) die sechs Color Groups separat hervorhebt.
+Üblicherweise werden mehrere Elemente eines HTML-Dokuments auf die selbe Farbe abgebildet. Ein Beispiel ist die Darstellung aller Links ($e.c_\text{text}$) sowie Buttons ($e.c_\text{background}$) in Blau. Im Folgenden wird eine Liste von Elementen einer Webseite mit gleicher Farbabbildung als \textbf{Color Group} $CG = (e_1, e_2, ...) $ bezeichnet \citep[siehe auch][]{webpage, patterns}. Die Menge aller Color Groups einer Webseite heißt \textbf{Color Groups} $CGs = \{CG_1, ... CG_m\}$ mit $|CGs| = m$. Abbildung \ref{fig:colorgroups} veranschaulicht dies anhand einer exemplarischen Webseite für Musik-Streaming. (a) zeigt ein generisches Farbdesign, während (c) die sechs Color Groups separat hervorhebt.
 
-\begin{figure}[]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{img/color_groups.png}
-	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. (a) Generische Farbgestaltung ohne Anpassung an das Albumcover. (b) Separate Hervorhebung der sechs Color Groups. Elemente einer Color Group sind jeweils rot dargestellt. (c) Beispiel einer Farbgestaltung mit Anpassung an das Album Cover.}
+	\includegraphics[width=0.7\textwidth]{img/color_groups.png}
+	\caption{Beispiel der Farbgestaltung einer exemplarischen Weboberfläche für Musik-Streaming. (a) Generische Farbgestaltung ohne Anpassung an das Albumcover. (b) Beispiel einer Farbgestaltung mit Anpassung an das Album Cover. (c) Separate Hervorhebung der sechs Color Groups. Elemente einer Color Group sind jeweils rot dargestellt.}
 	\label{fig:colorgroups}
 \end{figure}
-
-\textcolor{red}{TODO: Abbildung updaten}
 
 Webdesigner reduzieren die Größe des Suchraums zur Identifizierung geeigneter Farben für Color Groups durch die Verwendung einer sogenannten \textbf{Farbpalette} \citep{webpage, webdesign, webx0}. Dabei handelt es sich um eine Farbmenge $P = \{c_1, c_2, \ldots, c_n\}$ mit $n$ Farben, wobei jedes $c \in P$ als String von RGB Werten kodiert wird. Die Farbgestaltung einer Webseite ist die Abbildung aller enthaltenen Color Groups auf eine Farbe der Palette. Dies wird als die Funktion $f_\text{coloration}: CGs \to P$ mit folgender Definition modelliert:
 
@@ -40,7 +38,7 @@ Webdesigner reduzieren die Größe des Suchraums zur Identifizierung geeigneter 
 
 Ein entscheidendes Kriterium für die Zuordnung  ist eine funktionale Gestaltung der Webseite. Im Rahmen dieser Arbeit wird hierunter eine Färbung der Oberflächenelemente verstanden, die \textbf{Textlesbarkeit} und \textbf{Benutzerführung} gewährleistet. Eine intuitiv widersinnige Färbung ist beispielsweise roter Text auf orangem Hintergrund mit grauem Button. Weder ist der Text lesbar, noch wird die Aufmerksamkeit des Nutzers auf das Interaktionselement gelenkt.
 
-\textbf{Die Farbpalette soll auf einer Bildvorlage basieren.} So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die Farben einer Webseite wesentlich für die vermittelte Atmosphäre sind \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv die Wirkung des Bildes unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist potentiell eine Berechnung der Farbgestaltung zur Laufzeit möglich. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Webanwendung für Musikstreaming an das Cover der gespielten Albums. Abbildung \ref{fig:colorgroups} (c) zeigt hierfür ein Beispiel. Die Ermittlung von $P$ aus einer Grafik ist ein eigener Problembereich, welcher im Folgenden vorgestellt wird.
+\textbf{Die Farbpalette soll auf einer Bildvorlage basieren.} So wird eine Harmonisierung des visuellen Eindrucks einer Weboberfläche und einer darin präsenten Grafik erreicht. Da die Farben einer Webseite wesentlich für die vermittelte Atmosphäre sind \citep{webdesign}, soll die Anpassung der Farbgebung an ein Motiv die Wirkung des Bildes unterstützen. Da die Farbpalette somit auf den verarbeiteten Daten basiert, ist potentiell eine Berechnung der Farbgestaltung zur Laufzeit möglich. Ein Anwendungsbeispiel hierfür ist die farbliche Anpassung einer Webanwendung für Musikstreaming an das Cover der gespielten Albums. Abbildung \ref{fig:colorgroups} (b) zeigt hierfür ein Beispiel. Die Ermittlung von $P$ aus einer Grafik ist ein eigener Problembereich, welcher im Folgenden vorgestellt wird.
 
 \subsection{Farbpaletten aus Bildvorlagen}
 \label{sec:bildvorlagen}
