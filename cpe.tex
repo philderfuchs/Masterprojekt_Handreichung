@@ -21,9 +21,9 @@ Ein Schnitt des Dendograms entspricht einer Partitionierung des Raums, was dem R
 
 Für eine detailliertere Vorstellung von Algorithmen zur CPE verweist der Autor auf \citet{categorization2}.
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
-\includegraphics[width=0.48\textwidth]{img/peppers.png}
+\includegraphics[width=0.7\textwidth]{img/peppers.png}
 \caption{CPE Ergebnis von ACoPa. (a) Originalbild "Peppers". (b) Hierarchische Farbpalette. Die oberste Ebene identifiziert die wesentlichen Farbtöne. Ebene 2 bildet Sättigungsstufen. Ebene 3 schlüsselt das Ergebnis weiterhin in Helligkeitsstufen auf und zeigt die finalen Farben. (Quelle: \citep{acopa})}
 \label{fig:peppers}
 \end{figure}
@@ -115,14 +115,14 @@ Das Verfahren zur Histogramm-Segmentierung wird in \citep{ftc} als \textbf{Fine-
 
 Der ACoPa Algorithmus besteht aus einer hierarchischen Anwendung des FTC-Segmentation Algorithmus. Dabei wird zuerst der $H$-, danach der $S$- und abschließend der $I$-Kanal segmentiert. In jedem Schritt werden die Samples der entstandenen Segmente aufgeteilt und die Histogramme der nächsten Ebene separat berechnet. Das Ergebnis ist eine hierarchische Farbpalette. Abbildung \ref{fig:palette} zeigt dies am Beispiel der Covers aus Abbildung \ref{fig:h_segmentation}. Auf oberster Ebene (H) werden die grundsätzlichen Farbtöne des Bildes identifiziert. Auf der zweiten Ebene (S) werden die jeweiligen Farbtöne in unterschiedliche Sättigungsstufen aufgeteilt. Auf der dritten Ebene (I) werden von den Sättigungen verschiedene Helligkeitsabstufungen gebildet.
 
-Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial erschlossenen Farbtöne in \textbf{Hue-Groups (HG)} unterteilt. Somit wird für $\forall c \in P$ gleichzeitig erfasst, welche Farben konkrete Ausprägungen eines gemeinsamen Farbtons darstellen. \citet{acopa} empfehlen zusätzlich, die Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt das Ergebnis nach Konvergenz. Obwohl sich die Clusterzentren den im Bild enthaltenen Farben angenähert haben, ist zu sehen, wie hierdurch die Zuordnung zu den Hue-Groups verloren geht. Entsprechend der Argumentation in \autoref{sec:cpe-ueberblick} ist diese Zuordnung jedoch günstig zur Bildung von Farbschemata. Aus diesem Grund wird auf die nachgeschaltete Anwendung des K-Means Algorithmus verzichtet.
-
 \begin{figure}[]
 \centering
-\includegraphics[width=0.95\textwidth]{img/palette.png}
-\caption{(a) Hierarchische Farbpalette. Die 14 Farben sind in 4 Hue-Groups angeordnet. Die I-Ebene bildet die Farbpalette der Bildvoralge. (b) Farbpalette nach Anwendung von K-Means.}
+\includegraphics[width=0.5\textwidth]{img/palette.png}
+\caption{(a) Hierarchische Farbpalette des Covers aus \autoref{fig:h_segmentation}. Die 14 Farben sind in 4 Hue-Groups angeordnet. Die I-Ebene bildet die Farbpalette der Bildvoralge. (b) Farbpalette nach Anwendung von K-Means.}
 \label{fig:palette}
 \end{figure}
+
+Die letzte Ebene (I) bildet die Farbpalette $P$. Sie wird durch die initial erschlossenen Farbtöne in \textbf{Hue-Groups (HG)} unterteilt. Somit wird für $\forall c \in P$ gleichzeitig erfasst, welche Farben konkrete Ausprägungen eines gemeinsamen Farbtons darstellen. \citet{acopa} empfehlen zusätzlich, die Farben als Startpunkte für den K-Means Algorithmus zu verwenden. Abbildung \ref{fig:palette} (b) zeigt das Ergebnis nach Konvergenz. Obwohl sich die Clusterzentren den im Bild enthaltenen Farben angenähert haben, ist zu sehen, wie hierdurch die Zuordnung zu den Hue-Groups verloren geht. Entsprechend der Argumentation in \autoref{sec:cpe-ueberblick} ist diese Zuordnung jedoch günstig zur Bildung von Farbschemata. Aus diesem Grund wird auf die nachgeschaltete Anwendung des K-Means Algorithmus verzichtet.
 
 \subsection{Vorverarbeitung des Histogramms}
 \label{sec:vorverarbeitung}
