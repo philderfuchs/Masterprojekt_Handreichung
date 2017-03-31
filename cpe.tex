@@ -131,7 +131,7 @@ In \autoref{sec:architektur} wurde durch $P_\text{neutral}$ festgelegt, dass die
 
 \autoref{fig:h_segmentation} lässt außerdem erkennen, dass die resultierende Farbpalette zwar die Farbdetails der Bildvorlage berücksichtigt, umgekehrt jedoch nicht sofort jede Farbe der Palette intuitiv einem Bildobjekt zugeordnet werden kann. \citet{image-based-schemes} schlagen daher die Anwendung eines Weichzeichnungsfilter (Mittelwert) zur Reduzierung der gebildeten Abstufungen vor. \autoref{fig:grey_cylinder} veranschaulicht das Resultat nach Filterung des Grau-Zylinders und Weichzeichnung des Histogramms. Als Nebeneffekt wird auf diese Weise der Suchraum für die Ermittlung des Farbschemas reduziert, wodurch Laufzeiten verbessert werden.
 
-\begin{figure}[]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{img/grey_cylinder.png}
 \caption{(a) Hierarchische Farbpalette ohne Vorverarbeitung des Histogramms. (b) Hierarchische Farbpalette mit Filterung der Grau-Zylinders ($S < \theta = 0.1$) und Weichzeichnung des Histogramms. Die Hue-Group mit Farben geringer Sättigung entfällt. Es werden weniger Sättigungs- und Helligkeitsstufen gebildet, die sich intuitiver den Farben der Bildvorlage zuordnen lassen.}

@@ -1,25 +1,27 @@
 \section{Suchverfahren für Farbschemata}
 \label{sec:farbschema}
 
-In diesem Abschnitt wird eine Methode zur Lösung des Teilproblems $f_{scheme}: FGs \to P$ vorgeschlagen. Hierbei werden Farben aus $P$ für die Funktionsgruppen eines Layouts festgelegt, wodurch die Farbgestaltung der Webseite definiert wird. Zur Veranschaulichung wird ein exemplarisches Layout einer Webseite für Musikstreaming verwendet. Es enthält die in \autoref{sec:architektur} festgelegten Funktionsgruppen $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\}. \autoref{fig:fgs} hebt die Funktionsgruppen des Layouts separat hervor.
+In diesem Abschnitt wird eine Methode zur Lösung des Teilproblems $f_{scheme}: FGs \to P$ vorgeschlagen. Hierbei werden Farben aus $P$ für die Funktionsgruppen eines Layouts festgelegt, wodurch die Farbgestaltung der Webseite definiert wird. Zur Veranschaulichung wird ein exemplarisches Layout einer Webseite für Musikstreaming verwendet. Es enthält die in \autoref{sec:architektur} festgelegten Funktionsgruppen $FGs = $ \{Primär, Sekundär, Akzent, Interaktion, Text (neutral), Hintergrund (neutral)\}. In \autoref{fig:fgs} werden die Funktionsgruppen des Layouts separat hervorgehoben.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.95\textwidth]{img/fgs.png}
-\caption{Funktionsgruppen des exemplarischen Layouts einer  Webseite für Musikstreaming. Alle Oberflächenkomponenten, die zur der jeweiligen Funktionsgruppe gehören, sind rot hervorgehoben.}
+\includegraphics[width=1\textwidth]{img/fgs.png}
+\caption{Funktionsgruppen des exemplarischen Layouts einer  Webseite für Musikstreaming. Alle Oberflächenkomponenten, die zur der jeweiligen Funktionsgruppe gehören, werden rot hervorgehoben.}
 \label{fig:fgs}
 \end{figure}
 
-Für das Suchverfahren wurden Factor Graphs modelliert. Diese Methode wurde bereits erfolgreich in der Arbeit von \citet{magazines} zur Ermittlung der Farben von Flächen in Mustern eingesetzt. Ein Factor Graph ermöglicht die Beschreibung eines Constraint Graphen. Dieser repräsentiert die Aufspaltung einer komplexen Wahrscheinlichkeitsverteilung über mehrere Variablen durch deren Zerlegung in Teilfunktionen auf einer Teilmenge der Variablen. Zur Implementierung des Graphen sowie zur Inferenz möglicher Lösungen wird die Bibliothek \emph{Dimple}\footnote{\url{http://dimple.probprog.org/}} in der Programmiersprache Java verwendet.
+Für das Suchverfahren wurden \emph{Factor Graphs} modelliert. Diese Methode wurde bereits erfolgreich in der Arbeit von \citet{magazines} zur Ermittlung der Farben von Flächen in Mustern eingesetzt. Ein Factor Graph ermöglicht die Beschreibung eines Constraint Graphen. Dieser repräsentiert die Aufspaltung einer komplexen Wahrscheinlichkeitsverteilung über mehrere Variablen durch deren Zerlegung in Teilfunktionen auf einer Teilmenge der Variablen. Zur Implementierung des Graphen sowie zur Inferenz möglicher Lösungen wurde die Bibliothek \emph{Dimple}\footnote{\url{http://dimple.probprog.org/}} in der Programmiersprache Java verwendet.
 
-Der Constraint-Graph besteht aus Knoten $V$ und Kanten $E$. Knoten beschreiben Variablen, für die Werte gesucht werden. In diesem Falle gilt $V = FGs\; \backslash$ \{Text (neutral)\}. Die Gruppe \{Text (neutral)\} wird ausgelassen, da entsprechend der Erläuterungen in \autoref{sec:architektur} die Entscheidung über die jeweilige Textfarbe der Blockelemente auf Layout-Ebene  getroffen wird und nicht Teil des Suchverfahrens ist. Der Wertebereich der Variablen für die FGs \{Primär, Sekundär, Akzent, Interaktion\} ist eine finite Domain $dom = \{d_1, ..., d_{n}\}$. Die Elemente in $dom$ korrespondieren mit Farbwerten in $P = \{c_1, .., c_n\}$ und stellen einen eigenen Datentyp dar. Die Attribute der $d \in dom$ lauten:
+Der Constraint-Graph besteht aus einer Menge an Knoten $V$ und Kanten $E$. Knoten beschreiben Variablen, für die eine Wertebesetzung gesucht wird. In diesem Falle gilt $V = FGs\; \backslash$ \{Text (neutral)\}. Die Gruppe \{Text (neutral)\} wird ausgelassen, da entsprechend der Erläuterungen in \autoref{sec:architektur} die Entscheidung über die jeweilige Textfarbe der Blockelemente auf Layout-Ebene  getroffen wird und nicht Teil des Suchverfahrens ist. Der Wertebereich der Variablen für die FGs \{Primär, Sekundär, Akzent, Interaktion\} ist eine finite Domain $dom = \{d_1, ..., d_{n}\}$. Die Elemente in $dom$ korrespondieren mit Farbwerten in $P = \{c_1, .., c_n\}$ und stellen einen eigenen Datentyp dar. Die Attribute der $d \in dom$ lauten:
+
+\pagebreak
 
 \begin{itemize}
 	\item \textbf{$h$, $s$, $i$:} Der Farbwert im HSI Raum.
-	\item \textbf{$r$, $g$, $b$:} Der Farbwert im RGB Raum. Wird für die Berechnung des Kontrastverhältnisses $L_c()$ benötigt.
+	\item \textbf{$r$, $g$, $b$:} Der Farbwert im RGB Raum. Dieser wird für die Berechnung des Kontrastverhältnisses $L_c()$ benötigt.
 	\item \textbf{Gewicht $weight$:} Relatives Gewicht des Segments in der hierarchischen Farbpalette. Hierzu werden die Gewichte (entsprechend \autoref{eq:weight}) aller Samples des Segments addiert und durch das Gewicht des gesamten Histogramms dividiert.
 	\item \textbf{Hue-Group $hg$:} Index der Hue-Group der Farbe.
-	\item \textbf{Größe der Hue-Group} $hg_\text{size}$: Relativer Anteil der Farben in $P$, die $\in hg$ sind.
+	\item \textbf{Größe der Hue-Group} $hg_\text{size}$: Relativer Anteil der Farben in $P \in hg$.
 \end{itemize}
 
 Für die Funktionsgruppe \{Hintergrund (neutral)\} wird der Suchraum auf $weiss$ und $schwarz$ beschränkt.
@@ -28,11 +30,11 @@ Die Kanten $E$ entsprechen Constraints zwischen den Knoten. Es wird in Hard und 
 
 In \autoref{sec:farbschemata} wurde der Typ eines Farbschemas daran unterschieden, wie viele verschiedene Farbtöne enthalten sind. Ein \emph{monochromes} Farbschema enthält einen Farbton, ein \emph{duales} zwei und ein \emph{triadisches} Farbschema drei verschiedene Farbtöne. Der ACoPa-Algorithmus ermittelt die Anzahl verschiedener Farbtöne eines Bildes, wodurch ebenfalls der Typ einer Farbpalette durch Analyse der Anzahl enthaltener Hue-Groups $\#HGs(P)$ feststellbar ist. Dementsprechend führt eine Farbpalette mit $\#HGs(P) = 1$ zu einem monochromen Farbschema, eine Farbpalette mit $\#HGs(P) = 2$ zu einem dualen und mit $\#HGs(P) \geq 3$ zu einem triadischen Farbschema. Auf diese Art und Weise spiegelt sich die wahrgenommene \glqq{}Buntheit\grqq{} einer Bildvorlage (im Sinne der Anzahl enthaltener Farbtöne) in einer entsprechend bunten Weboberfläche wieder, und umgekehrt. Farbpaletten mit mehr als drei verschiedenen Farbtönen werden auf ein triadisches Farbschema reduziert, da entsprechend \autoref{sec:farbschemata} die Verwendung von mehr Farbtönen nicht sinnvoll für die Benutzerführung ist.
 
-Im Folgenden wird für jeden Typ ein separater Factor Graph entworfen. Die Ergebnisse werden anhand des prototypischen Layouts aus \autoref{fig:fgs} veranschaulicht.
+Für jeden Typ wurde ein separater Factor Graph entworfen. Diese werden im Folgenden vorgestellt und Ergebnisse anhand des prototypischen Layouts aus \autoref{fig:fgs} veranschaulicht.
 
 \subsection{Suchverfahren für triadische Farbschemata}
 
-\autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen. Quadrate repräsentieren Constraints, die sich auf die Variablen beziehen, zu denen Verbindungen eingezeichnet sind. Hard Constraints sind rot dargestellt, Soft Constraints gelb. Im Folgenden werden die Constraints erläutert.
+\autoref{fig:scheme_triadic} visualisiert den Factor Graph für das triadische Farbschema (Fall: $\#HGs(P) \geq 3$). Die Kreise repräsentieren die Variablen. Quadrate repräsentieren Constraints, die sich auf die Variablen beziehen, zu denen Verbindungen bestehen. Hard Constraints sind rot dargestellt, Soft Constraints gelb. Im Folgenden werden die Constraints erläutert.
 
 Hard Constraints:
 \begin{itemize}
@@ -72,35 +74,36 @@ Soft Constraints:
 \label{fig:scheme_triadic}
 \end{figure}
 
-\autoref{fig:results_triadic} veranschaulicht die Ergebnisse des Suchverfahrens anhand der exemplarischen Weboberfläche für Musikstreaming. Dabei zeigt (b) jeweils die hierarchische Farbpalette mit den Funktionsgruppen, die durch Inferenz auf dem Factor Graph von Dimple zugeordnet wurden. \emph{Pr} steht für Primär, \emph{Se} für Sekundär, \emph{Ak} für Akzent, \emph{In} für Interaktion und \emph{Hi} für Hintergrund (neutral). Die Farbe für letztere Funktionsgruppe ist abgesetzt dargestellt, da sie nicht Teil der hierarchischen Farbpalette ist. Der Gradient wird via CSS beschrieben und verläuft von der Primär- zur Akzentfarbe mit einem Alpha-Wert von 0.8.
+\autoref{fig:results_triadic} veranschaulicht einige Ergebnisse des Suchverfahrens anhand der exemplarischen Weboberfläche für Musikstreaming. Dabei zeigt (b) jeweils die hierarchische Farbpalette mit den Funktionsgruppen, die durch Inferenz auf dem Factor Graph von Dimple zugeordnet wurden. \emph{Pr} steht für Primär, \emph{Se} für Sekundär, \emph{Ak} für Akzent, \emph{In} für Interaktion und \emph{Hi} für Hintergrund (neutral). Die Farbe für letztere Funktionsgruppe ist abgesetzt dargestellt, da sie nicht Teil der hierarchischen Farbpalette ist. Der Gradient wird via CSS beschrieben und verläuft von der Primär- zur Akzentfarbe mit einem Alpha-Wert von 0.8.
 
 \begin{itemize}
 	\item \textbf{Ergebnis Nr. 1:} Erwartungsgemäße Färbung. Die Wahl der Primärfarbe unterstützt die Lesbarkeit.
-	\item \textbf{Ergebnis Nr. 2:} Blau wurde aufgrund des hohen visuellen Gewichts in der Bildvorlage als Primärfarbe selektiert. Da sich keine weitere Farbe in der selben Hue-Group befindet, wird die Sekundärfarbe auf den selben Farbwert abgebildet.
-	 \item \textbf{Ergebnis Nr. 3:} Obwohl Gelb visuell  als Akzent in der Bildvorlage hervortritt, wird es als Interaktions- und nicht als Akzentfarbe bestimmt. Grund ist deren Mitgliedschaft in der Hue-Group mit den Brauntönen, wodurch das Kriterium einer möglichst kleinen Hue-Group nicht erfüllt wird. Bei der Wahl der konkreten Helligkeitsstufe ist ein ansprechender Kompromiss zwischen Buntheit und Textlesbarkeit gelungen.
-	 \item \textbf{Ergebnis Nr. 4:} Fall mit $\#HGs(P) > 3$. Trotz der vergleichsweise hohen Anzahl möglicher Farben wird die Primärfarbe erwartungsgemäß zugeordnet. Die Interaktionsfarbe wird zu Gunsten des Lesbarkeit auf eine Farbe mit geringem visuellen Effekt in der Bildvorlage abgebildet (die Lippen der Figur).
+	\item \textbf{Ergebnis Nr. 2:} Blau wurde aufgrund des hohen visuellen Gewichts als Primärfarbe selektiert. Da sich keine weitere Farbe in der selben Hue-Group befindet, wurd die Sekundärfarbe auf den selben Farbwert abgebildet.
+	 \item \textbf{Ergebnis Nr. 3:} Obwohl Gelb visuell als Akzent in der Bildvorlage hervortritt, wurde es als Interaktions- und nicht als Akzentfarbe bestimmt. Grund ist dessen Mitgliedschaft in der Hue-Group mit den Brauntönen, wodurch das Kriterium einer möglichst kleinen Hue-Group nicht erfüllt wurde. Bei der Wahl der konkreten Helligkeitsstufe ist ein ansprechender Kompromiss zwischen Buntheit und Textlesbarkeit gelungen.
+	 \item \textbf{Ergebnis Nr. 4:} Fall mit $\#HGs(P) > 3$. Trotz der vergleichsweise hohen Anzahl möglicher Farben wurde die Primärfarbe erwartungsgemäß zugeordnet. Die Interaktionsfarbe wurde zu Gunsten der Lesbarkeit auf eine Farbe mit geringem visuellen Effekt in der Bildvorlage abgebildet (die Lippen der Figur).
 \end{itemize}
 
 \subsection{Suchverfahren für duale Farbschemata}
 
 \autoref{fig:scheme_dual} visualisiert den Factor Graph für das duale Farbschema (Fall: $\#HGs(P) = 2$). Im Gegensatz zum triadischen Farbschema wird die Wahl von Farbwerten mit unterschiedlichen Hue-Groups nur noch für die Primär- und Akzentfarbe erzwungen. Stattdessen verhindert der neue Hard Constraint \emph{diff var} die Wahl gleicher Farbwerte von Akzent-, Interaktions- und Sekundärfarbe.
- 
- \begin{itemize}
-	\item \textbf{Ergebnis Nr. 1:} Erwartungsgemäße Färbung.
-	\item \textbf{Ergebnis Nr. 2:} Der violette Farbton wird zur Akzentfarbe, obwohl er zur größten Hue-Group gehört. Dies ist dem Umstand geschuldet, dass Dunkelblau als bester Kompromiss zwischen Textlesbarkeit und visuellem Gewicht zur Primärfarbe wird, Akzent- und Primärfarbe jedoch Teil unterschiedlicher Hue-Groups sein müssen. Primär- und Sekundärfarbe fallen zusammen, da Türkis zur Interaktionsfarbe gewählt wird und somit in der Hue-Group der Primärfarbe kein anderer Farbton mehr zur Auswahl steht. Aufgrund der durchschnittlichen Luminanz $\leq 2.0$ wird $schwarz$ als Hintergrund (neutral) festgelegt.
-\end{itemize}
- 
-\begin{figure}[h]
+
+ \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{img/scheme_dual.png}
 \caption{Factor Graph zur Bildung dualer Farbschemata. Die Variablen werden rund, Hard Constraints rot und Soft Constraints gelb dargestellt.}
 \label{fig:scheme_dual}
 \end{figure}
 
+ 
+ \begin{itemize}
+	\item \textbf{Ergebnis Nr. 1:} Erwartungsgemäße Färbung.
+	\item \textbf{Ergebnis Nr. 2:} Der violette Farbton wurde zur Akzentfarbe, obwohl er zur größten Hue-Group gehört. Dies ist dem Umstand geschuldet, dass Dunkelblau als bester Kompromiss zwischen Textlesbarkeit und visuellem Gewicht zur Primärfarbe wird, Akzent- und Primärfarbe jedoch Teil unterschiedlicher Hue-Groups sein müssen. Primär- und Sekundärfarbe fallen zusammen, da Türkis zur Interaktionsfarbe gewählt wurde und somit in der Hue-Group der Primärfarbe kein anderer Farbton mehr zur Auswahl stand. Aufgrund der durchschnittlichen Luminanz $\leq 2.0$ wurde $schwarz$ als Hintergrund (neutral) festgelegt.
+\end{itemize}
+ 
 \subsection{Suchverfahren für monochrome Farbschemata}
 \label{sec:monochrome}
 
-\autoref{fig:scheme_monochrom} visualisiert den Factor Graph für monochrome Farbschemata (Fall: $\#HGs(P) = 1$). Trotz der Orientierung der Farbgestaltung an der Bildvorlage darf die Benutzerführung nicht vernachlässigt werden. Aus diesem Grund wurde die Entscheidung getroffen, $P$ durch die Komplementärfarbe der gewählten Primärfarbe zu ergänzen und diese für die Akzent- und Interaktionsfarbe festzulegen. \autoref{fig:scheme_monochrom} zeigt den Factor Graph für monochrome Farbschemata, wobei nur die Primär- und Sekundärfarbe entschieden werden. Daraufhin wird der Farbton der Komplementärfarbe durch $h_\text{komplementär} = (\text{value}(V_\text{Primär}).h + 180.0) \mod 360.0$ errechnet. Abschließend wird die I-Komponente der Komplementärfarbe so lange verschoben, bis ein ausreichender Luminanzkontrast zur Primärfarbe erreicht wurde. \autoref{fig:results_monochrom} veranschaulicht das Ergebnis anhand einer Bildvorlage mit nur einem einzigen dominierenden Farbton.
+\autoref{fig:scheme_monochrom} visualisiert den Factor Graph für Bildvorlagen mit monochromen Farbpaletten (Fall: $\#HGs(P) = 1$). Trotz der Orientierung der Farbgestaltung an der Bildvorlage darf die Benutzerführung nicht vernachlässigt werden. Aus diesem Grund wurde die Entscheidung getroffen, $P$ durch die Komplementärfarbe der gewählten Primärfarbe zu ergänzen und diese für die Akzent- und Interaktionsfarbe festzulegen. \autoref{fig:scheme_monochrom} zeigt den Factor Graph für monochrome Farbschemata, wobei nur die Primär- und Sekundärfarbe entschieden werden. Daraufhin wird der Farbton der Komplementärfarbe durch $h_\text{komplementär} = (\text{value}(V_\text{Primär}).h + 180.0) \mod 360.0$ errechnet. Abschließend wird die I-Komponente der Komplementärfarbe so lange verschoben, bis ein ausreichender Luminanzkontrast zur Primärfarbe erreicht wird. \autoref{fig:results_monochrom} veranschaulicht das Ergebnis anhand einer Bildvorlage mit nur einem einzigen dominierenden Farbton.
 
 \begin{figure}[h]
 \centering
@@ -112,14 +115,14 @@ Soft Constraints:
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.92\textwidth]{img/results_triadic.png}
-\caption{Ergebnis der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
+\caption{Ergebnisse der automatisierten Farbgestaltung (triadisches Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
 \label{fig:results_triadic}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.92\textwidth]{img/results_dual.png}
-\caption{Ergebnis der automatisierten Farbgestaltung (duales Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
+\caption{Ergebnisse der automatisierten Farbgestaltung (duales Farbschema). (a) Bildvorlage. (b) Hierarchische Farbpalette mit Zuordnung der Funktionsgruppen. (c) Färbungsergebnis des exemplarischen Layouts aus \autoref{fig:fgs}.}
 \label{fig:results_dual}
 \end{figure}
 
