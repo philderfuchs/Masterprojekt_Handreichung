@@ -78,7 +78,7 @@ H = \arccos{(\frac{\frac{1}{2}((R-G)+(R-B))}{\sqrt{(R-G)^2+(R-B)(G-B))}})}
 
 \autoref{fig:hsi_conversion} visualisiert des Konvertierungsergebnis. Das Resultat ist ein RGB-Würfel, der auf die \glqq{}schwarze Ecke gestellt wurde\grqq{}.
  
-\subsubsection{Segmentierung des Histogramm}
+\subsubsection{Segmentierung des Histogramms}
 \label{sec:segmentierung}
 
 Ein Histogramm $h=(h_i)_{i = 1 \ldots b}$ mit b-Bins wird gebildet. Gesucht wird nun eine Sequenz $s = (s_i)_{i = 1 \ldots k}$ von Markierungen des Definitionsbereichs mit $1 = s_0 < s_1 < \ldots < s_k = b$, welche als \textbf{Segmentierung} des Histogramms bezeichnet wird. Das Intervall $[h_{s_i}, \ldots,  h_{s_{i+1}}]$ wird als \textbf{Segment} bezeichnet. Die Vereinigung aller Segmente eines Histogramms ergibt wieder das Histogramm. Ziel ist, dass das Histogramm in allen Segmenten eine \glqq{}annähernd unimodale Verteilung aufweist\grqq{} \citep{acopa}. Abbildung \ref{fig:unimodal} zeigt das Prinzip an verschiedenen Beispielen.

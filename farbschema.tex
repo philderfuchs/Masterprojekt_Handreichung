@@ -98,6 +98,7 @@ Soft Constraints:
 \end{figure}
 
 \subsection{Suchverfahren für monochrome Farbschemata}
+\label{sec:monochrome}
 
 \autoref{fig:scheme_monochrom} visualisiert den Factor Graph für monochrome Farbschemata (Fall: $\#HGs(P) = 1$). Trotz der Orientierung der Farbgestaltung an der Bildvorlage darf die Benutzerführung nicht vernachlässigt werden. Aus diesem Grund wurde die Entscheidung getroffen, $P$ durch die Komplementärfarbe der gewählten Primärfarbe zu ergänzen und diese für die Akzent- und Interaktionsfarbe festzulegen. \autoref{fig:scheme_monochrom} zeigt den Factor Graph für monochrome Farbschemata, wobei nur die Primär- und Sekundärfarbe entschieden werden. Daraufhin wird der Farbton der Komplementärfarbe durch $h_\text{komplementär} = (\text{value}(V_\text{Primär}).h + 180.0) \mod 360.0$ errechnet. Abschließend wird die I-Komponente der Komplementärfarbe so lange verschoben, bis ein ausreichender Luminanzkontrast zur Primärfarbe erreicht wurde. \autoref{fig:results_monochrom} veranschaulicht das Ergebnis anhand einer Bildvorlage mit nur einem einzigen dominierenden Farbton.
 
